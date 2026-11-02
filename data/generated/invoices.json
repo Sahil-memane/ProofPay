@@ -1,0 +1,482 @@
+[
+  {
+    "invoice_id": "INV-00000",
+    "customer_id": "CUST-00101",
+    "amount_usd": 755.5,
+    "currency": "USD",
+    "issued_at": "2024-11-23T19:58:39+00:00",
+    "due_at": "2024-12-19T19:58:39+00:00"
+  },
+  {
+    "invoice_id": "INV-00001",
+    "customer_id": "CUST-00041",
+    "amount_usd": 655.73,
+    "currency": "GBP",
+    "issued_at": "2024-11-09T07:45:57+00:00",
+    "due_at": "2024-11-26T07:45:57+00:00"
+  },
+  {
+    "invoice_id": "INV-00002",
+    "customer_id": "CUST-00057",
+    "amount_usd": 282.11,
+    "currency": "EUR",
+    "issued_at": "2024-11-06T02:15:02+00:00",
+    "due_at": "2024-12-01T02:15:02+00:00"
+  },
+  {
+    "invoice_id": "INV-00003",
+    "customer_id": "CUST-00005",
+    "amount_usd": 389.57,
+    "currency": "EUR",
+    "issued_at": "2024-11-23T07:57:48+00:00",
+    "due_at": "2024-12-17T07:57:48+00:00"
+  },
+  {
+    "invoice_id": "INV-00004",
+    "customer_id": "CUST-00046",
+    "amount_usd": 482.77,
+    "currency": "EUR",
+    "issued_at": "2024-11-20T19:22:22+00:00",
+    "due_at": "2024-12-30T19:22:22+00:00"
+  },
+  {
+    "invoice_id": "INV-00005",
+    "customer_id": "CUST-00099",
+    "amount_usd": 457.08,
+    "currency": "GBP",
+    "issued_at": "2024-11-04T13:00:36+00:00",
+    "due_at": "2024-12-09T13:00:36+00:00"
+  },
+  {
+    "invoice_id": "INV-00006",
+    "customer_id": "CUST-00008",
+    "amount_usd": 450.62,
+    "currency": "GBP",
+    "issued_at": "2024-11-20T18:22:47+00:00",
+    "due_at": "2024-12-22T18:22:47+00:00"
+  },
+  {
+    "invoice_id": "INV-00007",
+    "customer_id": "CUST-00032",
+    "amount_usd": 744.18,
+    "currency": "GBP",
+    "issued_at": "2024-12-01T06:11:50+00:00",
+    "due_at": "2024-12-24T06:11:50+00:00"
+  },
+  {
+    "invoice_id": "INV-00008",
+    "customer_id": "CUST-00042",
+    "amount_usd": 265.72,
+    "currency": "GBP",
+    "issued_at": "2024-11-08T20:46:33+00:00",
+    "due_at": "2024-12-14T20:46:33+00:00"
+  },
+  {
+    "invoice_id": "INV-00009",
+    "customer_id": "CUST-00039",
+    "amount_usd": 925.93,
+    "currency": "GBP",
+    "issued_at": "2024-11-21T00:39:50+00:00",
+    "due_at": "2024-12-13T00:39:50+00:00"
+  },
+  {
+    "invoice_id": "INV-00010",
+    "customer_id": "CUST-00076",
+    "amount_usd": 733.08,
+    "currency": "USD",
+    "issued_at": "2024-11-17T00:41:20+00:00",
+    "due_at": "2024-12-25T00:41:20+00:00"
+  },
+  {
+    "invoice_id": "INV-00011",
+    "customer_id": "CUST-00082",
+    "amount_usd": 794.79,
+    "currency": "USD",
+    "issued_at": "2024-11-27T13:17:33+00:00",
+    "due_at": "2024-12-16T13:17:33+00:00"
+  },
+  {
+    "invoice_id": "INV-00012",
+    "customer_id": "CUST-00082",
+    "amount_usd": 704.49,
+    "currency": "GBP",
+    "issued_at": "2024-11-19T13:33:37+00:00",
+    "due_at": "2024-12-04T13:33:37+00:00"
+  },
+  {
+    "invoice_id": "INV-00013",
+    "customer_id": "CUST-00046",
+    "amount_usd": 435.11,
+    "currency": "USD",
+    "issued_at": "2024-11-18T14:08:49+00:00",
+    "due_at": "2025-01-02T14:08:49+00:00"
+  },
+  {
+    "invoice_id": "INV-00014",
+    "customer_id": "CUST-00024",
+    "amount_usd": 373.77,
+    "currency": "USD",
+    "issued_at": "2024-11-09T12:31:27+00:00",
+    "due_at": "2024-11-27T12:31:27+00:00"
+  },
+  {
+    "invoice_id": "INV-00015",
+    "customer_id": "CUST-00037",
+    "amount_usd": 834.1,
+    "currency": "USD",
+    "issued_at": "2024-11-26T15:30:04+00:00",
+    "due_at": "2024-12-12T15:30:04+00:00"
+  },
+  {
+    "invoice_id": "INV-00016",
+    "customer_id": "CUST-00084",
+    "amount_usd": 455.89,
+    "currency": "GBP",
+    "issued_at": "2024-11-08T08:40:59+00:00",
+    "due_at": "2024-12-16T08:40:59+00:00"
+  },
+  {
+    "invoice_id": "INV-00017",
+    "customer_id": "CUST-00019",
+    "amount_usd": 325.87,
+    "currency": "GBP",
+    "issued_at": "2024-11-10T00:52:01+00:00",
+    "due_at": "2024-12-22T00:52:01+00:00"
+  },
+  {
+    "invoice_id": "INV-00018",
+    "customer_id": "CUST-00005",
+    "amount_usd": 275.9,
+    "currency": "GBP",
+    "issued_at": "2024-11-13T12:44:33+00:00",
+    "due_at": "2024-12-25T12:44:33+00:00"
+  },
+  {
+    "invoice_id": "INV-00019",
+    "customer_id": "CUST-00078",
+    "amount_usd": 195.93,
+    "currency": "GBP",
+    "issued_at": "2024-11-23T19:02:20+00:00",
+    "due_at": "2024-12-21T19:02:20+00:00"
+  },
+  {
+    "invoice_id": "INV-00020",
+    "customer_id": "CUST-00068",
+    "amount_usd": 166.87,
+    "currency": "EUR",
+    "issued_at": "2024-11-11T10:02:42+00:00",
+    "due_at": "2024-12-18T10:02:42+00:00"
+  },
+  {
+    "invoice_id": "INV-00021",
+    "customer_id": "CUST-00086",
+    "amount_usd": 616.43,
+    "currency": "EUR",
+    "issued_at": "2024-11-24T09:53:46+00:00",
+    "due_at": "2024-12-26T09:53:46+00:00"
+  },
+  {
+    "invoice_id": "INV-00022",
+    "customer_id": "CUST-00099",
+    "amount_usd": 257.49,
+    "currency": "GBP",
+    "issued_at": "2024-11-22T07:46:30+00:00",
+    "due_at": "2024-12-16T07:46:30+00:00"
+  },
+  {
+    "invoice_id": "INV-00023",
+    "customer_id": "CUST-00104",
+    "amount_usd": 141.81,
+    "currency": "GBP",
+    "issued_at": "2024-11-08T17:14:45+00:00",
+    "due_at": "2024-12-08T17:14:45+00:00"
+  },
+  {
+    "invoice_id": "INV-00024",
+    "customer_id": "CUST-00006",
+    "amount_usd": 422.15,
+    "currency": "EUR",
+    "issued_at": "2024-11-28T22:05:12+00:00",
+    "due_at": "2024-12-18T22:05:12+00:00"
+  },
+  {
+    "invoice_id": "INV-00025",
+    "customer_id": "CUST-00091",
+    "amount_usd": 552.14,
+    "currency": "USD",
+    "issued_at": "2024-11-15T20:07:20+00:00",
+    "due_at": "2024-12-04T20:07:20+00:00"
+  },
+  {
+    "invoice_id": "INV-00026",
+    "customer_id": "CUST-00097",
+    "amount_usd": 116.8,
+    "currency": "EUR",
+    "issued_at": "2024-11-26T22:05:57+00:00",
+    "due_at": "2024-12-19T22:05:57+00:00"
+  },
+  {
+    "invoice_id": "INV-00027",
+    "customer_id": "CUST-00106",
+    "amount_usd": 292.8,
+    "currency": "USD",
+    "issued_at": "2024-11-23T21:36:07+00:00",
+    "due_at": "2024-12-29T21:36:07+00:00"
+  },
+  {
+    "invoice_id": "INV-00028",
+    "customer_id": "CUST-00119",
+    "amount_usd": 31.94,
+    "currency": "USD",
+    "issued_at": "2024-11-21T05:54:08+00:00",
+    "due_at": "2024-12-28T05:54:08+00:00"
+  },
+  {
+    "invoice_id": "INV-00029",
+    "customer_id": "CUST-00030",
+    "amount_usd": 260.22,
+    "currency": "USD",
+    "issued_at": "2024-11-20T04:48:17+00:00",
+    "due_at": "2024-12-18T04:48:17+00:00"
+  },
+  {
+    "invoice_id": "INV-00030",
+    "customer_id": "CUST-00003",
+    "amount_usd": 217.36,
+    "currency": "USD",
+    "issued_at": "2024-11-18T06:38:29+00:00",
+    "due_at": "2024-12-11T06:38:29+00:00"
+  },
+  {
+    "invoice_id": "INV-00031",
+    "customer_id": "CUST-00017",
+    "amount_usd": 39.32,
+    "currency": "EUR",
+    "issued_at": "2024-11-08T17:42:18+00:00",
+    "due_at": "2024-12-22T17:42:18+00:00"
+  },
+  {
+    "invoice_id": "INV-00032",
+    "customer_id": "CUST-00057",
+    "amount_usd": 405.75,
+    "currency": "USD",
+    "issued_at": "2024-11-02T22:08:28+00:00",
+    "due_at": "2024-12-02T22:08:28+00:00"
+  },
+  {
+    "invoice_id": "INV-00033",
+    "customer_id": "CUST-00027",
+    "amount_usd": 545.2,
+    "currency": "GBP",
+    "issued_at": "2024-12-01T13:23:48+00:00",
+    "due_at": "2025-01-11T13:23:48+00:00"
+  },
+  {
+    "invoice_id": "INV-00034",
+    "customer_id": "CUST-00014",
+    "amount_usd": 507.87,
+    "currency": "USD",
+    "issued_at": "2024-11-16T14:51:59+00:00",
+    "due_at": "2024-12-07T14:51:59+00:00"
+  },
+  {
+    "invoice_id": "INV-00035",
+    "customer_id": "CUST-00006",
+    "amount_usd": 166.41,
+    "currency": "GBP",
+    "issued_at": "2024-11-24T04:34:33+00:00",
+    "due_at": "2024-12-12T04:34:33+00:00"
+  },
+  {
+    "invoice_id": "INV-00036",
+    "customer_id": "CUST-00014",
+    "amount_usd": 546.3,
+    "currency": "EUR",
+    "issued_at": "2024-11-30T23:15:04+00:00",
+    "due_at": "2024-12-15T23:15:04+00:00"
+  },
+  {
+    "invoice_id": "INV-00037",
+    "customer_id": "CUST-00080",
+    "amount_usd": 342.26,
+    "currency": "USD",
+    "issued_at": "2024-11-08T23:16:44+00:00",
+    "due_at": "2024-12-10T23:16:44+00:00"
+  },
+  {
+    "invoice_id": "INV-00038",
+    "customer_id": "CUST-00054",
+    "amount_usd": 15.99,
+    "currency": "EUR",
+    "issued_at": "2024-11-13T16:16:39+00:00",
+    "due_at": "2024-12-23T16:16:39+00:00"
+  },
+  {
+    "invoice_id": "INV-00039",
+    "customer_id": "CUST-00023",
+    "amount_usd": 436.88,
+    "currency": "USD",
+    "issued_at": "2024-11-27T09:54:13+00:00",
+    "due_at": "2025-01-03T09:54:13+00:00"
+  },
+  {
+    "invoice_id": "INV-00040",
+    "customer_id": "CUST-00008",
+    "amount_usd": 620.41,
+    "currency": "GBP",
+    "issued_at": "2024-11-26T15:04:46+00:00",
+    "due_at": "2024-12-11T15:04:46+00:00"
+  },
+  {
+    "invoice_id": "INV-00041",
+    "customer_id": "CUST-00049",
+    "amount_usd": 569.57,
+    "currency": "USD",
+    "issued_at": "2024-11-20T18:44:57+00:00",
+    "due_at": "2024-12-27T18:44:57+00:00"
+  },
+  {
+    "invoice_id": "INV-00042",
+    "customer_id": "CUST-00032",
+    "amount_usd": 489.55,
+    "currency": "EUR",
+    "issued_at": "2024-11-05T06:42:45+00:00",
+    "due_at": "2024-12-11T06:42:45+00:00"
+  },
+  {
+    "invoice_id": "INV-00043",
+    "customer_id": "CUST-00030",
+    "amount_usd": 480.42,
+    "currency": "GBP",
+    "issued_at": "2024-11-07T00:46:37+00:00",
+    "due_at": "2024-12-12T00:46:37+00:00"
+  },
+  {
+    "invoice_id": "INV-00044",
+    "customer_id": "CUST-00017",
+    "amount_usd": 43.15,
+    "currency": "GBP",
+    "issued_at": "2024-11-18T10:26:10+00:00",
+    "due_at": "2024-12-13T10:26:10+00:00"
+  },
+  {
+    "invoice_id": "INV-00045",
+    "customer_id": "CUST-00106",
+    "amount_usd": 509.76,
+    "currency": "EUR",
+    "issued_at": "2024-11-25T05:31:45+00:00",
+    "due_at": "2024-12-20T05:31:45+00:00"
+  },
+  {
+    "invoice_id": "INV-00046",
+    "customer_id": "CUST-00103",
+    "amount_usd": 100.63,
+    "currency": "GBP",
+    "issued_at": "2024-11-24T05:14:07+00:00",
+    "due_at": "2024-12-10T05:14:07+00:00"
+  },
+  {
+    "invoice_id": "INV-00047",
+    "customer_id": "CUST-00037",
+    "amount_usd": 143.01,
+    "currency": "USD",
+    "issued_at": "2024-11-04T00:49:26+00:00",
+    "due_at": "2024-12-08T00:49:26+00:00"
+  },
+  {
+    "invoice_id": "INV-00048",
+    "customer_id": "CUST-00119",
+    "amount_usd": 211.9,
+    "currency": "EUR",
+    "issued_at": "2024-11-28T08:40:35+00:00",
+    "due_at": "2025-01-11T08:40:35+00:00"
+  },
+  {
+    "invoice_id": "INV-00049",
+    "customer_id": "CUST-00032",
+    "amount_usd": 38.25,
+    "currency": "GBP",
+    "issued_at": "2024-11-11T06:39:05+00:00",
+    "due_at": "2024-12-13T06:39:05+00:00"
+  },
+  {
+    "invoice_id": "INV-00050",
+    "customer_id": "CUST-00045",
+    "amount_usd": 562.46,
+    "currency": "USD",
+    "issued_at": "2024-11-18T02:43:13+00:00",
+    "due_at": "2024-12-19T02:43:13+00:00"
+  },
+  {
+    "invoice_id": "INV-00051",
+    "customer_id": "CUST-00015",
+    "amount_usd": 522.58,
+    "currency": "EUR",
+    "issued_at": "2024-11-21T10:03:32+00:00",
+    "due_at": "2025-01-02T10:03:32+00:00"
+  },
+  {
+    "invoice_id": "INV-00052",
+    "customer_id": "CUST-00114",
+    "amount_usd": 622.36,
+    "currency": "EUR",
+    "issued_at": "2024-11-11T01:39:28+00:00",
+    "due_at": "2024-12-26T01:39:28+00:00"
+  },
+  {
+    "invoice_id": "INV-00053",
+    "customer_id": "CUST-00088",
+    "amount_usd": 330.93,
+    "currency": "GBP",
+    "issued_at": "2024-11-14T22:45:07+00:00",
+    "due_at": "2024-12-03T22:45:07+00:00"
+  },
+  {
+    "invoice_id": "INV-00054",
+    "customer_id": "CUST-00093",
+    "amount_usd": 284.56,
+    "currency": "EUR",
+    "issued_at": "2024-12-01T05:54:32+00:00",
+    "due_at": "2024-12-26T05:54:32+00:00"
+  },
+  {
+    "invoice_id": "INV-00055",
+    "customer_id": "CUST-00069",
+    "amount_usd": 201.54,
+    "currency": "USD",
+    "issued_at": "2024-11-05T21:17:13+00:00",
+    "due_at": "2024-12-09T21:17:13+00:00"
+  },
+  {
+    "invoice_id": "INV-00056",
+    "customer_id": "CUST-00084",
+    "amount_usd": 202.73,
+    "currency": "EUR",
+    "issued_at": "2024-12-01T06:06:18+00:00",
+    "due_at": "2025-01-11T06:06:18+00:00"
+  },
+  {
+    "invoice_id": "INV-00057",
+    "customer_id": "CUST-00021",
+    "amount_usd": 453.0,
+    "currency": "EUR",
+    "issued_at": "2024-11-23T16:56:37+00:00",
+    "due_at": "2024-12-09T16:56:37+00:00"
+  },
+  {
+    "invoice_id": "INV-00058",
+    "customer_id": "CUST-00093",
+    "amount_usd": 567.47,
+    "currency": "EUR",
+    "issued_at": "2024-12-01T20:21:14+00:00",
+    "due_at": "2025-01-11T20:21:14+00:00"
+  },
+  {
+    "invoice_id": "INV-00059",
+    "customer_id": "CUST-00035",
+    "amount_usd": 421.06,
+    "currency": "USD",
+    "issued_at": "2024-11-05T15:25:45+00:00",
+    "due_at": "2024-12-14T15:25:45+00:00"
+  }
+]

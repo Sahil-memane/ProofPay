@@ -1,0 +1,131 @@
+# Recovery Strategy Ladder
+# Defines the ordered step ladder per diagnosis
+strategies:
+  insufficient_funds:
+    - step: 0
+      action: retry_and_reminder
+      channel: email
+      template: insufficient_funds
+      align_payday: true
+      description: Payday-aligned retry plus short reminder
+    - step: 1
+      action: send_payment_link
+      channel: payment_link
+      template: payment_link
+      align_payday: false
+      description: Send direct payment link
+    - step: 2
+      action: offer_split_payment
+      channel: email
+      template: split_offer
+      align_payday: false
+      description: Offer split payment installments
+
+  expired_card:
+    - step: 0
+      action: request_card_update
+      channel: email
+      template: expired_card
+      align_payday: false
+      description: Request payment method / card update
+    - step: 1
+      action: send_payment_link
+      channel: payment_link
+      template: payment_link
+      align_payday: false
+      description: Send alternate payment link
+    - step: 2
+      action: escalate
+      channel: none
+      template: escalate
+      align_payday: false
+      description: Escalate to human operator
+
+  temporary_hold:
+    - step: 0
+      action: wait_and_retry
+      channel: none
+      template: temporary_hold
+      align_payday: false
+      description: Wait and retry once
+    - step: 1
+      action: send_reminder
+      channel: email
+      template: temporary_hold
+      align_payday: false
+      description: Friendly reminder of temporary hold
+    - step: 2
+      action: send_payment_link
+      channel: payment_link
+      template: payment_link
+      align_payday: false
+      description: Send direct payment link
+
+  forgot_to_pay:
+    - step: 0
+      action: send_reminder
+      channel: email
+      template: forgot_to_pay
+      align_payday: false
+      description: Friendly reminder
+    - step: 1
+      action: send_payment_link
+      channel: payment_link
+      template: payment_link
+      align_payday: false
+      description: Send direct payment link
+    - step: 2
+      action: offer_split_payment
+      channel: email
+      template: split_offer
+      align_payday: false
+      description: Offer split payment installments
+    - step: 3
+      action: send_reminder
+      channel: email
+      template: forgot_to_pay
+      align_payday: false
+      description: Final notice reminder
+
+  large_overdue_invoice:
+    - step: 0
+      action: offer_split_payment
+      channel: email
+      template: large_overdue_invoice
+      align_payday: false
+      description: Offer installment / Pay Later plan
+    - step: 1
+      action: send_payment_link
+      channel: payment_link
+      template: payment_link
+      align_payday: false
+      description: Send direct payment link
+    - step: 2
+      action: escalate
+      channel: none
+      template: escalate
+      align_payday: false
+      description: Escalate to human operator
+
+  promised_date:
+    - step: 0
+      action: log_promise_to_pay
+      channel: none
+      template: promised_date_reminder
+      align_payday: false
+      description: Log the promise and remind the day before
+    - step: 1
+      action: send_reminder
+      channel: email
+      template: promised_date_reminder
+      align_payday: false
+      description: Reminder the day before promised date
+
+  suspicious_hard_decline:
+    - step: 0
+      action: escalate
+      channel: none
+      template: suspicious_hard_decline
+      align_payday: false
+      description: No retry; immediate human escalation
+

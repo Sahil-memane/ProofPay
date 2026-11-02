@@ -1,0 +1,8 @@
+{# English: forgot_to_pay #}
+Dear Customer,
+
+This is a friendly reminder that invoice {{ invoice_id | default('account balance') }} for {{ amount_usd }} {{ currency }} is currently overdue.
+You can review and settle your account anytime using our payment link: {{ payment_link | default('https://proofpay.invalid/pay') }}
+
+To opt out of future reminders or unsubscribe, reply STOP or click here: https://proofpay.invalid/opt-out
+

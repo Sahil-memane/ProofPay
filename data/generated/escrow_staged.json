@@ -1,0 +1,104 @@
+[
+  {
+    "project_id": "ESCROW-DEMO-DRAFT",
+    "title": "Demo Milestone Project (DRAFT)",
+    "client_id": "CUST-00000",
+    "freelancer_id": "CUST-00050",
+    "amount_usd": 1000.0,
+    "currency": "USD",
+    "stage": "DRAFT",
+    "milestones": [
+      {
+        "milestone_id": "M-DRAFT-1",
+        "title": "Milestone 1 for DRAFT",
+        "amount_usd": 500.0,
+        "status": "pending"
+      }
+    ]
+  },
+  {
+    "project_id": "ESCROW-DEMO-PLAN_APPROVED",
+    "title": "Demo Milestone Project (PLAN_APPROVED)",
+    "client_id": "CUST-00001",
+    "freelancer_id": "CUST-00051",
+    "amount_usd": 1250.0,
+    "currency": "USD",
+    "stage": "PLAN_APPROVED",
+    "milestones": [
+      {
+        "milestone_id": "M-PLAN_APPROVED-1",
+        "title": "Milestone 1 for PLAN_APPROVED",
+        "amount_usd": 500.0,
+        "status": "pending"
+      }
+    ]
+  },
+  {
+    "project_id": "ESCROW-DEMO-FUNDED",
+    "title": "Demo Milestone Project (FUNDED)",
+    "client_id": "CUST-00002",
+    "freelancer_id": "CUST-00052",
+    "amount_usd": 1500.0,
+    "currency": "USD",
+    "stage": "FUNDED",
+    "milestones": [
+      {
+        "milestone_id": "M-FUNDED-1",
+        "title": "Milestone 1 for FUNDED",
+        "amount_usd": 500.0,
+        "status": "pending"
+      }
+    ]
+  },
+  {
+    "project_id": "ESCROW-DEMO-IN_REVIEW",
+    "title": "Demo Milestone Project (IN_REVIEW)",
+    "client_id": "CUST-00003",
+    "freelancer_id": "CUST-00053",
+    "amount_usd": 1750.0,
+    "currency": "USD",
+    "stage": "IN_REVIEW",
+    "milestones": [
+      {
+        "milestone_id": "M-IN_REVIEW-1",
+        "title": "Milestone 1 for IN_REVIEW",
+        "amount_usd": 500.0,
+        "status": "completed"
+      }
+    ]
+  },
+  {
+    "project_id": "ESCROW-DEMO-RELEASED",
+    "title": "Demo Milestone Project (RELEASED)",
+    "client_id": "CUST-00004",
+    "freelancer_id": "CUST-00054",
+    "amount_usd": 2000.0,
+    "currency": "USD",
+    "stage": "RELEASED",
+    "milestones": [
+      {
+        "milestone_id": "M-RELEASED-1",
+        "title": "Milestone 1 for RELEASED",
+        "amount_usd": 500.0,
+        "status": "completed"
+      }
+    ]
+  },
+  {
+    "project_id": "ESCROW-DEMO-DISPUTED",
+    "title": "Demo Milestone Project (DISPUTED)",
+    "client_id": "CUST-00005",
+    "freelancer_id": "CUST-00055",
+    "amount_usd": 2250.0,
+    "currency": "USD",
+    "stage": "DISPUTED",
+    "milestones": [
+      {
+        "milestone_id": "M-DISPUTED-1",
+        "title": "Milestone 1 for DISPUTED",
+        "amount_usd": 500.0,
+        "status": "pending"
+      }
+    ]
+  }
+]

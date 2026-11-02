@@ -1,0 +1,16 @@
+[importlinter]
+root_package = backend.app
+
+[importlinter:contract:recovery-forbidden-imports]
+name = Recovery, agents and reconciliation must not import paypal or channels directly
+type = forbidden
+source_modules =
+    backend.app.recovery
+    backend.app.agents
+    backend.app.reconciliation
+forbidden_modules =
+    backend.app.paypal
+    backend.app.channels
+ignore_imports =
+    backend.app.stubs.executor -> backend.app.channels.outbox
+
