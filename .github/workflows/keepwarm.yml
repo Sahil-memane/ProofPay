@@ -1,0 +1,23 @@
+name: Keepwarm and Scheduler Tick
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+
+jobs:
+  tick:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Health Endpoint
+        run: |
+          if [ -n "${{ secrets.RENDER_API_BASE_URL }}" ]; then
+            curl -fsS "${{ secrets.RENDER_API_BASE_URL }}/healthz" || true
+          fi
+
+      - name: Trigger Internal Tick
+        run: |
+          if [ -n "${{ secrets.RENDER_API_BASE_URL }}" ] && [ -n "${{ secrets.INTERNAL_TICK_TOKEN }}" ]; then
+            curl -fsS -X POST "${{ secrets.RENDER_API_BASE_URL }}/internal/tick" \
+              -H "x-tick-token: ${{ secrets.INTERNAL_TICK_TOKEN }}" || true
+          fi
