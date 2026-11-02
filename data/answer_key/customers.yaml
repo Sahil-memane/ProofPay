@@ -1,0 +1,1014 @@
+CUST-00000:
+  behaviour: pays_after_one_reminder
+  history:
+  - paid
+  language: en
+  opted_out: false
+  timezone: America/New_York
+CUST-00001:
+  behaviour: already_paid_elsewhere
+  history:
+  - paid_via_link
+  - paid
+  - paid_via_link
+  - paid_via_link
+  language: en
+  opted_out: false
+  timezone: America/Chicago
+CUST-00002:
+  behaviour: needs_card_update
+  history:
+  - paid
+  - card_failed
+  - paid
+  - card_failed
+  language: en
+  opted_out: false
+  timezone: America/Chicago
+CUST-00003:
+  behaviour: prefers_split
+  history:
+  - split_paid
+  - split_paid
+  language: hi
+  opted_out: false
+  timezone: America/Sao_Paulo
+CUST-00004:
+  behaviour: ignores_everything
+  history:
+  - no_response
+  language: hi
+  opted_out: false
+  timezone: Europe/Paris
+CUST-00005:
+  behaviour: disputes_if_chased_early
+  history:
+  - disputed
+  - paid_after_mediation
+  language: en
+  opted_out: false
+  timezone: America/Chicago
+CUST-00006:
+  behaviour: already_paid_elsewhere
+  history:
+  - paid_elsewhere
+  - paid
+  - paid_elsewhere
+  - paid
+  language: hi
+  opted_out: false
+  timezone: America/New_York
+CUST-00007:
+  behaviour: already_paid_elsewhere
+  history:
+  - paid
+  - paid_elsewhere
+  language: hi
+  opted_out: false
+  timezone: Australia/Sydney
+CUST-00008:
+  behaviour: already_paid_elsewhere
+  history:
+  - paid_elsewhere
+  - paid_elsewhere
+  language: en
+  opted_out: false
+  timezone: America/New_York
+CUST-00009:
+  behaviour: disputes_if_chased_early
+  history:
+  - disputed
+  - disputed
+  language: en
+  opted_out: false
+  timezone: Europe/Berlin
+CUST-00010:
+  behaviour: disputes_if_chased_early
+  history:
+  - paid_after_mediation
+  - disputed
+  - paid_after_mediation
+  - paid_after_mediation
+  - disputed
+  language: hi
+  opted_out: false
+  timezone: America/Sao_Paulo
+CUST-00011:
+  behaviour: already_paid_elsewhere
+  history:
+  - paid
+  - paid
+  - card_failed
+  - paid
+  - card_updated_paid
+  language: en
+  opted_out: false
+  timezone: America/Los_Angeles
+CUST-00012:
+  behaviour: already_paid_elsewhere
+  history:
+  - paid
+  - paid
+  language: en
+  opted_out: false
+  timezone: America/Sao_Paulo
+CUST-00013:
+  behaviour: ignores_everything
+  history:
+  - no_response
+  - no_response
+  - defaulted
+  - no_response
+  - no_response
+  language: en
+  opted_out: false
+  timezone: America/Sao_Paulo
+CUST-00014:
+  behaviour: needs_payment_link
+  history:
+  - paid
+  - paid
+  - paid_via_link
+  - paid
+  - paid
+  language: hi
+  opted_out: false
+  timezone: America/Los_Angeles
+CUST-00015:
+  behaviour: needs_payment_link
+  history:
+  - paid
+  language: hi
+  opted_out: false
+  timezone: Asia/Singapore
+CUST-00016:
+  behaviour: already_paid_elsewhere
+  history: []
+  language: hi
+  opted_out: false
+  timezone: America/Chicago
+CUST-00017:
+  behaviour: disputes_if_chased_early
+  history:
+  - paid_after_mediation
+  - disputed
+  - disputed
+  language: en
+  opted_out: false
+  timezone: Australia/Sydney
+CUST-00018:
+  behaviour: ignores_everything
+  history:
+  - defaulted
+  - no_response
+  language: hi
+  opted_out: false
+  timezone: Asia/Singapore
+CUST-00019:
+  behaviour: already_paid_elsewhere
+  history:
+  - paid
+  - paid
+  language: en
+  opted_out: false
+  timezone: Australia/Sydney
+CUST-00020:
+  behaviour: prefers_split
+  history: []
+  language: en
+  opted_out: false
+  timezone: Europe/London
+CUST-00021:
+  behaviour: ignores_everything
+  history: []
+  language: hi
+  opted_out: false
+  timezone: Asia/Tokyo
+CUST-00022:
+  behaviour: needs_payment_link
+  history:
+  - paid_via_link
+  language: hi
+  opted_out: false
+  timezone: Australia/Sydney
+CUST-00023:
+  behaviour: ignores_everything
+  history: []
+  language: en
+  opted_out: false
+  timezone: Asia/Tokyo
+CUST-00024:
+  behaviour: needs_card_update
+  history:
+  - card_failed
+  - card_failed
+  language: hi
+  opted_out: true
+  timezone: Asia/Kolkata
+CUST-00025:
+  behaviour: already_paid_elsewhere
+  history:
+  - late_paid
+  - paid
+  - paid
+  - paid
+  - late_paid
+  language: en
+  opted_out: false
+  timezone: Asia/Singapore
+CUST-00026:
+  behaviour: ignores_everything
+  history:
+  - no_response
+  - defaulted
+  - defaulted
+  language: en
+  opted_out: false
+  timezone: Europe/London
+CUST-00027:
+  behaviour: disputes_if_chased_early
+  history:
+  - disputed
+  - disputed
+  - paid_after_mediation
+  - disputed
+  - disputed
+  language: en
+  opted_out: false
+  timezone: Europe/London
+CUST-00028:
+  behaviour: pays_after_one_reminder
+  history:
+  - paid
+  - paid
+  - paid
+  - paid
+  language: en
+  opted_out: false
+  timezone: America/Sao_Paulo
+CUST-00029:
+  behaviour: pays_after_one_reminder
+  history:
+  - paid
+  - paid
+  language: en
+  opted_out: false
+  timezone: America/Sao_Paulo
+CUST-00030:
+  behaviour: ignores_everything
+  history:
+  - defaulted
+  language: hi
+  opted_out: false
+  timezone: Australia/Sydney
+CUST-00031:
+  behaviour: already_paid_elsewhere
+  history:
+  - paid_elsewhere
+  - paid_elsewhere
+  - paid_elsewhere
+  language: hi
+  opted_out: false
+  timezone: America/Sao_Paulo
+CUST-00032:
+  behaviour: prefers_split
+  history:
+  - split_paid
+  - paid
+  - paid
+  - paid
+  - split_paid
+  language: hi
+  opted_out: false
+  timezone: Europe/Paris
+CUST-00033:
+  behaviour: already_paid_elsewhere
+  history: []
+  language: en
+  opted_out: false
+  timezone: Europe/Berlin
+CUST-00034:
+  behaviour: prefers_split
+  history:
+  - split_paid
+  language: en
+  opted_out: false
+  timezone: America/Sao_Paulo
+CUST-00035:
+  behaviour: already_paid_elsewhere
+  history: []
+  language: en
+  opted_out: false
+  timezone: Europe/London
+CUST-00036:
+  behaviour: already_paid_elsewhere
+  history:
+  - disputed
+  - disputed
+  - disputed
+  - disputed
+  language: hi
+  opted_out: false
+  timezone: Asia/Tokyo
+CUST-00037:
+  behaviour: already_paid_elsewhere
+  history:
+  - paid_elsewhere
+  - paid_elsewhere
+  - paid
+  language: hi
+  opted_out: false
+  timezone: Asia/Kolkata
+CUST-00038:
+  behaviour: already_paid_elsewhere
+  history:
+  - paid
+  - paid
+  - paid
+  language: en
+  opted_out: false
+  timezone: Europe/Berlin
+CUST-00039:
+  behaviour: already_paid_elsewhere
+  history: []
+  language: hi
+  opted_out: false
+  timezone: America/Los_Angeles
+CUST-00040:
+  behaviour: ignores_everything
+  history:
+  - defaulted
+  - defaulted
+  - no_response
+  language: en
+  opted_out: false
+  timezone: Europe/Paris
+CUST-00041:
+  behaviour: already_paid_elsewhere
+  history: []
+  language: en
+  opted_out: false
+  timezone: Asia/Tokyo
+CUST-00042:
+  behaviour: prefers_split
+  history: []
+  language: en
+  opted_out: false
+  timezone: Australia/Sydney
+CUST-00043:
+  behaviour: ignores_everything
+  history: []
+  language: en
+  opted_out: false
+  timezone: Asia/Singapore
+CUST-00044:
+  behaviour: ignores_everything
+  history:
+  - no_response
+  - no_response
+  language: hi
+  opted_out: false
+  timezone: Australia/Sydney
+CUST-00045:
+  behaviour: needs_payment_link
+  history:
+  - paid
+  - paid_via_link
+  - paid_via_link
+  - paid_via_link
+  - paid_via_link
+  language: hi
+  opted_out: false
+  timezone: America/Sao_Paulo
+CUST-00046:
+  behaviour: ignores_everything
+  history: []
+  language: en
+  opted_out: false
+  timezone: Asia/Kolkata
+CUST-00047:
+  behaviour: already_paid_elsewhere
+  history:
+  - card_updated_paid
+  language: en
+  opted_out: false
+  timezone: Asia/Tokyo
+CUST-00048:
+  behaviour: needs_payment_link
+  history:
+  - paid
+  - paid
+  - paid_via_link
+  language: en
+  opted_out: false
+  timezone: America/Sao_Paulo
+CUST-00049:
+  behaviour: needs_card_update
+  history:
+  - card_failed
+  - card_failed
+  - card_updated_paid
+  - card_failed
+  - card_failed
+  language: en
+  opted_out: false
+  timezone: Australia/Sydney
+CUST-00050:
+  behaviour: needs_payment_link
+  history:
+  - paid_via_link
+  - paid_via_link
+  - paid
+  - paid
+  - paid_via_link
+  language: en
+  opted_out: false
+  timezone: Europe/London
+CUST-00051:
+  behaviour: already_paid_elsewhere
+  history: []
+  language: hi
+  opted_out: false
+  timezone: Europe/London
+CUST-00052:
+  behaviour: needs_card_update
+  history: []
+  language: en
+  opted_out: false
+  timezone: Australia/Sydney
+CUST-00053:
+  behaviour: disputes_if_chased_early
+  history:
+  - disputed
+  - paid_after_mediation
+  language: en
+  opted_out: false
+  timezone: Europe/Paris
+CUST-00054:
+  behaviour: ignores_everything
+  history: []
+  language: hi
+  opted_out: false
+  timezone: Asia/Tokyo
+CUST-00055:
+  behaviour: disputes_if_chased_early
+  history:
+  - paid_after_mediation
+  language: en
+  opted_out: false
+  timezone: America/Chicago
+CUST-00056:
+  behaviour: needs_payment_link
+  history:
+  - paid_via_link
+  - paid_via_link
+  - paid_via_link
+  language: en
+  opted_out: false
+  timezone: Europe/Paris
+CUST-00057:
+  behaviour: needs_payment_link
+  history:
+  - paid_via_link
+  - paid
+  - paid_via_link
+  - paid_via_link
+  - paid
+  language: hi
+  opted_out: false
+  timezone: America/New_York
+CUST-00058:
+  behaviour: already_paid_elsewhere
+  history:
+  - paid_via_link
+  language: hi
+  opted_out: false
+  timezone: Asia/Singapore
+CUST-00059:
+  behaviour: already_paid_elsewhere
+  history:
+  - paid
+  - paid
+  - card_failed
+  language: hi
+  opted_out: false
+  timezone: America/New_York
+CUST-00060:
+  behaviour: pays_after_one_reminder
+  history:
+  - paid
+  - late_paid
+  - paid
+  language: hi
+  opted_out: false
+  timezone: America/Los_Angeles
+CUST-00061:
+  behaviour: already_paid_elsewhere
+  history:
+  - paid_elsewhere
+  language: en
+  opted_out: false
+  timezone: Asia/Kolkata
+CUST-00062:
+  behaviour: needs_card_update
+  history:
+  - card_failed
+  - card_updated_paid
+  language: en
+  opted_out: false
+  timezone: Australia/Sydney
+CUST-00063:
+  behaviour: disputes_if_chased_early
+  history:
+  - disputed
+  - disputed
+  - disputed
+  - disputed
+  language: hi
+  opted_out: false
+  timezone: Australia/Sydney
+CUST-00064:
+  behaviour: needs_card_update
+  history: []
+  language: en
+  opted_out: false
+  timezone: Asia/Singapore
+CUST-00065:
+  behaviour: disputes_if_chased_early
+  history:
+  - disputed
+  - paid_after_mediation
+  language: en
+  opted_out: false
+  timezone: Asia/Singapore
+CUST-00066:
+  behaviour: needs_payment_link
+  history:
+  - paid_via_link
+  - paid
+  language: en
+  opted_out: false
+  timezone: Europe/Berlin
+CUST-00067:
+  behaviour: already_paid_elsewhere
+  history:
+  - paid
+  - paid
+  - paid
+  - paid
+  language: hi
+  opted_out: false
+  timezone: America/New_York
+CUST-00068:
+  behaviour: disputes_if_chased_early
+  history:
+  - paid_after_mediation
+  - disputed
+  language: en
+  opted_out: false
+  timezone: Europe/Paris
+CUST-00069:
+  behaviour: disputes_if_chased_early
+  history:
+  - disputed
+  - disputed
+  - paid_after_mediation
+  language: en
+  opted_out: false
+  timezone: Europe/London
+CUST-00070:
+  behaviour: already_paid_elsewhere
+  history:
+  - split_paid
+  - paid
+  - paid
+  - split_paid
+  - paid
+  language: hi
+  opted_out: false
+  timezone: Asia/Tokyo
+CUST-00071:
+  behaviour: pays_after_one_reminder
+  history:
+  - paid
+  - paid
+  language: hi
+  opted_out: false
+  timezone: Europe/Berlin
+CUST-00072:
+  behaviour: needs_card_update
+  history:
+  - card_updated_paid
+  - card_updated_paid
+  - paid
+  language: hi
+  opted_out: false
+  timezone: Asia/Singapore
+CUST-00073:
+  behaviour: already_paid_elsewhere
+  history:
+  - paid_elsewhere
+  - paid
+  - paid_elsewhere
+  - paid
+  - paid
+  language: en
+  opted_out: false
+  timezone: Asia/Tokyo
+CUST-00074:
+  behaviour: already_paid_elsewhere
+  history:
+  - paid
+  language: hi
+  opted_out: false
+  timezone: America/Chicago
+CUST-00075:
+  behaviour: needs_payment_link
+  history: []
+  language: hi
+  opted_out: false
+  timezone: America/Sao_Paulo
+CUST-00076:
+  behaviour: ignores_everything
+  history: []
+  language: en
+  opted_out: false
+  timezone: America/Sao_Paulo
+CUST-00077:
+  behaviour: ignores_everything
+  history:
+  - defaulted
+  language: hi
+  opted_out: false
+  timezone: Europe/Berlin
+CUST-00078:
+  behaviour: needs_payment_link
+  history:
+  - paid
+  - paid_via_link
+  - paid_via_link
+  - paid_via_link
+  - paid_via_link
+  language: hi
+  opted_out: false
+  timezone: Asia/Kolkata
+CUST-00079:
+  behaviour: ignores_everything
+  history:
+  - no_response
+  language: en
+  opted_out: false
+  timezone: Asia/Tokyo
+CUST-00080:
+  behaviour: disputes_if_chased_early
+  history:
+  - paid_after_mediation
+  - paid_after_mediation
+  - disputed
+  - disputed
+  language: hi
+  opted_out: false
+  timezone: America/Los_Angeles
+CUST-00081:
+  behaviour: needs_payment_link
+  history:
+  - paid_via_link
+  - paid_via_link
+  - paid_via_link
+  - paid_via_link
+  - paid
+  language: hi
+  opted_out: false
+  timezone: Asia/Tokyo
+CUST-00082:
+  behaviour: needs_payment_link
+  history:
+  - paid_via_link
+  - paid_via_link
+  language: hi
+  opted_out: false
+  timezone: Asia/Tokyo
+CUST-00083:
+  behaviour: needs_card_update
+  history:
+  - card_failed
+  - card_failed
+  - card_failed
+  - card_failed
+  language: hi
+  opted_out: false
+  timezone: America/Sao_Paulo
+CUST-00084:
+  behaviour: pays_after_one_reminder
+  history:
+  - late_paid
+  - paid
+  - late_paid
+  language: hi
+  opted_out: false
+  timezone: America/Los_Angeles
+CUST-00085:
+  behaviour: prefers_split
+  history:
+  - paid
+  - paid
+  - split_paid
+  language: hi
+  opted_out: false
+  timezone: America/New_York
+CUST-00086:
+  behaviour: needs_card_update
+  history:
+  - card_updated_paid
+  - card_updated_paid
+  language: hi
+  opted_out: true
+  timezone: Asia/Kolkata
+CUST-00087:
+  behaviour: prefers_split
+  history:
+  - split_paid
+  - split_paid
+  - split_paid
+  language: en
+  opted_out: false
+  timezone: Asia/Kolkata
+CUST-00088:
+  behaviour: needs_payment_link
+  history:
+  - paid
+  - paid_via_link
+  - paid_via_link
+  - paid
+  language: hi
+  opted_out: false
+  timezone: America/Los_Angeles
+CUST-00089:
+  behaviour: needs_payment_link
+  history:
+  - paid_via_link
+  - paid_via_link
+  - paid_via_link
+  language: en
+  opted_out: false
+  timezone: America/Chicago
+CUST-00090:
+  behaviour: needs_card_update
+  history:
+  - card_updated_paid
+  - card_updated_paid
+  language: hi
+  opted_out: false
+  timezone: Europe/Paris
+CUST-00091:
+  behaviour: prefers_split
+  history: []
+  language: hi
+  opted_out: false
+  timezone: Europe/London
+CUST-00092:
+  behaviour: pays_after_one_reminder
+  history:
+  - paid
+  - paid
+  - paid
+  - paid
+  - paid
+  language: en
+  opted_out: false
+  timezone: Europe/Paris
+CUST-00093:
+  behaviour: disputes_if_chased_early
+  history: []
+  language: en
+  opted_out: false
+  timezone: America/Sao_Paulo
+CUST-00094:
+  behaviour: already_paid_elsewhere
+  history:
+  - paid_elsewhere
+  - paid
+  language: en
+  opted_out: false
+  timezone: Asia/Kolkata
+CUST-00095:
+  behaviour: pays_after_one_reminder
+  history:
+  - paid
+  - paid
+  - late_paid
+  - late_paid
+  language: en
+  opted_out: false
+  timezone: America/Los_Angeles
+CUST-00096:
+  behaviour: already_paid_elsewhere
+  history:
+  - paid_elsewhere
+  - paid_elsewhere
+  - paid
+  - paid
+  - paid
+  language: en
+  opted_out: false
+  timezone: America/Chicago
+CUST-00097:
+  behaviour: needs_card_update
+  history:
+  - card_updated_paid
+  - paid
+  - card_updated_paid
+  - card_failed
+  language: en
+  opted_out: false
+  timezone: Asia/Singapore
+CUST-00098:
+  behaviour: already_paid_elsewhere
+  history:
+  - paid_elsewhere
+  - paid
+  - paid
+  language: hi
+  opted_out: false
+  timezone: America/New_York
+CUST-00099:
+  behaviour: already_paid_elsewhere
+  history:
+  - paid_after_mediation
+  - disputed
+  - paid_after_mediation
+  - paid_after_mediation
+  language: hi
+  opted_out: false
+  timezone: America/Los_Angeles
+CUST-00100:
+  behaviour: disputes_if_chased_early
+  history:
+  - disputed
+  - disputed
+  - disputed
+  - disputed
+  language: hi
+  opted_out: false
+  timezone: Asia/Kolkata
+CUST-00101:
+  behaviour: prefers_split
+  history:
+  - paid
+  - paid
+  - split_paid
+  - split_paid
+  language: hi
+  opted_out: false
+  timezone: Asia/Kolkata
+CUST-00102:
+  behaviour: needs_payment_link
+  history:
+  - paid_via_link
+  - paid_via_link
+  - paid_via_link
+  language: en
+  opted_out: false
+  timezone: Asia/Kolkata
+CUST-00103:
+  behaviour: disputes_if_chased_early
+  history:
+  - paid_after_mediation
+  - disputed
+  language: hi
+  opted_out: false
+  timezone: Europe/London
+CUST-00104:
+  behaviour: prefers_split
+  history:
+  - paid
+  - split_paid
+  - paid
+  language: en
+  opted_out: false
+  timezone: America/Chicago
+CUST-00105:
+  behaviour: prefers_split
+  history: []
+  language: hi
+  opted_out: false
+  timezone: Australia/Sydney
+CUST-00106:
+  behaviour: disputes_if_chased_early
+  history:
+  - disputed
+  language: en
+  opted_out: false
+  timezone: Europe/London
+CUST-00107:
+  behaviour: needs_card_update
+  history:
+  - paid
+  - paid
+  - card_updated_paid
+  language: hi
+  opted_out: false
+  timezone: Asia/Kolkata
+CUST-00108:
+  behaviour: already_paid_elsewhere
+  history:
+  - card_failed
+  language: hi
+  opted_out: false
+  timezone: Asia/Kolkata
+CUST-00109:
+  behaviour: ignores_everything
+  history:
+  - no_response
+  - no_response
+  - no_response
+  - defaulted
+  - no_response
+  language: en
+  opted_out: false
+  timezone: Europe/Paris
+CUST-00110:
+  behaviour: already_paid_elsewhere
+  history:
+  - no_response
+  - no_response
+  - no_response
+  - no_response
+  language: hi
+  opted_out: false
+  timezone: Asia/Singapore
+CUST-00111:
+  behaviour: pays_after_one_reminder
+  history:
+  - paid
+  - paid
+  - paid
+  - paid
+  - paid
+  language: en
+  opted_out: false
+  timezone: Europe/Paris
+CUST-00112:
+  behaviour: already_paid_elsewhere
+  history: []
+  language: en
+  opted_out: false
+  timezone: Australia/Sydney
+CUST-00113:
+  behaviour: prefers_split
+  history:
+  - split_paid
+  - split_paid
+  - split_paid
+  language: en
+  opted_out: false
+  timezone: Asia/Singapore
+CUST-00114:
+  behaviour: pays_after_one_reminder
+  history:
+  - late_paid
+  - paid
+  - paid
+  language: hi
+  opted_out: false
+  timezone: Asia/Kolkata
+CUST-00115:
+  behaviour: needs_card_update
+  history: []
+  language: en
+  opted_out: false
+  timezone: America/Los_Angeles
+CUST-00116:
+  behaviour: prefers_split
+  history:
+  - paid
+  - paid
+  - split_paid
+  - paid
+  language: en
+  opted_out: false
+  timezone: America/Chicago
+CUST-00117:
+  behaviour: needs_card_update
+  history:
+  - card_updated_paid
+  - card_updated_paid
+  - paid
+  - paid
+  language: hi
+  opted_out: false
+  timezone: Asia/Kolkata
+CUST-00118:
+  behaviour: pays_after_one_reminder
+  history:
+  - paid
+  language: en
+  opted_out: false
+  timezone: Asia/Singapore
+CUST-00119:
+  behaviour: needs_payment_link
+  history:
+  - paid
+  language: hi
+  opted_out: false
+  timezone: Australia/Sydney

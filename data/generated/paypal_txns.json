@@ -1,0 +1,722 @@
+[
+  {
+    "txn_id": "adedda80-bff9-507d-cd14-a03e83599af6",
+    "customer_id": "CUST-00046",
+    "amount": 164.19,
+    "currency": "USD",
+    "status": "pending",
+    "timestamp": "2025-03-24T09:32:34+00:00",
+    "reference": "PP-737086"
+  },
+  {
+    "txn_id": "20509c62-08e8-95d7-702c-1821c8040fb7",
+    "customer_id": "CUST-00086",
+    "amount": 71.9,
+    "currency": "GBP",
+    "status": "refunded",
+    "timestamp": "2025-02-07T04:06:55+00:00",
+    "reference": "PP-694799"
+  },
+  {
+    "txn_id": "732e2016-add7-02c9-2747-b93c9ae77eab",
+    "customer_id": "CUST-00004",
+    "amount": 949.08,
+    "currency": "GBP",
+    "status": "reversed",
+    "timestamp": "2025-03-16T02:06:56+00:00",
+    "reference": "PP-180620"
+  },
+  {
+    "txn_id": "65e58f34-5df0-6e8c-878a-aed9233ffc82",
+    "customer_id": "CUST-00073",
+    "amount": 317.81,
+    "currency": "GBP",
+    "status": "pending",
+    "timestamp": "2025-01-12T00:21:15+00:00",
+    "reference": "PP-127172"
+  },
+  {
+    "txn_id": "63119aca-848a-f440-7fc1-58582fa0d842",
+    "customer_id": "CUST-00094",
+    "amount": 913.97,
+    "currency": "USD",
+    "status": "refunded",
+    "timestamp": "2025-03-17T05:47:53+00:00",
+    "reference": "PP-372933"
+  },
+  {
+    "txn_id": "9ca3fbb3-ff11-c8ba-36ee-1640723ef466",
+    "customer_id": "CUST-00090",
+    "amount": 289.15,
+    "currency": "CAD",
+    "status": "pending",
+    "timestamp": "2025-01-12T21:45:57+00:00",
+    "reference": "PP-242321"
+  },
+  {
+    "txn_id": "e60fd420-2c33-350c-73b9-11d812f5131a",
+    "customer_id": "CUST-00109",
+    "amount": 714.8,
+    "currency": "USD",
+    "status": "refunded",
+    "timestamp": "2025-03-06T20:10:46+00:00",
+    "reference": "PP-464301"
+  },
+  {
+    "txn_id": "4a552ea0-8acb-be09-8ccc-9cea109fd8ee",
+    "customer_id": "CUST-00090",
+    "amount": 891.88,
+    "currency": "EUR",
+    "status": "pending",
+    "timestamp": "2025-03-19T01:26:47+00:00",
+    "reference": "PP-479052"
+  },
+  {
+    "txn_id": "3373730e-fc31-a597-1f11-9c0f3967e60a",
+    "customer_id": "CUST-00065",
+    "amount": 793.11,
+    "currency": "EUR",
+    "status": "reversed",
+    "timestamp": "2025-01-03T13:14:46+00:00",
+    "reference": "PP-478427"
+  },
+  {
+    "txn_id": "cdbcc653-77a7-e8b7-5e70-f65f9280c5aa",
+    "customer_id": "CUST-00070",
+    "amount": 983.1,
+    "currency": "EUR",
+    "status": "completed",
+    "timestamp": "2025-01-07T09:12:15+00:00",
+    "reference": "PP-424314"
+  },
+  {
+    "txn_id": "7a89cbeb-b807-d78a-b788-f5d1ffe575f6",
+    "customer_id": "CUST-00050",
+    "amount": 528.07,
+    "currency": "CAD",
+    "status": "completed",
+    "timestamp": "2025-01-13T04:01:57+00:00",
+    "reference": "PP-432427"
+  },
+  {
+    "txn_id": "ae1b9f69-7740-d831-7331-874912fc7a87",
+    "customer_id": "CUST-00082",
+    "amount": 519.77,
+    "currency": "EUR",
+    "status": "pending",
+    "timestamp": "2025-03-16T13:03:39+00:00",
+    "reference": "PP-235300"
+  },
+  {
+    "txn_id": "0e2f8958-de43-1e06-e924-706980bbae52",
+    "customer_id": "CUST-00055",
+    "amount": 832.23,
+    "currency": "EUR",
+    "status": "refunded",
+    "timestamp": "2025-01-16T23:40:43+00:00",
+    "reference": "PP-269834"
+  },
+  {
+    "txn_id": "5894f7f1-39b8-6bb2-b596-ca7cef4afa88",
+    "customer_id": "CUST-00041",
+    "amount": 947.75,
+    "currency": "GBP",
+    "status": "completed",
+    "timestamp": "2025-01-25T07:57:09+00:00",
+    "reference": "PP-305837"
+  },
+  {
+    "txn_id": "200b2903-4642-6c45-8d03-f17af4d375c1",
+    "customer_id": "CUST-00081",
+    "amount": 626.9,
+    "currency": "USD",
+    "status": "pending",
+    "timestamp": "2025-02-27T11:00:49+00:00",
+    "reference": "PP-708851"
+  },
+  {
+    "txn_id": "b87b6384-9fdd-de2e-a8a2-b7ad2bd3cdcd",
+    "customer_id": "CUST-00019",
+    "amount": 902.49,
+    "currency": "GBP",
+    "status": "completed",
+    "timestamp": "2025-03-22T02:56:23+00:00",
+    "reference": "PP-129751"
+  },
+  {
+    "txn_id": "c561b8dc-a436-4fcd-f2d3-f7610ba36279",
+    "customer_id": "CUST-00010",
+    "amount": 578.89,
+    "currency": "EUR",
+    "status": "reversed",
+    "timestamp": "2025-03-02T00:17:49+00:00",
+    "reference": "PP-770030"
+  },
+  {
+    "txn_id": "8baaf744-a08d-d21b-e395-4cb17f7f6c0a",
+    "customer_id": "CUST-00003",
+    "amount": 293.22,
+    "currency": "GBP",
+    "status": "reversed",
+    "timestamp": "2025-01-24T18:36:24+00:00",
+    "reference": "PP-943776"
+  },
+  {
+    "txn_id": "741b77f5-4c24-a053-67f5-ae02af5b8f47",
+    "customer_id": "CUST-00103",
+    "amount": 77.61,
+    "currency": "USD",
+    "status": "pending",
+    "timestamp": "2025-02-12T16:21:18+00:00",
+    "reference": "PP-535810"
+  },
+  {
+    "txn_id": "9b4e164b-5716-dc2e-343a-da2a76e5ae78",
+    "customer_id": "CUST-00061",
+    "amount": 147.95,
+    "currency": "GBP",
+    "status": "refunded",
+    "timestamp": "2025-02-08T17:04:37+00:00",
+    "reference": "PP-237118"
+  },
+  {
+    "txn_id": "1b2ededb-8fc8-5fc0-83d5-bceb5edbb8ee",
+    "customer_id": "CUST-00097",
+    "amount": 322.52,
+    "currency": "CAD",
+    "status": "completed",
+    "timestamp": "2025-01-26T23:15:15+00:00",
+    "reference": "PP-571435"
+  },
+  {
+    "txn_id": "4a4b5563-0cf4-77ef-18c8-a61624108e9a",
+    "customer_id": "CUST-00031",
+    "amount": 945.66,
+    "currency": "CAD",
+    "status": "pending",
+    "timestamp": "2025-03-26T00:18:45+00:00",
+    "reference": "PP-267457"
+  },
+  {
+    "txn_id": "b89bdf7f-93e3-4c35-ef0a-573d53d2d56d",
+    "customer_id": "CUST-00104",
+    "amount": 316.15,
+    "currency": "EUR",
+    "status": "reversed",
+    "timestamp": "2025-02-19T23:23:44+00:00",
+    "reference": "PP-589491"
+  },
+  {
+    "txn_id": "05eee1d4-7f53-a88e-4efc-8248e10b1a47",
+    "customer_id": "CUST-00063",
+    "amount": 94.6,
+    "currency": "CAD",
+    "status": "reversed",
+    "timestamp": "2025-01-24T08:56:18+00:00",
+    "reference": "PP-325595"
+  },
+  {
+    "txn_id": "4806f804-0cf0-374c-0c74-dc0f5a575539",
+    "customer_id": "CUST-00074",
+    "amount": 497.42,
+    "currency": "CAD",
+    "status": "refunded",
+    "timestamp": "2025-02-22T02:34:48+00:00",
+    "reference": "PP-108574"
+  },
+  {
+    "txn_id": "e1e89e7e-2249-8f66-6e51-484d1b84edc3",
+    "customer_id": "CUST-00108",
+    "amount": 268.15,
+    "currency": "GBP",
+    "status": "reversed",
+    "timestamp": "2025-02-05T12:41:45+00:00",
+    "reference": "PP-147440"
+  },
+  {
+    "txn_id": "31d4ee09-8fd3-3afc-91fd-fa4f0d18ab95",
+    "customer_id": "CUST-00051",
+    "amount": 365.71,
+    "currency": "GBP",
+    "status": "completed",
+    "timestamp": "2025-02-07T12:15:28+00:00",
+    "reference": "PP-628750"
+  },
+  {
+    "txn_id": "d3479a3b-479b-c637-8cc3-6f3bc3affcfe",
+    "customer_id": "CUST-00057",
+    "amount": 989.15,
+    "currency": "USD",
+    "status": "pending",
+    "timestamp": "2025-01-10T09:17:03+00:00",
+    "reference": "PP-513037"
+  },
+  {
+    "txn_id": "8ece1128-56ce-4b42-fc9e-1dcbcb7e6268",
+    "customer_id": "CUST-00047",
+    "amount": 939.25,
+    "currency": "EUR",
+    "status": "pending",
+    "timestamp": "2025-02-28T11:50:25+00:00",
+    "reference": "PP-633853"
+  },
+  {
+    "txn_id": "09f64405-0b99-0034-0a4e-255280051b10",
+    "customer_id": "CUST-00051",
+    "amount": 141.35,
+    "currency": "GBP",
+    "status": "reversed",
+    "timestamp": "2025-02-20T10:07:58+00:00",
+    "reference": "PP-579187"
+  },
+  {
+    "txn_id": "23c8afdb-83f8-2f16-e4a4-474c9b33e3a4",
+    "customer_id": "CUST-00019",
+    "amount": 331.33,
+    "currency": "GBP",
+    "status": "pending",
+    "timestamp": "2025-02-08T03:39:01+00:00",
+    "reference": "PP-746447"
+  },
+  {
+    "txn_id": "561c9210-97fe-56c5-4c9a-9f24d7b4c294",
+    "customer_id": "CUST-00094",
+    "amount": 509.78,
+    "currency": "CAD",
+    "status": "refunded",
+    "timestamp": "2025-02-16T02:34:47+00:00",
+    "reference": "PP-955374"
+  },
+  {
+    "txn_id": "1c0f0bdc-ac7e-937c-54cc-1e2a5e4cb287",
+    "customer_id": "CUST-00002",
+    "amount": 980.0,
+    "currency": "GBP",
+    "status": "completed",
+    "timestamp": "2025-02-27T22:54:00+00:00",
+    "reference": "PP-597643"
+  },
+  {
+    "txn_id": "f8d8b7f1-c86c-6544-a7d4-cf50f791f1e5",
+    "customer_id": "CUST-00033",
+    "amount": 777.28,
+    "currency": "EUR",
+    "status": "completed",
+    "timestamp": "2025-02-26T15:42:28+00:00",
+    "reference": "PP-603787"
+  },
+  {
+    "txn_id": "9ea7017c-b89f-7039-a107-cc4686341718",
+    "customer_id": "CUST-00021",
+    "amount": 775.73,
+    "currency": "CAD",
+    "status": "pending",
+    "timestamp": "2025-03-21T18:36:34+00:00",
+    "reference": "PP-813793"
+  },
+  {
+    "txn_id": "b35556a5-f2bd-92f2-9293-f70508150147",
+    "customer_id": "CUST-00031",
+    "amount": 114.35,
+    "currency": "USD",
+    "status": "reversed",
+    "timestamp": "2025-01-31T10:57:23+00:00",
+    "reference": "PP-539122"
+  },
+  {
+    "txn_id": "690e7e62-3432-3ec6-b0c4-a01c69b7c0fa",
+    "customer_id": "CUST-00019",
+    "amount": 504.31,
+    "currency": "CAD",
+    "status": "completed",
+    "timestamp": "2025-03-10T12:34:31+00:00",
+    "reference": "PP-244789"
+  },
+  {
+    "txn_id": "ff84faef-5336-723b-8f96-468535145890",
+    "customer_id": "CUST-00066",
+    "amount": 663.92,
+    "currency": "CAD",
+    "status": "refunded",
+    "timestamp": "2025-01-17T19:32:39+00:00",
+    "reference": "PP-581992"
+  },
+  {
+    "txn_id": "5ab28d4a-8bd8-8fcd-57a2-be4e887b03e5",
+    "customer_id": "CUST-00116",
+    "amount": 677.49,
+    "currency": "GBP",
+    "status": "reversed",
+    "timestamp": "2025-01-19T16:00:28+00:00",
+    "reference": "PP-358494"
+  },
+  {
+    "txn_id": "f1053252-3990-e2c9-4c6a-70f48edec44d",
+    "customer_id": "CUST-00035",
+    "amount": 973.05,
+    "currency": "GBP",
+    "status": "refunded",
+    "timestamp": "2025-03-10T10:32:17+00:00",
+    "reference": "PP-317346"
+  },
+  {
+    "txn_id": "7ad465a1-5129-950d-7d2f-4e58b47a1c5b",
+    "customer_id": "CUST-00088",
+    "amount": 352.06,
+    "currency": "GBP",
+    "status": "refunded",
+    "timestamp": "2025-01-12T19:59:14+00:00",
+    "reference": "PP-701334"
+  },
+  {
+    "txn_id": "faebcd19-e550-8ea2-6133-a34d8b0e8eb1",
+    "customer_id": "CUST-00086",
+    "amount": 397.56,
+    "currency": "GBP",
+    "status": "pending",
+    "timestamp": "2025-01-29T04:48:13+00:00",
+    "reference": "PP-144109"
+  },
+  {
+    "txn_id": "58ab4778-143b-45e3-b6d1-f6bbf48f709c",
+    "customer_id": "CUST-00036",
+    "amount": 924.39,
+    "currency": "GBP",
+    "status": "reversed",
+    "timestamp": "2025-01-21T18:37:31+00:00",
+    "reference": "PP-311883"
+  },
+  {
+    "txn_id": "8fe069b6-eeda-a802-4568-f42689e03e22",
+    "customer_id": "CUST-00105",
+    "amount": 697.69,
+    "currency": "EUR",
+    "status": "completed",
+    "timestamp": "2025-03-01T18:37:53+00:00",
+    "reference": "PP-876880"
+  },
+  {
+    "txn_id": "ab7a3d1c-0cfe-f683-3e11-bafe3d4196fe",
+    "customer_id": "CUST-00075",
+    "amount": 905.66,
+    "currency": "EUR",
+    "status": "pending",
+    "timestamp": "2025-01-06T02:18:47+00:00",
+    "reference": "PP-205065"
+  },
+  {
+    "txn_id": "19bd4f93-78ef-7666-b7a4-c719548e1f6b",
+    "customer_id": "CUST-00052",
+    "amount": 682.79,
+    "currency": "EUR",
+    "status": "completed",
+    "timestamp": "2025-02-23T10:24:51+00:00",
+    "reference": "PP-265613"
+  },
+  {
+    "txn_id": "e0decc3d-e172-1c83-ef5e-4376a723fb72",
+    "customer_id": "CUST-00052",
+    "amount": 478.32,
+    "currency": "EUR",
+    "status": "refunded",
+    "timestamp": "2025-02-01T04:22:29+00:00",
+    "reference": "PP-399279"
+  },
+  {
+    "txn_id": "16e6e5c0-c4cb-294f-e86e-8e630f25477d",
+    "customer_id": "CUST-00082",
+    "amount": 654.04,
+    "currency": "EUR",
+    "status": "completed",
+    "timestamp": "2025-03-30T15:58:46+00:00",
+    "reference": "PP-283568"
+  },
+  {
+    "txn_id": "ef158d5b-2d00-7d05-d66d-4627e1dace6a",
+    "customer_id": "CUST-00053",
+    "amount": 920.04,
+    "currency": "CAD",
+    "status": "reversed",
+    "timestamp": "2025-01-19T02:08:15+00:00",
+    "reference": "PP-885386"
+  },
+  {
+    "txn_id": "0997623a-e072-3d96-4a1a-81f5ed10f004",
+    "customer_id": "CUST-00111",
+    "amount": 14.22,
+    "currency": "USD",
+    "status": "refunded",
+    "timestamp": "2025-01-28T15:04:36+00:00",
+    "reference": "PP-576419"
+  },
+  {
+    "txn_id": "e3a68a70-7e71-0b55-8639-bd418b15bd94",
+    "customer_id": "CUST-00082",
+    "amount": 938.87,
+    "currency": "CAD",
+    "status": "refunded",
+    "timestamp": "2025-01-19T17:16:59+00:00",
+    "reference": "PP-948102"
+  },
+  {
+    "txn_id": "757b6b29-bb2a-a146-2999-394c54a7b69b",
+    "customer_id": "CUST-00014",
+    "amount": 650.04,
+    "currency": "EUR",
+    "status": "completed",
+    "timestamp": "2025-03-13T12:26:38+00:00",
+    "reference": "PP-453487"
+  },
+  {
+    "txn_id": "c1dd484a-aca5-8d95-915a-1c304b86b5a1",
+    "customer_id": "CUST-00101",
+    "amount": 197.2,
+    "currency": "CAD",
+    "status": "reversed",
+    "timestamp": "2025-02-20T00:41:27+00:00",
+    "reference": "PP-443856"
+  },
+  {
+    "txn_id": "2f4dd219-186b-2880-ab54-5a15669d01ff",
+    "customer_id": "CUST-00011",
+    "amount": 981.78,
+    "currency": "CAD",
+    "status": "refunded",
+    "timestamp": "2025-01-25T01:59:29+00:00",
+    "reference": "PP-107161"
+  },
+  {
+    "txn_id": "c0f63229-725d-4259-3c4b-1eec6231ee73",
+    "customer_id": "CUST-00033",
+    "amount": 270.66,
+    "currency": "GBP",
+    "status": "refunded",
+    "timestamp": "2025-02-26T13:13:54+00:00",
+    "reference": "PP-857997"
+  },
+  {
+    "txn_id": "5c0b9b10-a757-cb10-42f5-25b902ed73ce",
+    "customer_id": "CUST-00073",
+    "amount": 694.3,
+    "currency": "USD",
+    "status": "completed",
+    "timestamp": "2025-02-15T04:26:56+00:00",
+    "reference": "PP-421709"
+  },
+  {
+    "txn_id": "ec50ace4-80a5-2e65-afa2-855967c96204",
+    "customer_id": "CUST-00020",
+    "amount": 895.64,
+    "currency": "GBP",
+    "status": "completed",
+    "timestamp": "2025-03-04T00:18:18+00:00",
+    "reference": "PP-409369"
+  },
+  {
+    "txn_id": "f5159494-3818-cfd3-3889-936a9d5817e8",
+    "customer_id": "CUST-00047",
+    "amount": 137.9,
+    "currency": "EUR",
+    "status": "reversed",
+    "timestamp": "2025-03-14T14:20:54+00:00",
+    "reference": "PP-735163"
+  },
+  {
+    "txn_id": "e9ad0e9b-8c9a-a1e9-b3b2-63376a74dbb7",
+    "customer_id": "CUST-00047",
+    "amount": 473.47,
+    "currency": "EUR",
+    "status": "pending",
+    "timestamp": "2025-03-08T01:18:41+00:00",
+    "reference": "PP-891401"
+  },
+  {
+    "txn_id": "86879aa9-14f5-73d0-c991-2032df85c777",
+    "customer_id": "CUST-00076",
+    "amount": 449.51,
+    "currency": "GBP",
+    "status": "completed",
+    "timestamp": "2025-03-31T01:20:06+00:00",
+    "reference": "PP-691573"
+  },
+  {
+    "txn_id": "e723ada3-8c32-bdb2-d42a-895e0fcf601f",
+    "customer_id": "CUST-00014",
+    "amount": 507.96,
+    "currency": "EUR",
+    "status": "pending",
+    "timestamp": "2025-02-01T20:34:10+00:00",
+    "reference": "PP-995993"
+  },
+  {
+    "txn_id": "3495311e-ae27-d432-1dc1-e7eb711c7673",
+    "customer_id": "CUST-00066",
+    "amount": 718.33,
+    "currency": "CAD",
+    "status": "completed",
+    "timestamp": "2025-03-29T06:33:50+00:00",
+    "reference": "PP-635167"
+  },
+  {
+    "txn_id": "21c71aa3-7414-23b5-0e3e-25f2cf0671c7",
+    "customer_id": "CUST-00057",
+    "amount": 515.68,
+    "currency": "CAD",
+    "status": "completed",
+    "timestamp": "2025-02-24T06:05:30+00:00",
+    "reference": "PP-584838"
+  },
+  {
+    "txn_id": "0592bfa5-b928-e23f-4ee4-334ece920136",
+    "customer_id": "CUST-00086",
+    "amount": 398.97,
+    "currency": "USD",
+    "status": "pending",
+    "timestamp": "2025-02-26T03:33:46+00:00",
+    "reference": "PP-176577"
+  },
+  {
+    "txn_id": "105291d3-b34c-6c73-5833-0b306c776e95",
+    "customer_id": "CUST-00005",
+    "amount": 543.46,
+    "currency": "USD",
+    "status": "completed",
+    "timestamp": "2025-02-15T20:00:20+00:00",
+    "reference": "PP-133276"
+  },
+  {
+    "txn_id": "22ab7752-c4db-5a62-2e13-418d68ab80ea",
+    "customer_id": "CUST-00036",
+    "amount": 767.0,
+    "currency": "CAD",
+    "status": "refunded",
+    "timestamp": "2025-03-28T12:57:28+00:00",
+    "reference": "PP-501058"
+  },
+  {
+    "txn_id": "60a399d4-e821-e716-eac8-0da1de9f6f5b",
+    "customer_id": "CUST-00057",
+    "amount": 378.77,
+    "currency": "EUR",
+    "status": "refunded",
+    "timestamp": "2025-01-12T12:26:07+00:00",
+    "reference": "PP-287143"
+  },
+  {
+    "txn_id": "ba54e920-2099-d180-8762-3997649f7d88",
+    "customer_id": "CUST-00068",
+    "amount": 978.83,
+    "currency": "USD",
+    "status": "completed",
+    "timestamp": "2025-01-29T23:14:10+00:00",
+    "reference": "PP-585494"
+  },
+  {
+    "txn_id": "882ccd1e-6c93-a791-8b60-c511b8168aeb",
+    "customer_id": "CUST-00086",
+    "amount": 382.38,
+    "currency": "EUR",
+    "status": "pending",
+    "timestamp": "2025-02-14T17:20:04+00:00",
+    "reference": "PP-462974"
+  },
+  {
+    "txn_id": "e00da49d-effa-2002-3040-413c4690fb15",
+    "customer_id": "CUST-00019",
+    "amount": 726.4,
+    "currency": "USD",
+    "status": "completed",
+    "timestamp": "2025-03-20T14:13:15+00:00",
+    "reference": "PP-792267"
+  },
+  {
+    "txn_id": "e23ddfaa-efad-49e9-c41c-147e9d6b9b62",
+    "customer_id": "CUST-00053",
+    "amount": 889.6,
+    "currency": "EUR",
+    "status": "pending",
+    "timestamp": "2025-01-07T12:47:57+00:00",
+    "reference": "PP-205797"
+  },
+  {
+    "txn_id": "ac09bdb7-9908-6e47-7249-f62c08987462",
+    "customer_id": "CUST-00076",
+    "amount": 704.77,
+    "currency": "USD",
+    "status": "pending",
+    "timestamp": "2025-03-13T21:35:08+00:00",
+    "reference": "PP-146385"
+  },
+  {
+    "txn_id": "379ef467-8a2d-b2e6-3bfd-a8a6705fddf5",
+    "customer_id": "CUST-00051",
+    "amount": 755.61,
+    "currency": "USD",
+    "status": "pending",
+    "timestamp": "2025-02-18T22:09:44+00:00",
+    "reference": "PP-403314"
+  },
+  {
+    "txn_id": "937bf79b-bb44-badc-ea98-fef8d0d75e37",
+    "customer_id": "CUST-00029",
+    "amount": 322.31,
+    "currency": "GBP",
+    "status": "pending",
+    "timestamp": "2025-01-30T07:09:43+00:00",
+    "reference": "PP-250219"
+  },
+  {
+    "txn_id": "4ceda164-69df-14e9-3896-41dd8570b59f",
+    "customer_id": "CUST-00084",
+    "amount": 278.78,
+    "currency": "EUR",
+    "status": "reversed",
+    "timestamp": "2025-02-23T23:13:33+00:00",
+    "reference": "PP-619696"
+  },
+  {
+    "txn_id": "a4b05c89-f10b-ce9c-582b-91eef8e8035b",
+    "customer_id": "CUST-00006",
+    "amount": 672.99,
+    "currency": "GBP",
+    "status": "reversed",
+    "timestamp": "2025-02-09T15:18:46+00:00",
+    "reference": "PP-256466"
+  },
+  {
+    "txn_id": "89b5aab0-c121-69db-2f12-b150605fb1eb",
+    "customer_id": "CUST-00038",
+    "amount": 476.15,
+    "currency": "EUR",
+    "status": "refunded",
+    "timestamp": "2025-03-25T06:12:57+00:00",
+    "reference": "PP-841948"
+  },
+  {
+    "txn_id": "0ec0713d-ea2c-7a51-7688-d11fce4758be",
+    "customer_id": "CUST-00018",
+    "amount": 564.57,
+    "currency": "CAD",
+    "status": "pending",
+    "timestamp": "2025-02-07T17:04:55+00:00",
+    "reference": "PP-354655"
+  },
+  {
+    "txn_id": "143df5b3-a58e-83dd-548c-1d84340de049",
+    "customer_id": "CUST-00032",
+    "amount": 922.61,
+    "currency": "GBP",
+    "status": "completed",
+    "timestamp": "2025-02-22T00:07:16+00:00",
+    "reference": "PP-859782"
+  },
+  {
+    "txn_id": "608e149e-44b9-e602-0d31-812e30c36756",
+    "customer_id": "CUST-00106",
+    "amount": 675.3,
+    "currency": "USD",
+    "status": "completed",
+    "timestamp": "2025-01-19T06:27:08+00:00",
+    "reference": "PP-943737"
+  }
+]

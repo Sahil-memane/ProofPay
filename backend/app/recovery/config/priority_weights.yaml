@@ -1,0 +1,12 @@
+# Recovery Likelihood Weights by Diagnosis
+likelihood_by_diagnosis:
+  forgot_to_pay: 0.85
+  expired_card: 0.75
+  temporary_hold: 0.65
+  insufficient_funds: 0.60
+  large_overdue_invoice: 0.50
+  suspicious_hard_decline: 0.15
+
+default_likelihood: 0.50
+default_daily_action_cap: 50
+

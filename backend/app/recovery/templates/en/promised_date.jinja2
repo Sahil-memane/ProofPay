@@ -1,0 +1,8 @@
+{# English: promised_date #}
+Dear Customer,
+
+This is a courteous reminder regarding your scheduled payment of {{ amount_usd }} {{ currency }} on {{ promised_date | default('your promised date') }}.
+You can complete this payment anytime using our secure checkout: {{ payment_link | default('https://proofpay.invalid/pay') }}
+
+To opt out of future notifications or unsubscribe, reply STOP or click here: https://proofpay.invalid/opt-out
+

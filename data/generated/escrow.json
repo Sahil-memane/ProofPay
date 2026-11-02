@@ -1,0 +1,150 @@
+[
+  {
+    "project_id": "ESCROW-000",
+    "buyer_id": "CUST-00010",
+    "seller_id": "CUST-00081",
+    "amount_usd": 1618.54,
+    "currency": "USD",
+    "milestone": "maintenance",
+    "evidence_fixtures": [
+      "dispute_letter.pdf",
+      "invoice_signed.pdf",
+      "email_thread.eml",
+      "contract_draft.pdf"
+    ],
+    "disputed": false,
+    "created_at": "2025-01-16T02:03:17+00:00"
+  },
+  {
+    "project_id": "ESCROW-001",
+    "buyer_id": "CUST-00068",
+    "seller_id": "CUST-00041",
+    "amount_usd": 3523.51,
+    "currency": "USD",
+    "milestone": "development",
+    "evidence_fixtures": [
+      "inspection_report.pdf",
+      "milestone_photo.jpg",
+      "email_thread.eml"
+    ],
+    "disputed": true,
+    "created_at": "2025-01-09T08:53:25+00:00"
+  },
+  {
+    "project_id": "ESCROW-002",
+    "buyer_id": "CUST-00118",
+    "seller_id": "CUST-00055",
+    "amount_usd": 1615.52,
+    "currency": "USD",
+    "milestone": "development",
+    "evidence_fixtures": [
+      "work_sample.zip",
+      "contract_draft.pdf"
+    ],
+    "disputed": true,
+    "created_at": "2025-01-14T07:43:35+00:00"
+  },
+  {
+    "project_id": "ESCROW-003",
+    "buyer_id": "CUST-00089",
+    "seller_id": "CUST-00001",
+    "amount_usd": 2662.73,
+    "currency": "USD",
+    "milestone": "testing",
+    "evidence_fixtures": [
+      "work_sample.zip",
+      "bank_receipt.pdf"
+    ],
+    "disputed": true,
+    "created_at": "2025-01-13T07:46:11+00:00"
+  },
+  {
+    "project_id": "ESCROW-004",
+    "buyer_id": "CUST-00095",
+    "seller_id": "CUST-00099",
+    "amount_usd": 4054.83,
+    "currency": "USD",
+    "milestone": "testing",
+    "evidence_fixtures": [
+      "milestone_photo.jpg",
+      "contract_draft.pdf",
+      "bank_receipt.pdf"
+    ],
+    "disputed": false,
+    "created_at": "2025-01-26T12:43:01+00:00"
+  },
+  {
+    "project_id": "ESCROW-005",
+    "buyer_id": "CUST-00091",
+    "seller_id": "CUST-00073",
+    "amount_usd": 1864.61,
+    "currency": "USD",
+    "milestone": "delivery",
+    "evidence_fixtures": [
+      "milestone_photo.jpg",
+      "work_sample.zip",
+      "dispute_letter.pdf",
+      "email_thread.eml"
+    ],
+    "disputed": false,
+    "created_at": "2025-01-17T04:51:42+00:00"
+  },
+  {
+    "project_id": "ESCROW-006",
+    "buyer_id": "CUST-00047",
+    "seller_id": "CUST-00020",
+    "amount_usd": 3729.82,
+    "currency": "USD",
+    "milestone": "design",
+    "evidence_fixtures": [
+      "milestone_photo.jpg",
+      "inspection_report.pdf",
+      "delivery_confirmation.png"
+    ],
+    "disputed": true,
+    "created_at": "2025-01-02T04:37:59+00:00"
+  },
+  {
+    "project_id": "ESCROW-007",
+    "buyer_id": "CUST-00031",
+    "seller_id": "CUST-00005",
+    "amount_usd": 976.91,
+    "currency": "USD",
+    "milestone": "design",
+    "evidence_fixtures": [
+      "bank_receipt.pdf",
+      "chat_screenshot.png",
+      "invoice_signed.pdf"
+    ],
+    "disputed": false,
+    "created_at": "2025-02-10T17:12:04+00:00"
+  },
+  {
+    "project_id": "ESCROW-008",
+    "buyer_id": "CUST-00028",
+    "seller_id": "CUST-00041",
+    "amount_usd": 1429.16,
+    "currency": "USD",
+    "milestone": "design",
+    "evidence_fixtures": [
+      "chat_screenshot.png",
+      "bank_receipt.pdf"
+    ],
+    "disputed": false,
+    "created_at": "2025-01-12T14:13:27+00:00"
+  },
+  {
+    "project_id": "ESCROW-009",
+    "buyer_id": "CUST-00064",
+    "seller_id": "CUST-00086",
+    "amount_usd": 4041.26,
+    "currency": "USD",
+    "milestone": "design",
+    "evidence_fixtures": [
+      "invoice_signed.pdf",
+      "delivery_confirmation.png"
+    ],
+    "disputed": false,
+    "created_at": "2025-01-07T16:36:36+00:00"
+  }
+]

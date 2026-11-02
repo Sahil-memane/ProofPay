@@ -1,0 +1,812 @@
+[
+  {
+    "sub_id": "4a8ff810-784c-2f29-9804-02a2b07aa066",
+    "customer_id": "CUST-00009",
+    "failure_code": "insufficient_funds",
+    "amount_usd": 55.38,
+    "currency": "USD",
+    "failed_at": "2025-02-09T15:54:53+00:00",
+    "retry_count": 3
+  },
+  {
+    "sub_id": "ec856f37-3bc1-a987-aff8-754d1238d630",
+    "customer_id": "CUST-00004",
+    "failure_code": "expired_card",
+    "amount_usd": 77.12,
+    "currency": "USD",
+    "failed_at": "2025-01-28T10:46:53+00:00",
+    "retry_count": 3
+  },
+  {
+    "sub_id": "398d1ca6-8b68-70b5-1d61-fac36cd5e859",
+    "customer_id": "CUST-00033",
+    "failure_code": "temporary_hold",
+    "amount_usd": 238.46,
+    "currency": "USD",
+    "failed_at": "2025-02-27T06:18:33+00:00",
+    "retry_count": 1
+  },
+  {
+    "sub_id": "cae9b4a7-2a79-ea68-0f44-704f1247ea4e",
+    "customer_id": "CUST-00082",
+    "failure_code": "hard_decline",
+    "amount_usd": 53.2,
+    "currency": "USD",
+    "failed_at": "2025-01-26T18:58:06+00:00",
+    "retry_count": 1
+  },
+  {
+    "sub_id": "45b1ed25-f153-3ae8-670a-cc5cb321bf21",
+    "customer_id": "CUST-00039",
+    "failure_code": "temporary_hold",
+    "amount_usd": 137.34,
+    "currency": "USD",
+    "failed_at": "2025-02-15T12:08:43+00:00",
+    "retry_count": 2
+  },
+  {
+    "sub_id": "5283aac7-bc0a-6a5d-6e99-6e3ee3b137fc",
+    "customer_id": "CUST-00064",
+    "failure_code": "hard_decline",
+    "amount_usd": 136.94,
+    "currency": "USD",
+    "failed_at": "2025-02-28T01:31:35+00:00",
+    "retry_count": 0
+  },
+  {
+    "sub_id": "d248a9a7-ac1a-a554-c3c7-5611ffe3fa49",
+    "customer_id": "CUST-00077",
+    "failure_code": "temporary_hold",
+    "amount_usd": 17.49,
+    "currency": "USD",
+    "failed_at": "2025-01-23T05:25:57+00:00",
+    "retry_count": 0
+  },
+  {
+    "sub_id": "ea83bf00-7135-f221-a6c9-537f84dad06a",
+    "customer_id": "CUST-00034",
+    "failure_code": "insufficient_funds",
+    "amount_usd": 231.29,
+    "currency": "USD",
+    "failed_at": "2025-01-18T00:13:26+00:00",
+    "retry_count": 3
+  },
+  {
+    "sub_id": "5913f9d3-7852-99f4-175b-a98df8140102",
+    "customer_id": "CUST-00035",
+    "failure_code": "expired_card",
+    "amount_usd": 299.1,
+    "currency": "USD",
+    "failed_at": "2025-02-12T07:41:08+00:00",
+    "retry_count": 3
+  },
+  {
+    "sub_id": "7ed70ed7-b194-990b-6961-929e546e035a",
+    "customer_id": "CUST-00052",
+    "failure_code": "temporary_hold",
+    "amount_usd": 103.1,
+    "currency": "USD",
+    "failed_at": "2025-01-11T03:44:07+00:00",
+    "retry_count": 1
+  },
+  {
+    "sub_id": "409d3602-5084-3242-168b-1625746f7891",
+    "customer_id": "CUST-00036",
+    "failure_code": "hard_decline",
+    "amount_usd": 245.92,
+    "currency": "USD",
+    "failed_at": "2025-02-23T09:49:04+00:00",
+    "retry_count": 0
+  },
+  {
+    "sub_id": "764414fd-8ae7-69ed-de8e-de0ba85c6e4a",
+    "customer_id": "CUST-00041",
+    "failure_code": "insufficient_funds",
+    "amount_usd": 291.34,
+    "currency": "USD",
+    "failed_at": "2025-02-09T05:47:46+00:00",
+    "retry_count": 0
+  },
+  {
+    "sub_id": "0d366dfc-c28e-bd70-7129-9889a01ac992",
+    "customer_id": "CUST-00052",
+    "failure_code": "insufficient_funds",
+    "amount_usd": 64.39,
+    "currency": "USD",
+    "failed_at": "2025-02-05T03:00:25+00:00",
+    "retry_count": 3
+  },
+  {
+    "sub_id": "1f15c7b6-7c16-128d-b2c0-8394e17f29e1",
+    "customer_id": "CUST-00026",
+    "failure_code": "temporary_hold",
+    "amount_usd": 169.26,
+    "currency": "USD",
+    "failed_at": "2025-01-28T23:09:23+00:00",
+    "retry_count": 3
+  },
+  {
+    "sub_id": "3985fb62-17dc-8eff-6872-13f98d605936",
+    "customer_id": "CUST-00003",
+    "failure_code": "expired_card",
+    "amount_usd": 215.83,
+    "currency": "USD",
+    "failed_at": "2025-01-31T04:06:01+00:00",
+    "retry_count": 0
+  },
+  {
+    "sub_id": "4ab7706e-b773-50ca-eec2-59dc7f95897c",
+    "customer_id": "CUST-00107",
+    "failure_code": "insufficient_funds",
+    "amount_usd": 143.81,
+    "currency": "USD",
+    "failed_at": "2025-01-12T09:42:57+00:00",
+    "retry_count": 1
+  },
+  {
+    "sub_id": "25074181-8d1f-b540-74ef-f5453e652603",
+    "customer_id": "CUST-00065",
+    "failure_code": "temporary_hold",
+    "amount_usd": 130.48,
+    "currency": "USD",
+    "failed_at": "2025-02-16T20:18:19+00:00",
+    "retry_count": 3
+  },
+  {
+    "sub_id": "c5ce099c-46b8-2659-11df-12d7dd30de89",
+    "customer_id": "CUST-00049",
+    "failure_code": "expired_card",
+    "amount_usd": 277.33,
+    "currency": "USD",
+    "failed_at": "2025-02-19T08:17:13+00:00",
+    "retry_count": 1
+  },
+  {
+    "sub_id": "b9de7a3a-4868-22b9-00a8-1de9d20f87d0",
+    "customer_id": "CUST-00101",
+    "failure_code": "hard_decline",
+    "amount_usd": 108.55,
+    "currency": "USD",
+    "failed_at": "2025-02-19T07:06:52+00:00",
+    "retry_count": 2
+  },
+  {
+    "sub_id": "c34b9fbb-8d4a-75b8-551a-c8ea585a0afa",
+    "customer_id": "CUST-00038",
+    "failure_code": "hard_decline",
+    "amount_usd": 260.92,
+    "currency": "USD",
+    "failed_at": "2025-02-13T08:31:51+00:00",
+    "retry_count": 3
+  },
+  {
+    "sub_id": "9261549d-3d22-5c30-b28f-41defb140bc3",
+    "customer_id": "CUST-00069",
+    "failure_code": "hard_decline",
+    "amount_usd": 142.04,
+    "currency": "USD",
+    "failed_at": "2025-02-01T05:47:44+00:00",
+    "retry_count": 1
+  },
+  {
+    "sub_id": "b489d070-7914-f8a8-bea4-ff31517400f8",
+    "customer_id": "CUST-00049",
+    "failure_code": "expired_card",
+    "amount_usd": 258.23,
+    "currency": "USD",
+    "failed_at": "2025-02-09T21:10:31+00:00",
+    "retry_count": 0
+  },
+  {
+    "sub_id": "80962718-2051-acef-097a-1e10f6febc0e",
+    "customer_id": "CUST-00116",
+    "failure_code": "hard_decline",
+    "amount_usd": 121.95,
+    "currency": "USD",
+    "failed_at": "2025-01-15T18:25:51+00:00",
+    "retry_count": 3
+  },
+  {
+    "sub_id": "03edd1f8-74f9-3d17-e912-b4bf86a4bae4",
+    "customer_id": "CUST-00075",
+    "failure_code": "temporary_hold",
+    "amount_usd": 262.2,
+    "currency": "USD",
+    "failed_at": "2025-02-12T17:59:16+00:00",
+    "retry_count": 0
+  },
+  {
+    "sub_id": "43d88870-f81d-baa1-c812-0a8e78308930",
+    "customer_id": "CUST-00092",
+    "failure_code": "expired_card",
+    "amount_usd": 128.88,
+    "currency": "USD",
+    "failed_at": "2025-01-15T23:41:15+00:00",
+    "retry_count": 0
+  },
+  {
+    "sub_id": "b7fddd71-a075-e927-5110-b492f4427e0b",
+    "customer_id": "CUST-00043",
+    "failure_code": "hard_decline",
+    "amount_usd": 198.44,
+    "currency": "USD",
+    "failed_at": "2025-02-01T21:36:47+00:00",
+    "retry_count": 3
+  },
+  {
+    "sub_id": "ebc2026f-af34-cf65-a193-c4b23c19e71d",
+    "customer_id": "CUST-00113",
+    "failure_code": "hard_decline",
+    "amount_usd": 262.98,
+    "currency": "USD",
+    "failed_at": "2025-01-04T11:39:03+00:00",
+    "retry_count": 0
+  },
+  {
+    "sub_id": "df615a5c-b432-3070-a23d-4c2fc2a79689",
+    "customer_id": "CUST-00036",
+    "failure_code": "expired_card",
+    "amount_usd": 226.55,
+    "currency": "USD",
+    "failed_at": "2025-02-12T03:13:36+00:00",
+    "retry_count": 0
+  },
+  {
+    "sub_id": "0e5dd462-cbd0-0ef2-530a-37df0bc61066",
+    "customer_id": "CUST-00012",
+    "failure_code": "hard_decline",
+    "amount_usd": 58.24,
+    "currency": "USD",
+    "failed_at": "2025-01-30T01:48:23+00:00",
+    "retry_count": 0
+  },
+  {
+    "sub_id": "ae8a7813-90e0-a95b-697c-392387fa841a",
+    "customer_id": "CUST-00037",
+    "failure_code": "temporary_hold",
+    "amount_usd": 118.69,
+    "currency": "USD",
+    "failed_at": "2025-01-15T03:12:07+00:00",
+    "retry_count": 1
+  },
+  {
+    "sub_id": "7f671eec-3da7-0577-aee1-e86b9ea556aa",
+    "customer_id": "CUST-00101",
+    "failure_code": "expired_card",
+    "amount_usd": 59.29,
+    "currency": "USD",
+    "failed_at": "2025-01-08T16:00:34+00:00",
+    "retry_count": 3
+  },
+  {
+    "sub_id": "e61ede90-0267-deb3-aab6-12c9415d174a",
+    "customer_id": "CUST-00116",
+    "failure_code": "expired_card",
+    "amount_usd": 77.32,
+    "currency": "USD",
+    "failed_at": "2025-01-25T15:48:36+00:00",
+    "retry_count": 3
+  },
+  {
+    "sub_id": "5876fd09-f1fa-f665-7115-33f312e89d10",
+    "customer_id": "CUST-00102",
+    "failure_code": "hard_decline",
+    "amount_usd": 271.34,
+    "currency": "USD",
+    "failed_at": "2025-02-23T01:39:57+00:00",
+    "retry_count": 1
+  },
+  {
+    "sub_id": "32ffe294-4d57-d880-d865-d69a74f33103",
+    "customer_id": "CUST-00075",
+    "failure_code": "temporary_hold",
+    "amount_usd": 195.28,
+    "currency": "USD",
+    "failed_at": "2025-02-11T04:42:41+00:00",
+    "retry_count": 2
+  },
+  {
+    "sub_id": "b303f438-fe21-10d0-4bbe-4aff9326dffd",
+    "customer_id": "CUST-00049",
+    "failure_code": "hard_decline",
+    "amount_usd": 40.92,
+    "currency": "USD",
+    "failed_at": "2025-02-07T00:38:35+00:00",
+    "retry_count": 2
+  },
+  {
+    "sub_id": "af908e3c-dd75-0e98-90e0-b95f0212b554",
+    "customer_id": "CUST-00037",
+    "failure_code": "insufficient_funds",
+    "amount_usd": 293.59,
+    "currency": "USD",
+    "failed_at": "2025-02-08T10:17:39+00:00",
+    "retry_count": 2
+  },
+  {
+    "sub_id": "9b689c88-3ae9-09fe-cc82-18dac696f5e6",
+    "customer_id": "CUST-00099",
+    "failure_code": "insufficient_funds",
+    "amount_usd": 274.07,
+    "currency": "USD",
+    "failed_at": "2025-02-18T05:27:30+00:00",
+    "retry_count": 2
+  },
+  {
+    "sub_id": "c478f6f1-b88e-c318-c16d-83edad81f8bd",
+    "customer_id": "CUST-00102",
+    "failure_code": "temporary_hold",
+    "amount_usd": 73.5,
+    "currency": "USD",
+    "failed_at": "2025-01-19T11:02:22+00:00",
+    "retry_count": 2
+  },
+  {
+    "sub_id": "945ef2e4-088a-93ec-70d9-c9f8c9e26074",
+    "customer_id": "CUST-00084",
+    "failure_code": "expired_card",
+    "amount_usd": 192.18,
+    "currency": "USD",
+    "failed_at": "2025-01-04T19:51:40+00:00",
+    "retry_count": 2
+  },
+  {
+    "sub_id": "336749b5-2cf6-bf75-6a5e-6920bf5ae7e6",
+    "customer_id": "CUST-00046",
+    "failure_code": "expired_card",
+    "amount_usd": 36.13,
+    "currency": "USD",
+    "failed_at": "2025-01-29T15:39:25+00:00",
+    "retry_count": 2
+  },
+  {
+    "sub_id": "f1b64afe-d31e-df1a-e9ff-1cae41c8ca8c",
+    "customer_id": "CUST-00016",
+    "failure_code": "temporary_hold",
+    "amount_usd": 163.94,
+    "currency": "USD",
+    "failed_at": "2025-01-27T11:02:05+00:00",
+    "retry_count": 1
+  },
+  {
+    "sub_id": "2408a6dc-1346-d1a9-f680-2cdb77e490c7",
+    "customer_id": "CUST-00061",
+    "failure_code": "temporary_hold",
+    "amount_usd": 226.49,
+    "currency": "USD",
+    "failed_at": "2025-02-02T21:15:49+00:00",
+    "retry_count": 0
+  },
+  {
+    "sub_id": "03902c5d-6502-d6a2-ca6a-2224171e16cc",
+    "customer_id": "CUST-00096",
+    "failure_code": "expired_card",
+    "amount_usd": 259.43,
+    "currency": "USD",
+    "failed_at": "2025-02-08T14:02:09+00:00",
+    "retry_count": 2
+  },
+  {
+    "sub_id": "5f18e583-f0b6-f83f-a377-f6f1d289f0ab",
+    "customer_id": "CUST-00033",
+    "failure_code": "insufficient_funds",
+    "amount_usd": 141.88,
+    "currency": "USD",
+    "failed_at": "2025-01-26T10:52:49+00:00",
+    "retry_count": 3
+  },
+  {
+    "sub_id": "a5cc8bf7-38ab-854c-9c2e-58deea4e3617",
+    "customer_id": "CUST-00013",
+    "failure_code": "expired_card",
+    "amount_usd": 146.72,
+    "currency": "USD",
+    "failed_at": "2025-02-24T12:10:26+00:00",
+    "retry_count": 2
+  },
+  {
+    "sub_id": "f23e323d-0b9b-d934-23c8-6d301dde7969",
+    "customer_id": "CUST-00008",
+    "failure_code": "hard_decline",
+    "amount_usd": 273.71,
+    "currency": "USD",
+    "failed_at": "2025-01-30T08:09:14+00:00",
+    "retry_count": 3
+  },
+  {
+    "sub_id": "22bae10e-899c-a782-e323-6d1a3c1bdacc",
+    "customer_id": "CUST-00004",
+    "failure_code": "temporary_hold",
+    "amount_usd": 298.81,
+    "currency": "USD",
+    "failed_at": "2025-01-12T06:34:49+00:00",
+    "retry_count": 0
+  },
+  {
+    "sub_id": "278ed00d-ba02-66ef-be05-5787965befdf",
+    "customer_id": "CUST-00049",
+    "failure_code": "hard_decline",
+    "amount_usd": 117.58,
+    "currency": "USD",
+    "failed_at": "2025-02-22T10:44:23+00:00",
+    "retry_count": 3
+  },
+  {
+    "sub_id": "08601833-479d-0cda-f396-ea37f065c817",
+    "customer_id": "CUST-00113",
+    "failure_code": "hard_decline",
+    "amount_usd": 199.92,
+    "currency": "USD",
+    "failed_at": "2025-02-17T12:15:40+00:00",
+    "retry_count": 3
+  },
+  {
+    "sub_id": "fb1e143b-196f-4dfa-5cd8-fe1adafec8a9",
+    "customer_id": "CUST-00088",
+    "failure_code": "temporary_hold",
+    "amount_usd": 73.0,
+    "currency": "USD",
+    "failed_at": "2025-02-13T04:12:59+00:00",
+    "retry_count": 1
+  },
+  {
+    "sub_id": "f7dc67e0-3097-4b2b-46a0-2a9b65ec7acd",
+    "customer_id": "CUST-00087",
+    "failure_code": "temporary_hold",
+    "amount_usd": 167.89,
+    "currency": "USD",
+    "failed_at": "2025-02-04T19:46:14+00:00",
+    "retry_count": 0
+  },
+  {
+    "sub_id": "3e5a87e3-5560-db22-c96b-5edb0cf2b69b",
+    "customer_id": "CUST-00015",
+    "failure_code": "hard_decline",
+    "amount_usd": 36.58,
+    "currency": "USD",
+    "failed_at": "2025-01-21T14:14:32+00:00",
+    "retry_count": 0
+  },
+  {
+    "sub_id": "dea45c19-d024-3d72-3748-967f961d33ba",
+    "customer_id": "CUST-00016",
+    "failure_code": "expired_card",
+    "amount_usd": 29.89,
+    "currency": "USD",
+    "failed_at": "2025-02-23T19:23:51+00:00",
+    "retry_count": 1
+  },
+  {
+    "sub_id": "250a4578-fbe9-4499-dbc0-80fd46fb7bf3",
+    "customer_id": "CUST-00029",
+    "failure_code": "temporary_hold",
+    "amount_usd": 234.56,
+    "currency": "USD",
+    "failed_at": "2025-02-27T20:44:16+00:00",
+    "retry_count": 0
+  },
+  {
+    "sub_id": "ca3c6f5f-5bb5-c40c-03cd-e2e321bddb41",
+    "customer_id": "CUST-00016",
+    "failure_code": "temporary_hold",
+    "amount_usd": 241.56,
+    "currency": "USD",
+    "failed_at": "2025-01-11T16:08:49+00:00",
+    "retry_count": 0
+  },
+  {
+    "sub_id": "bde13c1b-2073-3f6d-0d6a-05b343ef2016",
+    "customer_id": "CUST-00100",
+    "failure_code": "expired_card",
+    "amount_usd": 180.76,
+    "currency": "USD",
+    "failed_at": "2025-01-02T12:46:21+00:00",
+    "retry_count": 1
+  },
+  {
+    "sub_id": "97fa7f04-8363-9007-5cae-9610c72c1fe3",
+    "customer_id": "CUST-00053",
+    "failure_code": "insufficient_funds",
+    "amount_usd": 226.23,
+    "currency": "USD",
+    "failed_at": "2025-02-16T05:44:00+00:00",
+    "retry_count": 3
+  },
+  {
+    "sub_id": "ddf275eb-e8a3-f341-c881-9065ba2c98ce",
+    "customer_id": "CUST-00013",
+    "failure_code": "hard_decline",
+    "amount_usd": 156.1,
+    "currency": "USD",
+    "failed_at": "2025-03-01T17:18:10+00:00",
+    "retry_count": 0
+  },
+  {
+    "sub_id": "66d06371-d8e8-8ebb-7a9e-8eefffa361be",
+    "customer_id": "CUST-00084",
+    "failure_code": "temporary_hold",
+    "amount_usd": 142.82,
+    "currency": "USD",
+    "failed_at": "2025-01-04T00:35:10+00:00",
+    "retry_count": 0
+  },
+  {
+    "sub_id": "9bb96155-5275-eb94-14ae-af5ce63658c9",
+    "customer_id": "CUST-00054",
+    "failure_code": "insufficient_funds",
+    "amount_usd": 152.17,
+    "currency": "USD",
+    "failed_at": "2025-02-13T01:34:30+00:00",
+    "retry_count": 0
+  },
+  {
+    "sub_id": "87d292a6-98ee-ac2b-fe9f-ecaa6182f347",
+    "customer_id": "CUST-00018",
+    "failure_code": "insufficient_funds",
+    "amount_usd": 46.59,
+    "currency": "USD",
+    "failed_at": "2025-02-26T19:59:54+00:00",
+    "retry_count": 2
+  },
+  {
+    "sub_id": "da509fed-1d4a-3d81-b3a7-d0e0cb08587d",
+    "customer_id": "CUST-00037",
+    "failure_code": "hard_decline",
+    "amount_usd": 156.6,
+    "currency": "USD",
+    "failed_at": "2025-02-11T18:26:13+00:00",
+    "retry_count": 0
+  },
+  {
+    "sub_id": "66132e69-7418-8109-d3d1-bf0f56c438e4",
+    "customer_id": "CUST-00083",
+    "failure_code": "expired_card",
+    "amount_usd": 134.71,
+    "currency": "USD",
+    "failed_at": "2025-01-23T04:25:43+00:00",
+    "retry_count": 3
+  },
+  {
+    "sub_id": "afd380c4-2713-582c-f41e-a3ac5fd23109",
+    "customer_id": "CUST-00053",
+    "failure_code": "insufficient_funds",
+    "amount_usd": 100.63,
+    "currency": "USD",
+    "failed_at": "2025-01-31T08:13:57+00:00",
+    "retry_count": 2
+  },
+  {
+    "sub_id": "bd21bc11-be9d-61ee-18b8-72456e8f75a1",
+    "customer_id": "CUST-00118",
+    "failure_code": "hard_decline",
+    "amount_usd": 29.46,
+    "currency": "USD",
+    "failed_at": "2025-01-09T06:54:48+00:00",
+    "retry_count": 0
+  },
+  {
+    "sub_id": "5a856750-692a-c139-1f4a-8ca1ab85fd59",
+    "customer_id": "CUST-00047",
+    "failure_code": "expired_card",
+    "amount_usd": 171.34,
+    "currency": "USD",
+    "failed_at": "2025-02-26T22:33:45+00:00",
+    "retry_count": 2
+  },
+  {
+    "sub_id": "1a85910d-5a05-7c11-4ffc-a6b199b479d4",
+    "customer_id": "CUST-00111",
+    "failure_code": "hard_decline",
+    "amount_usd": 261.74,
+    "currency": "USD",
+    "failed_at": "2025-01-05T23:52:40+00:00",
+    "retry_count": 2
+  },
+  {
+    "sub_id": "d86a6460-59a1-120e-1bb4-3332d8e7012f",
+    "customer_id": "CUST-00073",
+    "failure_code": "expired_card",
+    "amount_usd": 54.86,
+    "currency": "USD",
+    "failed_at": "2025-02-16T19:34:57+00:00",
+    "retry_count": 1
+  },
+  {
+    "sub_id": "8f9b72ae-d85c-16bd-6dda-4f8dcea60f4c",
+    "customer_id": "CUST-00071",
+    "failure_code": "temporary_hold",
+    "amount_usd": 43.31,
+    "currency": "USD",
+    "failed_at": "2025-01-28T01:06:39+00:00",
+    "retry_count": 1
+  },
+  {
+    "sub_id": "c32d4526-b3e4-110a-45f5-0c522e2fbf77",
+    "customer_id": "CUST-00098",
+    "failure_code": "insufficient_funds",
+    "amount_usd": 186.6,
+    "currency": "USD",
+    "failed_at": "2025-01-26T23:11:54+00:00",
+    "retry_count": 0
+  },
+  {
+    "sub_id": "11d059b2-6699-cd99-a847-bce790fa6b57",
+    "customer_id": "CUST-00039",
+    "failure_code": "temporary_hold",
+    "amount_usd": 111.79,
+    "currency": "USD",
+    "failed_at": "2025-01-18T14:42:20+00:00",
+    "retry_count": 1
+  },
+  {
+    "sub_id": "5744f596-7422-2167-6b7a-2460604e46cb",
+    "customer_id": "CUST-00018",
+    "failure_code": "insufficient_funds",
+    "amount_usd": 36.6,
+    "currency": "USD",
+    "failed_at": "2025-02-21T12:06:51+00:00",
+    "retry_count": 1
+  },
+  {
+    "sub_id": "284c03d2-27d4-15b6-0d77-c5a0e222b6a6",
+    "customer_id": "CUST-00020",
+    "failure_code": "temporary_hold",
+    "amount_usd": 100.36,
+    "currency": "USD",
+    "failed_at": "2025-02-01T11:52:00+00:00",
+    "retry_count": 0
+  },
+  {
+    "sub_id": "9b69554d-7c54-535f-6c8c-3b6aa974d079",
+    "customer_id": "CUST-00096",
+    "failure_code": "insufficient_funds",
+    "amount_usd": 205.44,
+    "currency": "USD",
+    "failed_at": "2025-01-27T10:02:44+00:00",
+    "retry_count": 3
+  },
+  {
+    "sub_id": "4882d73c-1c63-45ab-6e0e-d1e8585d3f86",
+    "customer_id": "CUST-00056",
+    "failure_code": "hard_decline",
+    "amount_usd": 89.21,
+    "currency": "USD",
+    "failed_at": "2025-02-19T17:51:12+00:00",
+    "retry_count": 0
+  },
+  {
+    "sub_id": "996d5c50-fc04-a168-652f-fb493873e57f",
+    "customer_id": "CUST-00086",
+    "failure_code": "hard_decline",
+    "amount_usd": 162.8,
+    "currency": "USD",
+    "failed_at": "2025-01-30T22:40:09+00:00",
+    "retry_count": 0
+  },
+  {
+    "sub_id": "53ffd3a2-4a19-3501-4169-b9fcc3a00c6f",
+    "customer_id": "CUST-00007",
+    "failure_code": "insufficient_funds",
+    "amount_usd": 69.27,
+    "currency": "USD",
+    "failed_at": "2025-01-21T12:12:39+00:00",
+    "retry_count": 1
+  },
+  {
+    "sub_id": "b423ccde-8857-5117-6155-46672112507c",
+    "customer_id": "CUST-00015",
+    "failure_code": "insufficient_funds",
+    "amount_usd": 154.23,
+    "currency": "USD",
+    "failed_at": "2025-02-11T19:29:56+00:00",
+    "retry_count": 1
+  },
+  {
+    "sub_id": "13eecdc6-ebd1-4d2c-75b2-745504cc3ede",
+    "customer_id": "CUST-00029",
+    "failure_code": "temporary_hold",
+    "amount_usd": 30.89,
+    "currency": "USD",
+    "failed_at": "2025-01-05T02:34:17+00:00",
+    "retry_count": 3
+  },
+  {
+    "sub_id": "4a1dab32-6aed-fdc7-a3e0-5309b5a1b949",
+    "customer_id": "CUST-00110",
+    "failure_code": "temporary_hold",
+    "amount_usd": 176.96,
+    "currency": "USD",
+    "failed_at": "2025-02-25T16:07:05+00:00",
+    "retry_count": 3
+  },
+  {
+    "sub_id": "75c8e90d-9e3d-750d-f296-d9f0cd2372c2",
+    "customer_id": "CUST-00014",
+    "failure_code": "hard_decline",
+    "amount_usd": 16.04,
+    "currency": "USD",
+    "failed_at": "2025-02-01T12:45:52+00:00",
+    "retry_count": 1
+  },
+  {
+    "sub_id": "862268d1-6683-e107-96c0-44d06f887f28",
+    "customer_id": "CUST-00106",
+    "failure_code": "temporary_hold",
+    "amount_usd": 35.55,
+    "currency": "USD",
+    "failed_at": "2025-01-11T06:40:44+00:00",
+    "retry_count": 1
+  },
+  {
+    "sub_id": "138d994c-2b0a-bedd-c774-44cb5543fc3c",
+    "customer_id": "CUST-00010",
+    "failure_code": "hard_decline",
+    "amount_usd": 262.44,
+    "currency": "USD",
+    "failed_at": "2025-02-02T23:07:23+00:00",
+    "retry_count": 1
+  },
+  {
+    "sub_id": "d1a69d87-f54e-2019-ba35-844e59e1ac09",
+    "customer_id": "CUST-00065",
+    "failure_code": "insufficient_funds",
+    "amount_usd": 163.87,
+    "currency": "USD",
+    "failed_at": "2025-01-19T19:49:42+00:00",
+    "retry_count": 2
+  },
+  {
+    "sub_id": "2722796e-9a36-d1ec-2c6a-6e9a328067a1",
+    "customer_id": "CUST-00082",
+    "failure_code": "expired_card",
+    "amount_usd": 78.51,
+    "currency": "USD",
+    "failed_at": "2025-01-15T05:14:23+00:00",
+    "retry_count": 2
+  },
+  {
+    "sub_id": "9458054e-c287-4f06-9050-f7efc1235c91",
+    "customer_id": "CUST-00097",
+    "failure_code": "insufficient_funds",
+    "amount_usd": 61.36,
+    "currency": "USD",
+    "failed_at": "2025-02-17T23:22:34+00:00",
+    "retry_count": 3
+  },
+  {
+    "sub_id": "71348c2a-780b-3657-117b-355b70944bdb",
+    "customer_id": "CUST-00057",
+    "failure_code": "temporary_hold",
+    "amount_usd": 260.62,
+    "currency": "USD",
+    "failed_at": "2025-01-31T16:39:25+00:00",
+    "retry_count": 1
+  },
+  {
+    "sub_id": "4f76e388-12fe-28bf-81e0-d4895a18e2a3",
+    "customer_id": "CUST-00080",
+    "failure_code": "temporary_hold",
+    "amount_usd": 240.93,
+    "currency": "USD",
+    "failed_at": "2025-02-27T10:06:28+00:00",
+    "retry_count": 0
+  },
+  {
+    "sub_id": "fa34d2e8-dd3f-7d7e-a508-dc9513a4a492",
+    "customer_id": "CUST-00059",
+    "failure_code": "hard_decline",
+    "amount_usd": 20.9,
+    "currency": "USD",
+    "failed_at": "2025-02-05T19:13:15+00:00",
+    "retry_count": 2
+  },
+  {
+    "sub_id": "f4488385-8de7-ad6c-9490-77c27674456f",
+    "customer_id": "CUST-00109",
+    "failure_code": "insufficient_funds",
+    "amount_usd": 188.34,
+    "currency": "USD",
+    "failed_at": "2025-02-19T05:33:13+00:00",
+    "retry_count": 3
+  }
+]

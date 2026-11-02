@@ -1,0 +1,8 @@
+{# English: payment_link #}
+Dear Customer,
+
+Here is your direct payment link to settle {{ amount_usd }} {{ currency }}:
+{{ payment_link | default('https://proofpay.invalid/pay-direct') }}
+
+To opt out of future notifications or unsubscribe, reply STOP or click here: https://proofpay.invalid/opt-out
+

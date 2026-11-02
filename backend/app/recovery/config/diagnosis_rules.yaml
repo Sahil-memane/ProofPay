@@ -1,0 +1,26 @@
+# Diagnosis Mapping Rules
+failure_code_rules:
+  insufficient_funds: insufficient_funds
+  expired_card: expired_card
+  temporary_hold: temporary_hold
+  hard_decline: suspicious_hard_decline
+
+invoice_rules:
+  large_amount_threshold_usd: 200.0
+  large_overdue: large_overdue_invoice
+  standard_overdue: forgot_to_pay
+
+funding_rules:
+  insufficient_balance: insufficient_funds
+  expired_instrument: expired_card
+  risk_block: suspicious_hard_decline
+  default: temporary_hold
+
+valid_diagnoses:
+  - insufficient_funds
+  - expired_card
+  - temporary_hold
+  - forgot_to_pay
+  - large_overdue_invoice
+  - suspicious_hard_decline
+

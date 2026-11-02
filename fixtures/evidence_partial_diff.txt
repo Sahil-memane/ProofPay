@@ -1,0 +1,12 @@
+diff --git a/app/core.py b/app/core.py
+index 45a1c2..88b4d1 100644
+--- a/app/core.py
++++ b/app/core.py
+@@ -10,3 +10,12 @@
+ def calculate_totals(items):
++    # Incomplete implementation - requires QA review
++    pass
+NOTE: Only 50% of the milestone specification is covered.
+Pending unit test suite and security audit review.
+Verification Label: borderline
+
