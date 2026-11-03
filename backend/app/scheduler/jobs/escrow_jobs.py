@@ -148,3 +148,4 @@ def stale_escrow_reminder(project_id: str) -> dict[str, Any]:
         "timestamp": _clock.utcnow().isoformat(),
     })
     return {"status": "reminder_sent", "project_id": project_id}
+

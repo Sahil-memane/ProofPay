@@ -132,3 +132,4 @@ async def list_transactions(
         return result.get("transactions", [])
     except AttributeError:
         return []
+

@@ -22,3 +22,4 @@ If a milestone is edited after approval, all approvals are reset and `plan_hash`
 - **Positive:** Hash is visible in the audit log, providing legal evidence.
 - **Negative:** Clients must re-read and re-submit the hash after any edit — extra UX step.
 - **Implementation:** `backend/app/escrow/plan_hash.py` → `compute_plan_hash(milestones)`.
+

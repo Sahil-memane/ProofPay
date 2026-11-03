@@ -25,3 +25,4 @@ Running against the real PayPal sandbox requires internet access, sandbox creden
 - **Positive:** No sandbox credential management during development.
 - **Negative:** FakePayPal response shapes must be kept aligned with PayPal API updates.
 - **Rule:** Never commit PayPal sandbox credentials to `.env`. Render dashboard only.
+

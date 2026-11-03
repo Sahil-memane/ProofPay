@@ -32,3 +32,4 @@ Three specialised agents, each in its own package:
 - **Positive:** Each agent is independently testable, deployable, and replaceable.
 - **Positive:** Stub fallbacks mean the API works even if an agent fails to import.
 - **Negative:** Import-path injection (`sys.path.insert`) is a code smell but necessary given the hackathon mono-repo structure. Production would use proper packages.
+

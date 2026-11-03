@@ -191,3 +191,4 @@ def handle_dispute_resolved(event: dict[str, Any]) -> None:
     except Exception as exc:
         log.error("customer_dispute_resolved handler error: %s", exc, exc_info=True)
         raise
+

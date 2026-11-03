@@ -18,3 +18,4 @@ We define `PayPalGateway` as a structural Protocol (PEP 544) in `backend/app/pay
 - **Positive:** Zero mock patching in tests — just set `PAYPAL_EXEC_MODE=fake`.
 - **Negative:** FakePayPal must be kept in sync with PayPal API response shapes. Divergence = silent test failures.
 - **Rule:** `PAYPAL_EXEC_MODE=fake` always in `.env`. Only `rest` in Render dashboard for gate runs.
+

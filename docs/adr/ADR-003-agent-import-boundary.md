@@ -24,3 +24,4 @@ CI enforces this via `backend/tests/unit/test_import_linter.py` which uses `impo
 - **Positive:** Agents can be tested with no PayPal credentials at all.
 - **Positive:** Clear separation: agent = reasoning, executor = side effects.
 - **Negative:** Agents cannot directly query PayPal for context (must use a data-fetching service layer that is allowed to be called by agents without triggering payment actions).
+

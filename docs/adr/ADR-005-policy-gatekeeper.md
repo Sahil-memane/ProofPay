@@ -24,3 +24,4 @@ All decisions are written to the audit log with every check result listed.
 - **Positive:** Rules are pure functions — trivially unit-testable.
 - **Positive:** Hackathon demo: change `auto_action_limit` via admin endpoint live on camera.
 - **Negative:** Every action incurs policy evaluation overhead (milliseconds; acceptable).
+
