@@ -63,7 +63,7 @@ app = FastAPI(
 # ── CORS ──────────────────────────────────────────────────────────────────────
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Tighten in production
+    allow_origins=[settings.app_base_url, "http://localhost:3000", "http://localhost:8000"],  # Locked
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -77,11 +77,13 @@ app.add_exception_handler(Exception, generic_error_handler)  # type: ignore[arg-
 from backend.app.api import cases, sim  # noqa: E402
 from backend.app.api.projects import router as projects_router  # noqa: E402
 from backend.app.api.reputation import router as reputation_router  # noqa: E402
+from backend.app.api.submissions import router as submissions_router  # noqa: E402
 from backend.app.ingestion.receiver import router as ingestion_router  # noqa: E402
 
 app.include_router(cases.router)
 app.include_router(sim.router)
 app.include_router(projects_router)
+app.include_router(submissions_router)
 app.include_router(ingestion_router)
 app.include_router(reputation_router)
 

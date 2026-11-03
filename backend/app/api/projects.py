@@ -85,34 +85,29 @@ def _validate_milestones(milestones: list[dict[str, Any]], total: float) -> list
 @router.post("/projects", status_code=201)
 async def create_project(req: CreateProjectRequest) -> dict[str, Any]:
     """
-    Create a project. Stub scoping: one milestone covering the full amount.
-    In Phase 2 this calls the Scoping agent.
+    Create a project. Calls the Scoping Agent (Dev 2) to generate a
+    milestone plan. Falls back to a single-milestone stub if the agent
+    is unavailable (langgraph not installed or agent error).
     """
-    project_id = str(uuid.uuid4())
-    milestone_id = str(uuid.uuid4())
+    import asyncio
+    from backend.app.agents.scoping import run_scoping
 
-    # Stub scoping: single milestone
-    milestone = {
-        "id": milestone_id,
-        "project_id": project_id,
-        "title": "Project Milestone 1",
-        "amount": req.total_amount,
-        "currency": req.currency,
-        "state": "DRAFT",
-        "sequence": 0,
-        "criteria": [
-            {
-                "id": "manual_review",
-                "type": "manual_review",
-                "params": {},
-                "weight": 1.0,
-                "must_pass": True,
-            }
-        ],
-        "deadline": req.deadline,
-        "submission_count": 0,
-        "max_submissions": 3,
-    }
+    project_id = str(uuid.uuid4())
+
+    # Run scoping agent in a thread pool so we don't block the event loop
+    loop = asyncio.get_event_loop()
+    scoping_result = await loop.run_in_executor(
+        None,
+        lambda: run_scoping(
+            project_id=project_id,
+            job_description=req.job_description,
+            total_amount=req.total_amount,
+            currency=req.currency,
+            client_id=req.client_id,
+            freelancer_id=req.freelancer_id,
+            deadline=req.deadline,
+        ),
+    )
 
     project: dict[str, Any] = {
         "id": project_id,
@@ -129,10 +124,12 @@ async def create_project(req: CreateProjectRequest) -> dict[str, Any]:
         "job_description": req.job_description,
         "deadline": req.deadline,
         "created_at": datetime.now(timezone.utc).isoformat(),
+        "scoping_status": scoping_result.status,
+        "clarification_questions": scoping_result.clarification_questions,
     }
 
     _PROJECTS[project_id] = project
-    _MILESTONES[project_id] = [milestone]
+    _MILESTONES[project_id] = scoping_result.milestones
 
     audit_log("project_created", {
         "subject": project_id,
@@ -140,9 +137,16 @@ async def create_project(req: CreateProjectRequest) -> dict[str, Any]:
         "project_id": project_id,
         "total_amount": req.total_amount,
         "currency": req.currency,
+        "scoping_status": scoping_result.status,
+        "milestone_count": len(scoping_result.milestones),
     })
 
-    return {"project": project, "milestones": [milestone]}
+    return {
+        "project": project,
+        "milestones": scoping_result.milestones,
+        "scoping_status": scoping_result.status,
+        "clarification_questions": scoping_result.clarification_questions,
+    }
 
 
 @router.get("/projects")

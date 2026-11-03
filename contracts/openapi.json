@@ -1,0 +1,1772 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "ProofPay API",
+    "description": "AI-powered collections, payment recovery, and freelance escrow.",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/cases": {
+      "get": {
+        "tags": [
+          "cases"
+        ],
+        "summary": "List Cases",
+        "operationId": "list_cases_cases_get",
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Sort"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object"
+                  },
+                  "title": "Response List Cases Cases Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cases/{case_id}": {
+      "get": {
+        "tags": [
+          "cases"
+        ],
+        "summary": "Get Case Detail",
+        "operationId": "get_case_detail_cases__case_id__get",
+        "parameters": [
+          {
+            "name": "case_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Case Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "title": "Response Get Case Detail Cases  Case Id  Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/outbox": {
+      "get": {
+        "tags": [
+          "cases"
+        ],
+        "summary": "Get Outbox",
+        "operationId": "get_outbox_outbox_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array",
+                  "title": "Response Get Outbox Outbox Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/reconciliation/summary": {
+      "get": {
+        "tags": [
+          "cases"
+        ],
+        "summary": "Get Reconciliation Summary",
+        "operationId": "get_reconciliation_summary_reconciliation_summary_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "title": "Response Get Reconciliation Summary Reconciliation Summary Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/approvals": {
+      "get": {
+        "tags": [
+          "cases"
+        ],
+        "summary": "List Pending Approvals",
+        "operationId": "list_pending_approvals_approvals_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array",
+                  "title": "Response List Pending Approvals Approvals Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/approvals/{case_id}/decide": {
+      "post": {
+        "tags": [
+          "cases"
+        ],
+        "summary": "Decide Approval",
+        "operationId": "decide_approval_approvals__case_id__decide_post",
+        "parameters": [
+          {
+            "name": "case_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Case Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/backend__app__api__cases__ApprovalDecisionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "title": "Response Decide Approval Approvals  Case Id  Decide Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cases/{case_id}/reopen": {
+      "post": {
+        "tags": [
+          "cases"
+        ],
+        "summary": "Reopen Case Endpoint",
+        "operationId": "reopen_case_endpoint_cases__case_id__reopen_post",
+        "parameters": [
+          {
+            "name": "case_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Case Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReopenRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "title": "Response Reopen Case Endpoint Cases  Case Id  Reopen Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/demo/inject-failure": {
+      "post": {
+        "tags": [
+          "demo"
+        ],
+        "summary": "Demo Inject Failure",
+        "operationId": "demo_inject_failure_demo_inject_failure_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InjectFailureRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "title": "Response Demo Inject Failure Demo Inject Failure Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/demo/run-simulator": {
+      "post": {
+        "tags": [
+          "demo"
+        ],
+        "summary": "Demo Run Simulator",
+        "operationId": "demo_run_simulator_demo_run_simulator_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RunSimulatorRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "title": "Response Demo Run Simulator Demo Run Simulator Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/demo/advance-clock": {
+      "post": {
+        "tags": [
+          "demo"
+        ],
+        "summary": "Demo Advance Clock",
+        "operationId": "demo_advance_clock_demo_advance_clock_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdvanceClockRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "title": "Response Demo Advance Clock Demo Advance Clock Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/demo/reset": {
+      "post": {
+        "tags": [
+          "demo"
+        ],
+        "summary": "Demo Reset Endpoint",
+        "operationId": "demo_reset_endpoint_demo_reset_post",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "title": "Response Demo Reset Endpoint Demo Reset Post"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects": {
+      "get": {
+        "tags": [
+          "projects"
+        ],
+        "summary": "List Projects",
+        "operationId": "list_projects_projects_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array",
+                  "title": "Response List Projects Projects Get"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "projects"
+        ],
+        "summary": "Create Project",
+        "description": "Create a project. Calls the Scoping Agent (Dev 2) to generate a\nmilestone plan. Falls back to a single-milestone stub if the agent\nis unavailable (langgraph not installed or agent error).",
+        "operationId": "create_project_projects_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProjectRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "title": "Response Create Project Projects Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/{project_id}": {
+      "get": {
+        "tags": [
+          "projects"
+        ],
+        "summary": "Get Project",
+        "operationId": "get_project_projects__project_id__get",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Project Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "title": "Response Get Project Projects  Project Id  Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/milestones/{milestone_id}": {
+      "patch": {
+        "tags": [
+          "projects"
+        ],
+        "summary": "Edit Milestone",
+        "operationId": "edit_milestone_projects__project_id__milestones__milestone_id__patch",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Project Id"
+            }
+          },
+          {
+            "name": "milestone_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Milestone Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EditMilestoneRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "title": "Response Edit Milestone Projects  Project Id  Milestones  Milestone Id  Patch"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/approve": {
+      "post": {
+        "tags": [
+          "projects"
+        ],
+        "summary": "Approve Project",
+        "operationId": "approve_project_projects__project_id__approve_post",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Project Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApproveRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "title": "Response Approve Project Projects  Project Id  Approve Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/fund": {
+      "post": {
+        "tags": [
+          "projects"
+        ],
+        "summary": "Fund Project",
+        "description": "Guard: both approvals must exist and plan_hash must match.\nCreates a PayPal Orders v2 order; returns order_id for JS SDK.",
+        "operationId": "fund_project_projects__project_id__fund_post",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Project Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FundRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "title": "Response Fund Project Projects  Project Id  Fund Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/{project_id}/capture": {
+      "post": {
+        "tags": [
+          "projects"
+        ],
+        "summary": "Capture Project",
+        "description": "Optimistic capture \u2014 calls PayPal capture and returns immediately.\nThe FUNDED state transition is driven by the capture webhook (source of truth).",
+        "operationId": "capture_project_projects__project_id__capture_post",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Project Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CaptureRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "title": "Response Capture Project Projects  Project Id  Capture Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/milestones/{milestone_id}/submit": {
+      "post": {
+        "tags": [
+          "submissions"
+        ],
+        "summary": "Submit Milestone",
+        "description": "Freelancer submits evidence for a milestone.\nKicks off async verification via the Dev 2 verifier agent.\nMilestone moves to VERIFYING immediately; poll GET /submission to track.",
+        "operationId": "submit_milestone_milestones__milestone_id__submit_post",
+        "parameters": [
+          {
+            "name": "milestone_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Milestone Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "title": "Response Submit Milestone Milestones  Milestone Id  Submit Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/milestones/{milestone_id}/submission": {
+      "get": {
+        "tags": [
+          "submissions"
+        ],
+        "summary": "Get Submission",
+        "description": "Poll verification and release status for a milestone.",
+        "operationId": "get_submission_milestones__milestone_id__submission_get",
+        "parameters": [
+          {
+            "name": "milestone_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Milestone Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "title": "Response Get Submission Milestones  Milestone Id  Submission Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/milestones/{milestone_id}/review": {
+      "post": {
+        "tags": [
+          "submissions"
+        ],
+        "summary": "Review Milestone",
+        "description": "Client manually approves or rejects an IN_REVIEW milestone.",
+        "operationId": "review_milestone_milestones__milestone_id__review_post",
+        "parameters": [
+          {
+            "name": "milestone_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Milestone Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReviewRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "title": "Response Review Milestone Milestones  Milestone Id  Review Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/milestones/{milestone_id}/refund": {
+      "post": {
+        "tags": [
+          "submissions"
+        ],
+        "summary": "Refund Milestone",
+        "description": "Client requests a refund for a funded but unreleased milestone.\nGoes through Policy \u2192 Executor \u2192 FakePayPal/REST.\nMilestone \u2192 REFUNDED once capture_refunded webhook arrives.",
+        "operationId": "refund_milestone_milestones__milestone_id__refund_post",
+        "parameters": [
+          {
+            "name": "milestone_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Milestone Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefundRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "title": "Response Refund Milestone Milestones  Milestone Id  Refund Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/submission-approvals": {
+      "get": {
+        "tags": [
+          "submissions"
+        ],
+        "summary": "List Submission Approvals",
+        "description": "List payout release tasks that require human sign-off.",
+        "operationId": "list_submission_approvals_submission_approvals_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array",
+                  "title": "Response List Submission Approvals Submission Approvals Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/submission-approvals/{task_id}/decide": {
+      "post": {
+        "tags": [
+          "submissions"
+        ],
+        "summary": "Decide Submission Approval",
+        "description": "Human approves or rejects an oversized payout release.",
+        "operationId": "decide_submission_approval_submission_approvals__task_id__decide_post",
+        "parameters": [
+          {
+            "name": "task_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Task Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/backend__app__api__submissions__ApprovalDecisionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "title": "Response Decide Submission Approval Submission Approvals  Task Id  Decide Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/webhooks/paypal": {
+      "post": {
+        "tags": [
+          "ingestion"
+        ],
+        "summary": "Receive Webhook",
+        "description": "Receive a PayPal webhook:\n1. Read raw body (needed for signature verification).\n2. Verify PayPal signature \u2014 return 400 on failure.\n3. Insert into webhook_events with ON CONFLICT DO NOTHING.\n4. Return 200 immediately (processing is async).",
+        "operationId": "receive_webhook_webhooks_paypal_post",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sim/events": {
+      "post": {
+        "tags": [
+          "ingestion"
+        ],
+        "summary": "Receive Sim Event",
+        "description": "Accept a simulated event (no PayPal signature required).\nOnly available when DEMO_MODE or SIMULATOR_ENABLED is true.\nProtected by the internal tick token.",
+        "operationId": "receive_sim_event_sim_events_post",
+        "parameters": [
+          {
+            "name": "x-tick-token",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "",
+              "title": "X-Tick-Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "title": "Response Receive Sim Event Sim Events Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/reputation/{subject}": {
+      "get": {
+        "tags": [
+          "reputation"
+        ],
+        "summary": "Get Reputation",
+        "description": "Return current reputation score and contributing event history.",
+        "operationId": "get_reputation_reputation__subject__get",
+        "parameters": [
+          {
+            "name": "subject",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Subject"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "title": "Response Get Reputation Reputation  Subject  Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/healthz": {
+      "get": {
+        "tags": [
+          "meta"
+        ],
+        "summary": "Healthz",
+        "description": "Health check \u2014 verifies DB connectivity.",
+        "operationId": "healthz_healthz_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "type": "object",
+                  "title": "Response Healthz Healthz Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/internal/tick": {
+      "post": {
+        "tags": [
+          "meta"
+        ],
+        "summary": "Internal Tick",
+        "description": "Drives the scheduler on Render's free tier (no cron worker needed).\nCalled by GitHub Actions keepwarm.yml every 5 minutes.\nAlso processes any pending webhook events.",
+        "operationId": "internal_tick_internal_tick_post",
+        "parameters": [
+          {
+            "name": "x-tick-token",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "",
+              "title": "X-Tick-Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "title": "Response Internal Tick Internal Tick Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/audit": {
+      "get": {
+        "tags": [
+          "meta"
+        ],
+        "summary": "Get Audit Log",
+        "description": "Return recent audit events, optionally filtered by case_id.",
+        "operationId": "get_audit_log_audit_get",
+        "parameters": [
+          {
+            "name": "case_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Case Id"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 100,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object"
+                  },
+                  "title": "Response Get Audit Log Audit Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AdvanceClockRequest": {
+        "properties": {
+          "days": {
+            "type": "number",
+            "title": "Days",
+            "default": 0.0
+          },
+          "hours": {
+            "type": "number",
+            "title": "Hours",
+            "default": 0.0
+          }
+        },
+        "type": "object",
+        "title": "AdvanceClockRequest"
+      },
+      "ApproveRequest": {
+        "properties": {
+          "party": {
+            "type": "string",
+            "title": "Party",
+            "description": "'client' or 'freelancer'"
+          }
+        },
+        "type": "object",
+        "required": [
+          "party"
+        ],
+        "title": "ApproveRequest"
+      },
+      "CaptureRequest": {
+        "properties": {
+          "order_id": {
+            "type": "string",
+            "title": "Order Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "order_id"
+        ],
+        "title": "CaptureRequest"
+      },
+      "CreateProjectRequest": {
+        "properties": {
+          "job_description": {
+            "type": "string",
+            "minLength": 10,
+            "title": "Job Description"
+          },
+          "total_amount": {
+            "type": "number",
+            "exclusiveMinimum": 0.0,
+            "title": "Total Amount"
+          },
+          "currency": {
+            "type": "string",
+            "maxLength": 3,
+            "title": "Currency",
+            "default": "USD"
+          },
+          "client_id": {
+            "type": "string",
+            "title": "Client Id",
+            "default": "client-1"
+          },
+          "freelancer_id": {
+            "type": "string",
+            "title": "Freelancer Id",
+            "default": "freelancer-1"
+          },
+          "deadline": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Deadline"
+          }
+        },
+        "type": "object",
+        "required": [
+          "job_description",
+          "total_amount"
+        ],
+        "title": "CreateProjectRequest"
+      },
+      "EditMilestoneRequest": {
+        "properties": {
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          },
+          "amount": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Amount"
+          },
+          "criteria": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Criteria"
+          },
+          "deadline": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Deadline"
+          }
+        },
+        "type": "object",
+        "title": "EditMilestoneRequest"
+      },
+      "FundRequest": {
+        "properties": {
+          "plan_hash": {
+            "type": "string",
+            "title": "Plan Hash",
+            "description": "Must match stored plan_hash"
+          }
+        },
+        "type": "object",
+        "required": [
+          "plan_hash"
+        ],
+        "title": "FundRequest"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "InjectFailureRequest": {
+        "properties": {
+          "customer_id": {
+            "type": "string",
+            "title": "Customer Id",
+            "default": "CUST-DEMO-01"
+          },
+          "failure_code": {
+            "type": "string",
+            "title": "Failure Code",
+            "default": "insufficient_funds"
+          },
+          "amount_usd": {
+            "type": "number",
+            "title": "Amount Usd",
+            "default": 125.0
+          },
+          "currency": {
+            "type": "string",
+            "title": "Currency",
+            "default": "USD"
+          },
+          "invoice_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Invoice Id"
+          }
+        },
+        "type": "object",
+        "title": "InjectFailureRequest"
+      },
+      "RefundRequest": {
+        "properties": {
+          "reason": {
+            "type": "string",
+            "maxLength": 500,
+            "title": "Reason",
+            "default": "client_cancelled"
+          },
+          "actor": {
+            "type": "string",
+            "title": "Actor",
+            "default": "client"
+          }
+        },
+        "type": "object",
+        "title": "RefundRequest"
+      },
+      "ReopenRequest": {
+        "properties": {
+          "actor": {
+            "type": "string",
+            "title": "Actor",
+            "default": "human_operator"
+          },
+          "reason": {
+            "type": "string",
+            "title": "Reason",
+            "default": "reopened_by_support"
+          }
+        },
+        "type": "object",
+        "title": "ReopenRequest"
+      },
+      "ReviewRequest": {
+        "properties": {
+          "decision": {
+            "type": "string",
+            "title": "Decision",
+            "description": "'approve' or 'reject'"
+          },
+          "actor": {
+            "type": "string",
+            "title": "Actor",
+            "default": "client"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 1000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          }
+        },
+        "type": "object",
+        "required": [
+          "decision"
+        ],
+        "title": "ReviewRequest"
+      },
+      "RunSimulatorRequest": {
+        "properties": {
+          "case_id": {
+            "type": "string",
+            "title": "Case Id"
+          },
+          "action": {
+            "type": "string",
+            "title": "Action",
+            "default": "send_reminder"
+          },
+          "seed": {
+            "type": "integer",
+            "title": "Seed",
+            "default": 42
+          }
+        },
+        "type": "object",
+        "required": [
+          "case_id"
+        ],
+        "title": "RunSimulatorRequest"
+      },
+      "SubmitRequest": {
+        "properties": {
+          "freelancer_id": {
+            "type": "string",
+            "title": "Freelancer Id"
+          },
+          "pr_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pr Url"
+          },
+          "deployed_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Deployed Url"
+          },
+          "repository": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Repository",
+            "description": "GitHub owner/repo e.g. org/project"
+          },
+          "evidence_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Evidence Url"
+          },
+          "files": {
+            "additionalProperties": {
+              "type": "object"
+            },
+            "type": "object",
+            "title": "Files"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notes"
+          }
+        },
+        "type": "object",
+        "required": [
+          "freelancer_id"
+        ],
+        "title": "SubmitRequest"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "backend__app__api__cases__ApprovalDecisionRequest": {
+        "properties": {
+          "decision": {
+            "type": "string",
+            "title": "Decision",
+            "description": "'approve' or 'reject'"
+          },
+          "actor": {
+            "type": "string",
+            "title": "Actor",
+            "default": "human_operator"
+          },
+          "notes": {
+            "type": "string",
+            "title": "Notes",
+            "default": ""
+          }
+        },
+        "type": "object",
+        "required": [
+          "decision"
+        ],
+        "title": "ApprovalDecisionRequest"
+      },
+      "backend__app__api__submissions__ApprovalDecisionRequest": {
+        "properties": {
+          "decision": {
+            "type": "string",
+            "title": "Decision",
+            "description": "'approve' or 'reject'"
+          },
+          "actor": {
+            "type": "string",
+            "title": "Actor",
+            "default": "admin"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          }
+        },
+        "type": "object",
+        "required": [
+          "decision"
+        ],
+        "title": "ApprovalDecisionRequest"
+      }
+    }
+  }
+}

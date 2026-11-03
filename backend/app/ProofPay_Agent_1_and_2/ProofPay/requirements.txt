@@ -1,0 +1,22 @@
+# Core LangChain & LangGraph
+langgraph>=0.2.0
+langgraph-checkpoint-sqlite>=2.0.0
+langchain>=0.3.0
+langchain-core>=0.3.0
+langchain-google-genai>=2.0.0
+
+# Validation & Serialization
+pydantic>=2.7.0
+pydantic-settings>=2.2.0
+
+# API & Web
+fastapi>=0.110.0
+uvicorn>=0.29.0
+
+# Utilities & Config
+python-dotenv>=1.0.1
+
+# Testing
+pytest>=8.0.0
+pytest-asyncio>=0.23.0
+

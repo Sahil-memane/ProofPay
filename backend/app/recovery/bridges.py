@@ -135,6 +135,18 @@ def on_escrow_case_state_change(case: dict[str, Any]) -> str | None:
             "case_id": case_id,
             "client_id": case.get("customer_id"),
         })
+        # Stub reputation event: wire to real rep ledger in Phase 3
+        try:
+            from backend.app.audit import log_event as audit_log
+            audit_log("rep_event", {
+                "subject": case.get("customer_id", case_id),
+                "actor": "recovery",
+                "event": "recovered",
+                "case_id": case_id,
+                "project_id": project_id,
+            })
+        except Exception:
+            pass
         return EVENT_FUNDING_RESUMED
 
     elif state in (CaseState.UNRECOVERED, "UNRECOVERED"):
