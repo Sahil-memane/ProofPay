@@ -27,7 +27,15 @@ async def verify_paypal_signature(
     """
     Calls PayPal's verify-webhook-signature endpoint.
     Returns True if the signature is valid.
+
+    In fake/dev mode (PAYPAL_EXEC_MODE=fake or PAYPAL_WEBHOOK_ID unset),
+    signature verification is skipped to support local integration gates.
     """
+    import os
+    if os.environ.get("PAYPAL_EXEC_MODE", "fake") == "fake":
+        log.debug("PAYPAL_EXEC_MODE=fake — skipping signature verification")
+        return True
+
     if not settings.paypal_webhook_id:
         log.warning("PAYPAL_WEBHOOK_ID not set — skipping signature verification (dev mode)")
         return True

@@ -98,7 +98,7 @@ def handle_succeeded(event: dict[str, Any]) -> None:
             freelancer_id,
         )
 
-        log.info("payout_item_succeeded: milestone %s → RELEASED", milestone_id)
+        log.info("payout_item_succeeded: milestone %s -> RELEASED", milestone_id)
 
     except Exception as exc:
         log.error("payout_item_succeeded handler error: %s", exc, exc_info=True)
