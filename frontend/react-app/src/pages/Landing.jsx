@@ -14,7 +14,23 @@ export default function Landing() {
           </div>
           <span className={styles.logoText}>ProofPay</span>
         </div>
-        <button className={styles.ctaBtn} onClick={() => navigate('/dashboard')}>Open Dashboard →</button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <button
+            style={{
+              background: 'transparent',
+              border: 'none',
+              color: '#BFD3F2',
+              fontSize: 14,
+              fontWeight: 500,
+              cursor: 'pointer',
+              padding: '8px 12px',
+            }}
+            onClick={() => navigate('/login')}
+          >
+            Sign In
+          </button>
+          <button className={styles.ctaBtn} onClick={() => navigate('/dashboard')}>Open Dashboard →</button>
+        </div>
       </header>
 
       <main className={styles.hero}>

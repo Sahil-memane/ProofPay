@@ -1,0 +1,271 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.headerRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.titleArea h1 {
+  font-size: 28px;
+  font-weight: 600;
+  margin: 0;
+  color: var(--blue-dark);
+}
+
+.titleArea p {
+  margin: 4px 0 0;
+  color: var(--muted);
+}
+
+.card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0;
+  overflow: hidden;
+}
+
+.tabList {
+  display: flex;
+  gap: 4px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;
+}
+
+.tab {
+  height: 44px;
+  padding: 0 16px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: var(--muted);
+  font: 500 14px Inter, sans-serif;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.tab:hover {
+  color: #172B4D;
+}
+
+.tabActive {
+  color: var(--blue);
+  border-bottom-color: var(--blue);
+  font-weight: 600;
+}
+
+.tabContent {
+  padding: 24px;
+}
+
+.twoCols {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.formGrid {
+  display: grid;
+  gap: 20px;
+  max-width: 720px;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.label {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.input {
+  width: 100%;
+  height: 44px;
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font: 14px Inter, sans-serif;
+  color: #172B4D;
+  background: #fff;
+}
+
+.mono {
+  font-family: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
+  font-size: 12px;
+  color: var(--blue-dark);
+}
+
+.tableResponsive {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 640px;
+  text-align: left;
+}
+
+.table thead tr {
+  background: #F0F3F8;
+}
+
+.th {
+  padding: 10px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.td {
+  padding: 12px;
+  border-top: 1px solid var(--border);
+  font-size: 14px;
+  vertical-align: middle;
+}
+
+.tr:hover td {
+  background: #F8FAFC;
+}
+
+.badge {
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 12px;
+  padding: 2px 10px;
+  white-space: nowrap;
+  display: inline-block;
+}
+
+.badgeGreen  { background: #E3F4EB; color: #1E7A4C; }
+.badgeAmber  { background: #FEF1D9; color: #8A5A00; }
+.badgeRed    { background: #FBE5E6; color: #B42830; }
+.badgeBlue   { background: #E6F0FC; color: #005BB5; }
+.badgeGray   { background: #F0F3F8; color: #64748B; }
+
+.btn {
+  height: 44px;
+  padding: 0 16px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: #fff;
+  color: #172B4D;
+  font: 600 14px Inter, sans-serif;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+}
+
+.btn:hover {
+  background: #F0F3F8;
+}
+
+.btnPrimary {
+  background: var(--blue);
+  border-color: var(--blue);
+  color: #fff;
+}
+
+.btnPrimary:hover {
+  background: #005fc0;
+}
+
+.btnDanger {
+  color: #B42830;
+  border-color: #F1C4C7;
+  background: #fff;
+}
+
+.btnDanger:hover {
+  background: #FBE5E6;
+}
+
+.btnSm {
+  height: 34px;
+  padding: 0 12px;
+  font-size: 13px;
+}
+
+/* Switch */
+.switch {
+  position: relative;
+  width: 40px;
+  height: 22px;
+  border-radius: 11px;
+  border: 0;
+  background: #C5CCD8;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.15s;
+}
+
+.switchChecked {
+  background: #2E9D65;
+}
+
+.switchKnob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  border-radius: 9px;
+  background: #fff;
+  transition: left 0.15s;
+}
+
+.switchChecked .switchKnob {
+  left: 20px;
+}
+
+/* Modal */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 37, 64, 0.4);
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.modalCard {
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px;
+  width: 100%;
+  max-width: 460px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: 0 8px 32px rgba(10,37,64,0.15);
+}
+
+.footerTagline {
+  text-align: center;
+  padding: 8px 0 16px;
+  color: var(--blue-dark);
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.footerSub {
+  font-weight: 400;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 12px;
+}

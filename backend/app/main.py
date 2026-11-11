@@ -146,7 +146,40 @@ async def get_audit_log(
     return events[:limit]
 
 
-# ── Frontend static files (mount LAST — after all API routes) ─────────────────
+# ── Frontend static files & SPA routing (mount LAST — after all API routes) ──
 _FRONTEND_DIR = Path(__file__).resolve().parents[2] / "frontend" / "react-app" / "dist"
 if _FRONTEND_DIR.exists():
-    app.mount("/", StaticFiles(directory=str(_FRONTEND_DIR), html=True), name="frontend")
+    from fastapi.responses import FileResponse
+
+    _assets_dir = _FRONTEND_DIR / "assets"
+    if _assets_dir.exists():
+        app.mount("/assets", StaticFiles(directory=str(_assets_dir)), name="assets")
+
+    @app.middleware("http")
+    async def spa_html_middleware(request: Request, call_next):
+        accept = request.headers.get("accept", "")
+        path = request.url.path
+        # If it's a browser page navigation (accept contains text/html) and not API docs:
+        if (
+            request.method == "GET"
+            and "text/html" in accept
+            and not path.startswith(("/docs", "/redoc", "/openapi.json"))
+        ):
+            static_file = _FRONTEND_DIR / path.lstrip("/")
+            if path != "/" and static_file.is_file():
+                return FileResponse(static_file)
+            index_html = _FRONTEND_DIR / "index.html"
+            if index_html.is_file():
+                return FileResponse(index_html)
+
+        response = await call_next(request)
+
+        # Fallback for client-side routes returning 404 on direct hit/refresh
+        if response.status_code == 404 and request.method == "GET":
+            static_file = _FRONTEND_DIR / path.lstrip("/")
+            if static_file.is_file():
+                return FileResponse(static_file)
+            index_html = _FRONTEND_DIR / "index.html"
+            if index_html.is_file() and ("text/html" in accept or "*/*" in accept):
+                return FileResponse(index_html)
+        return response

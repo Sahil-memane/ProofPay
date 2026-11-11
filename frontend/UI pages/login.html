@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ProofPay — Sign in or create account</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%278%27 fill=%27%230070E0%27/%3E%3Cpath d=%27M16 6l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V9zM13 15l2 2 4-4%27 fill=%27none%27 stroke=%27%23fff%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27/%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;display=swap">
+<style>
+:root{--navy:#003087;--dark:#001C64;--blue:#0070E0;--bright:#009CDE;--canvas:#F5F7FA;--text:#172B4D;--mute:#64748B;--line:#E5E9F0;--soft:#F0F3F8;--green:#2E9D65;--red:#D9363E;--ease:cubic-bezier(.65,.05,.25,1)}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:var(--text);font-size:14px;background:var(--navy)}
+a{color:var(--blue);text-decoration:none}a:hover{text-decoration:underline}
+.i{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.stage{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:20px 16px;position:relative;overflow:hidden;background:radial-gradient(1100px 600px at 12% -10%,#0A4BBD 0%,transparent 60%),radial-gradient(900px 520px at 100% 110%,#0070E0 0%,transparent 55%),var(--navy)}
+.stage:before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:48px 48px;-webkit-mask-image:radial-gradient(circle at 50% 45%,#000,transparent 75%);mask-image:radial-gradient(circle at 50% 45%,#000,transparent 75%)}
+.stage>*{position:relative}
+.brand{display:flex;align-items:center;gap:10px;font-size:22px;font-weight:600;color:#fff}.brand:hover{text-decoration:none}
+.bar{display:flex;align-items:center;gap:16px}
+.pby{display:flex;align-items:center;gap:8px;padding-left:16px;border-left:1px solid rgba(255,255,255,.28);font-size:15px;color:#BFD3F2;line-height:1}.pby b{color:#fff;font-weight:600;font-size:17px}
+.logo{width:36px;height:36px;border-radius:10px;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 1px rgba(255,255,255,.2)}
+
+/* window */
+.box{position:relative;width:100%;max-width:960px;height:clamp(540px,calc(100vh - 150px),680px);background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 0 0 1px rgba(255,255,255,.12),0 30px 80px rgba(0,12,48,.55),0 8px 20px rgba(0,12,48,.3)}
+.pane{position:absolute;top:0;left:0;width:50%;height:100%;padding:18px 44px;overflow-y:auto;display:flex;flex-direction:column;justify-content:center;transition:transform .7s var(--ease),opacity .4s;background:#fff}
+.pane.si{z-index:2}
+.pane.su{opacity:0;z-index:1}
+.box.reg .pane.si{transform:translateX(100%)}
+.box.reg .pane.su{transform:translateX(100%);opacity:1;z-index:5}
+h1{font-size:24px;font-weight:600;margin:0;color:var(--navy)}
+.sub{color:var(--mute);margin:2px 0 8px}
+label.l{display:block;font-size:13px;font-weight:500;margin-top:9px}
+.f{display:block;width:100%;height:40px;margin-top:4px;padding:0 12px;border:1px solid var(--line);border-radius:8px;font:14px Inter,sans-serif;color:var(--text);background:#fff}
+.f:hover{border-color:#C9D2E0}
+.f:focus-visible,.btn:focus-visible,a:focus-visible,.eye:focus-visible,.chip:focus-visible,.ghost:focus-visible,input[type=checkbox]:focus-visible,.lnk:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.f[aria-invalid=true]{border-color:var(--red)}
+.pw{position:relative}.pw .f{padding-right:46px}
+.eye{position:absolute;right:2px;top:6px;width:38px;height:38px;border:0;background:transparent;border-radius:8px;color:var(--mute);cursor:pointer;display:flex;align-items:center;justify-content:center}
+.eye:hover{background:var(--soft)}
+.err{font-size:12px;color:var(--red);margin-top:2px}.err:empty{display:none}
+.banner{display:none;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:8px;background:#FBE5E6;color:#B42830;margin-bottom:4px;font-size:13px}
+.banner.show{display:flex}.banner.info{background:#E6F0FC;color:#005BB5}
+.row{display:flex;justify-content:space-between;align-items:center;margin:12px 0 14px;font-size:13px}
+.ck{display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px}
+.ck input{width:16px;height:16px;accent-color:var(--blue);margin:0}
+.btn{width:100%;height:42px;border-radius:8px;border:1px solid var(--line);background:#fff;color:var(--text);font:600 14px Inter,sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn:hover{background:var(--soft)}
+.btn.p{background:var(--blue);border-color:var(--blue);color:#fff}.btn.p:hover{background:#005fc0}
+.btn[disabled]{opacity:.7;cursor:progress}
+.spin{width:16px;height:16px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.or{display:flex;align-items:center;gap:12px;color:var(--mute);font-size:12px;margin:14px 0}
+.or:before,.or:after{content:"";flex:1;height:1px;background:var(--line)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.chip{height:30px;padding:0 10px;border-radius:15px;border:1px solid var(--line);background:#fff;font:500 12px Inter,sans-serif;color:var(--text);cursor:pointer}
+.chip:hover{border-color:var(--blue);color:var(--blue)}
+.demo{margin-top:16px;font-size:12px;color:var(--mute)}
+.banner.ok{background:#E3F4EB;color:#1E7A4C}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.meter{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:6px}
+.meter i{height:4px;border-radius:2px;background:var(--line);transition:background .2s}
+.hint{font-size:12px;color:var(--mute);margin-top:3px;min-height:16px}
+.hint.ok{color:#1E7A4C}
+.invite{display:none;margin-top:8px;padding:10px 12px;border-radius:8px;background:#FEF1D9;color:#6B4600;font-size:12px}
+.invite.show{display:block}.invite .f{margin-top:6px;background:#fff}
+.ben{display:grid;gap:11px;margin:4px 0 0;padding:0;list-style:none}
+.ben li{display:flex;gap:12px;align-items:flex-start}
+.ben .ic{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;color:#9FD3FF;flex:none}
+.ben b{display:block;font-size:14px;color:#fff;font-weight:600}.ben span{font-size:12px;color:#C9D8F2}
+.sw{font-size:13px;color:#C9D8F2}
+.bm{display:none;margin:0 0 6px;padding:12px 14px;list-style:none;gap:8px;border-radius:10px;background:var(--soft);font-size:12px;color:var(--text)}
+.bm li{display:flex;gap:8px;align-items:center}.bm .i{width:15px;height:15px;color:var(--green)}
+.lnk{display:none;margin-top:14px;text-align:center;font-size:13px;color:var(--mute)}
+.lnk button{border:0;background:none;color:var(--blue);font:600 13px Inter,sans-serif;cursor:pointer;padding:0}
+
+/* sliding overlay */
+.ov{position:absolute;top:0;left:50%;width:50%;height:100%;overflow:hidden;z-index:10;transition:transform .7s var(--ease)}
+.box.reg .ov{transform:translateX(-100%)}
+.ovi{position:relative;left:-100%;width:200%;height:100%;display:flex;color:#fff;background:linear-gradient(155deg,#0A4BBD 0%,var(--navy) 55%,var(--dark) 100%);transition:transform .7s var(--ease)}
+.ovi:before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);background-size:40px 40px}
+.box.reg .ovi{transform:translateX(50%)}
+.op{position:relative;width:50%;height:100%;padding:24px 44px;display:flex;flex-direction:column;justify-content:center;gap:12px;transition:transform .7s var(--ease)}
+.op.l{transform:translateX(-18%)}.op.r{transform:translateX(0)}
+.box.reg .op.l{transform:translateX(0)}.box.reg .op.r{transform:translateX(18%)}
+.op h2{font-size:26px;line-height:1.2;font-weight:600;margin:0}
+.op p{margin:0;color:#C9D8F2;font-size:14px;max-width:320px}
+.ghost{align-self:flex-start;height:44px;padding:0 24px;border-radius:8px;border:1.5px solid #fff;background:transparent;color:#fff;font:600 14px Inter,sans-serif;cursor:pointer}
+.ghost:hover{background:#fff;color:var(--navy)}
+.pts{display:grid;gap:10px;margin:4px 0 0;padding:0;list-style:none;font-size:13px;color:#D6E2F5}
+.pts li{display:flex;gap:10px;align-items:center}.pts .i{width:16px;height:16px;color:#4CC38A}
+.mini{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:12px 14px;max-width:320px;font-size:12px;color:#D6E2F5}
+.mini b{display:block;color:#fff;font-size:13px;margin-bottom:2px}.mini code{font-family:'JetBrains Mono','SF Mono',Consolas,monospace;font-size:11px;color:#9FD3FF}
+
+.tag{font-size:15px;color:#fff;text-align:center;margin:0;font-weight:500}.desc{margin:4px 0 0;color:#BFD3F2;font-size:13px;text-align:center}
+.trust{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 20px;font-size:12px;color:#C9D8F2}
+.trust span{display:flex;align-items:center;gap:6px}.trust .i{width:16px;height:16px;color:#4CC38A}
+
+@media (max-width:820px){
+ .box{height:auto;max-width:460px}
+ .pby{font-size:13px;gap:6px;padding-left:12px}.pby b{font-size:14px}.bar{gap:12px}.brand{font-size:19px}
+ .two{grid-template-columns:1fr}
+ .pane,.box.reg .pane.si,.box.reg .pane.su{position:static;width:100%;height:auto;transform:none;padding:28px 24px;transition:none;overflow:visible}
+ .pane.su,.box:not(.reg) .pane.su{display:none;opacity:1}
+ .box.reg .pane.si{display:none}.box.reg .pane.su{display:flex}
+ .ov{display:none}.lnk{display:block}.bm{display:grid}
+}
+@media (prefers-reduced-motion:reduce){.pane,.ov,.ovi,.op{transition:none}}
+</style>
+</head>
+<body>
+<div class="stage">
+<div class="bar"><a class="brand" href="login-slide.html"><span class="logo"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6zM9 12l2 2 4-4"></path></svg></span>ProofPay</a><span class="pby">Powered by <b>PayPal</b></span></div>
+
+<main class="box" id="box">
+<!-- Sign in -->
+<section class="pane si" id="si" aria-labelledby="t1">
+<h1 id="t1">Sign in</h1>
+<p class="sub">Access escrow projects, recovery cases and approvals.</p>
+<div id="b1" class="banner" role="alert"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l10 18H2zM12 10v5M12 18h.01"></path></svg><span></span></div>
+<form id="lf" novalidate>
+<label class="l" for="em" style="margin-top:0">Email address</label>
+<input class="f" id="em" type="email" autocomplete="username" placeholder="you@company.com">
+<div class="err" id="eem" role="alert"></div>
+<label class="l" for="pw">Password</label>
+<div class="pw"><input class="f" id="pw" type="password" autocomplete="current-password" placeholder="Enter your password"><button type="button" class="eye" data-t="pw" aria-label="Show password" aria-pressed="false"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12zM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"></path></svg></button></div>
+<div class="err" id="epw" role="alert"></div>
+<div class="row"><label class="ck"><input type="checkbox" id="rm"> Remember me</label><a href="forgot-password.html">Forgot password?</a></div>
+<button class="btn p" id="go" type="submit">Sign in</button>
+</form>
+<div id="gw" hidden><div class="or">or</div><button class="btn" id="gbtn" type="button"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7M21 12h-9"></path></svg>Continue with Google</button></div>
+<div class="demo">Evaluator quick access
+<div class="chips"><button class="chip" type="button" data-e="client@example.com">Client</button><button class="chip" type="button" data-e="freelancer@example.com">Freelancer</button><button class="chip" type="button" data-e="merchant@example.com">Merchant</button><button class="chip" type="button" data-e="admin@example.com">Risk Officer</button></div></div>
+<p class="lnk">New to ProofPay? <button type="button" data-go="reg">Create account</button></p>
+</section>
+
+<!-- Register -->
+<section class="pane su" id="su" aria-labelledby="t2" inert>
+<h1 id="t2">Create your account</h1>
+<p class="sub">Start managing escrow and revenue recovery in one workspace.</p>
+<ul class="bm" aria-label="Account benefits"><li><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l4 4 10-10"></path></svg>Secure milestone-based escrow</li><li><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l4 4 10-10"></path></svg>AI-powered revenue recovery</li><li><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l4 4 10-10"></path></svg>PayPal payment integration</li><li><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l4 4 10-10"></path></svg>Transparent financial audit trails</li></ul>
+<div id="b2" class="banner" role="alert"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l10 18H2zM12 10v5M12 18h.01"></path></svg><span></span></div>
+<form id="rf" novalidate>
+<label class="l" for="rn" style="margin-top:0">Full name</label>
+<input class="f" id="rn" autocomplete="name" placeholder="Rahul Sharma">
+<div class="err" id="ern" role="alert"></div>
+<label class="l" for="re">Work email</label>
+<input class="f" id="re" type="email" autocomplete="email" placeholder="you@company.com">
+<div class="err" id="ere" role="alert"></div>
+<label class="l" for="rr">Account type</label>
+<select class="f" id="rr"><option value="client">Client (Buyer)</option><option value="freelancer">Freelancer (Contractor)</option><option value="merchant">Merchant (Billing Admin)</option><option value="admin">Admin / Risk Officer (invite only)</option></select>
+<div class="invite" id="inv"><label for="ri" style="font-weight:500">Admin invitation code</label><input class="f" id="ri" autocomplete="off" placeholder="Paste the code from your invitation email"><div class="err" id="eri" role="alert"></div>Admin access is restricted. The server checks your code before the account is created.</div>
+<div class="two">
+<div><label class="l" for="rp">Password</label>
+<div class="pw"><input class="f" id="rp" type="password" autocomplete="new-password" placeholder="8+ characters"><button type="button" class="eye" data-t="rp" aria-label="Show password" aria-pressed="false"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12zM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"></path></svg></button></div></div>
+<div><label class="l" for="rc">Confirm password</label>
+<div class="pw"><input class="f" id="rc" type="password" autocomplete="new-password" placeholder="Re-enter password"><button type="button" class="eye" data-t="rc" aria-label="Show confirm password" aria-pressed="false"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12zM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"></path></svg></button></div></div>
+</div>
+<div class="meter" id="mt" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+<div class="hint" id="rh" aria-live="polite">Use 8+ characters with upper and lower case, a number or a symbol.</div>
+<div class="err" id="erp" role="alert"></div><div class="err" id="erc" role="alert"></div>
+<label class="ck" style="margin:8px 0 4px"><input type="checkbox" id="rt"> <span>I agree to the <a href="help.html">Terms</a> and <a href="help.html">Privacy Policy</a></span></label>
+<div class="err" id="ert" role="alert" style="margin:0 0 8px"></div>
+<button class="btn p" id="rgo" type="submit">Create Account</button>
+</form>
+<p class="lnk">Already have an account? <button type="button" data-go="login">Sign In</button></p>
+</section>
+
+<!-- Sliding overlay -->
+<div class="ov" aria-hidden="false"><div class="ovi">
+<div class="op l">
+<h2>Everything you need to get paid, protected</h2>
+<ul class="ben">
+<li><span class="ic"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6zM9 12l2 2 4-4"></path></svg></span><div><b>Secure milestone-based escrow</b><span>Funds are held until the agreed work is verified.</span></div></li>
+<li><span class="ic"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8M15 7h6v6"></path></svg></span><div><b>AI-powered revenue recovery</b><span>Win back failed charges without wrongful dunning.</span></div></li>
+<li><span class="ic"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18v12H3zM3 10h18"></path></svg></span><div><b>PayPal payment integration</b><span>Checkout, payouts and webhooks built in.</span></div></li>
+<li><span class="ic"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"></path></svg></span><div><b>Transparent financial audit trails</b><span>Every action is hash-chained and verifiable.</span></div></li>
+</ul>
+<div class="mini"><b>PRJ-2026-001 · $2,400.00 USD</b>4 milestones · plan approved by both parties<br><code>sha256: 9f2c…a41e</code></div>
+<div class="sw">Already have an account? <button class="ghost" type="button" data-go="login" id="toLogin" style="margin-left:8px;height:36px;padding:0 16px">Sign In</button></div>
+</div>
+<div class="op r">
+<h2>Every Payment. Proven. Protected.</h2>
+<p>Secure milestones. Recover revenue. Trust every transaction.</p>
+<div class="mini"><b>Milestone 2 · $700.00 USD</b>Over the $200.00 limit, so it goes to a human for approval.<br><code>sha256: 9f2c…a41e</code></div>
+<ul class="pts"><li><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l4 4 10-10"></path></svg>Dual-approved escrow plans</li><li><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l4 4 10-10"></path></svg>Recovery without wrongful dunning</li><li><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l4 4 10-10"></path></svg>Tamper-evident audit trail</li></ul>
+<button class="ghost" type="button" data-go="reg" id="toReg">Create account</button>
+</div>
+</div></div>
+</main>
+
+<div><p class="tag">Secure milestones. Recover revenue. Trust every transaction.</p></div>
+<div class="trust" aria-label="Security">
+<span><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 11V8a6 6 0 0 1 12 0v3M5 11h14v10H5z"></path></svg>Secure authentication</span>
+<span><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18v12H3zM3 10h18"></path></svg>PayPal-integrated financial operations</span>
+<span><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"></path></svg>Protected workspace access</span>
+</div>
+</div>
+
+<script>
+/* Set LIVE:true once the FastAPI backend is running. While false, no network call is made and the page runs in sandbox mode. */
+const CFG={API:'http://localhost:8000',LIVE:false,GOOGLE:false,DASH:'index.html'};
+const $=s=>document.querySelector(s);
+const MOCK={'client@example.com':{name:'Acme Global Solutions',role:'client'},'freelancer@example.com':{name:'Rahul Sharma',role:'freelancer'},'merchant@example.com':{name:'Sahil',role:'merchant'},'admin@example.com':{name:'Risk Officer',role:'admin'}};
+const US={get(){try{return JSON.parse(localStorage.getItem('pp_users')||'{}')}catch(e){return{}}},set(u){try{localStorage.setItem('pp_users',JSON.stringify(u))}catch(e){}}};
+async function sha(s){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
+const DEMO_PW='ProofPay@2026',EM=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+if(CFG.GOOGLE)$('#gw').hidden=false;
+const box=$('#box');
+
+/* slide */
+function mode(m){
+  const reg=m==='reg';box.classList.toggle('reg',reg);
+  $('#su').inert=!reg;$('#si').inert=reg;
+  clearAll();
+  try{history.replaceState(null,'',reg?'#register':'#login')}catch(e){}
+  setTimeout(()=>$(reg?'#rn':'#em').focus({preventScroll:true}),reg?450:450);
+}
+document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>mode(b.dataset.go));
+if(location.hash==='#register')mode('reg');
+
+/* helpers */
+document.querySelectorAll('.eye').forEach(b=>b.onclick=()=>{const p=$('#'+b.dataset.t),s=p.type==='password';p.type=s?'text':'password';b.setAttribute('aria-pressed',s);b.setAttribute('aria-label',s?'Hide password':'Show password')});
+document.querySelectorAll('.chip').forEach(c=>c.onclick=()=>{$('#em').value=c.dataset.e;$('#pw').value=DEMO_PW;clearAll();$('#pw').focus()});
+function clearAll(){document.querySelectorAll('.err').forEach(e=>e.textContent='');document.querySelectorAll('[aria-invalid]').forEach(e=>e.removeAttribute('aria-invalid'));document.querySelectorAll('.banner').forEach(b=>b.className='banner')}
+function bad(id,eid,msg){$('#'+id).setAttribute('aria-invalid',true);$('#'+eid).textContent=msg}
+function banner(id,msg,info){const b=$('#'+id);b.querySelector('span').textContent=msg;b.className='banner show'+(info?' info':'')}
+function busy(id,on,label){const b=$('#'+id);b.disabled=on;b.innerHTML=on?'<span class="spin"></span>'+label+'…':label}
+function focusFirst(){const e=document.querySelector('[aria-invalid=true]');if(e)e.focus()}
+function done(user,token,offline,bid){
+  const st=($('#rm').checked&&bid==='b1')?localStorage:sessionStorage;
+  try{st.setItem('pp_session',JSON.stringify({user,token,role:user.role,offline:!!offline}));sessionStorage.setItem('pp_role',user.role)}catch(e){}
+  banner(bid,offline?'Done with sandbox data. Redirecting…':'Done. Redirecting…',true);
+  setTimeout(()=>location.href=CFG.DASH,500);
+}
+async function post(path,body){
+  if(!CFG.LIVE)throw new Error('sandbox');
+  const ctl=new AbortController(),t=setTimeout(()=>ctl.abort(),4000);
+  try{return await fetch(CFG.API+path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body),signal:ctl.signal})}finally{clearTimeout(t)}
+}
+
+/* sign in */
+$('#lf').onsubmit=async e=>{
+  e.preventDefault();clearAll();
+  const em=$('#em').value.trim().toLowerCase(),pw=$('#pw').value;let x=false;
+  if(!em){bad('em','eem','Enter your email address.');x=true}else if(!EM.test(em)){bad('em','eem','Enter a valid email, like you@company.com.');x=true}
+  if(!pw){bad('pw','epw','Enter your password.');x=true}
+  if(x)return focusFirst();
+  busy('go',true,'Signing in');
+  try{
+    const r=await post('/auth/login',{email:em,password:pw,remember:$('#rm').checked});
+    if(r.status===401||r.status===403){busy('go',false,'Sign in');banner('b1','Email or password is incorrect. Check both and try again.');$('#pw').focus();return}
+    if(r.status===429){busy('go',false,'Sign in');banner('b1','Too many attempts. Wait a minute, then try again.');return}
+    if(!r.ok)throw 0;
+    const d=await r.json();done(d.user||{email:em,role:d.role||'client',name:em},d.access_token||d.token,false,'b1');
+  }catch(err){
+    const u=MOCK[em];
+    if(u&&pw===DEMO_PW)return done({email:em,...u},'mock-token',true,'b1');
+    const a=US.get()[em];
+    if(a){let h='';try{h=await sha(a.salt+pw)}catch(_){}
+      if(h&&h===a.hash)return done({email:em,name:a.name,role:a.role},'mock-token',true,'b1')}
+    busy('go',false,'Sign in');
+    banner('b1',(u||a)?'Email or password is incorrect. Check both and try again.':'No account found for this email in sandbox mode. Create one, or use a demo persona below.')
+  }
+};
+
+/* register */
+const rp=$('#rp'),rc=$('#rc'),rh=$('#rh'),mt=$('#mt');
+function score(p){let k=0;if(p.length>=8)k++;if(/[a-z]/.test(p)&&/[A-Z]/.test(p))k++;if(/\d/.test(p))k++;if(/[^A-Za-z0-9]/.test(p))k++;if(p.length>=12&&k>=3)k=4;return p.length<8?Math.min(k,1):k}
+const LV=[['',''],['Weak','#D9363E'],['Fair','#F5A623'],['Good','#009CDE'],['Strong','#2E9D65']];
+function meter(){const k=score(rp.value);mt.querySelectorAll('i').forEach((e,i)=>e.style.background=i<k?LV[k][1]:'');
+  if(!rp.value){rh.className='hint';rh.textContent='Use 8+ characters with upper and lower case, a number or a symbol.'}
+  else{rh.className='hint'+(k>=3?' ok':'');rh.textContent=LV[k][0]+(k<3?'. Add upper and lower case, a number or a symbol.':'.')}
+  match()}
+function match(){const e=$('#erc');if(rc.value&&rc.value!==rp.value){e.textContent='Passwords don’t match.'}else e.textContent=''}
+rp.oninput=meter;rc.oninput=match;
+$('#rr').onchange=e=>{$('#inv').classList.toggle('show',e.target.value==='admin');if(e.target.value==='admin')$('#ri').focus()};
+function created(em,pw){mode('login');$('#em').value=em;$('#pw').value='';banner('b1','Account created. Sign in to continue.');$('#b1').classList.add('ok');setTimeout(()=>$('#pw').focus(),500)}
+$('#rf').onsubmit=async e=>{
+  e.preventDefault();clearAll();
+  const n=$('#rn').value.trim(),em=$('#re').value.trim().toLowerCase(),role=$('#rr').value,pw=rp.value,inv=$('#ri').value.trim();let x=false;
+  if(!n){bad('rn','ern','Enter your full name.');x=true}
+  if(!em){bad('re','ere','Enter your work email.');x=true}else if(!EM.test(em)){bad('re','ere','Enter a valid email, like you@company.com.');x=true}
+  if(role==='admin'&&!inv){bad('ri','eri','Enter your admin invitation code.');x=true}
+  if(score(pw)<3){bad('rp','erp','Choose a stronger password: 8+ characters with upper and lower case, plus a number or a symbol.');x=true}
+  if(rc.value!==pw){bad('rc','erc','Passwords don’t match.');x=true}
+  if(!$('#rt').checked){$('#ert').textContent='Accept the Terms and Privacy Policy to continue.';x=true}
+  if(x)return focusFirst();
+  busy('rgo',true,'Creating account');
+  const reset=()=>busy('rgo',false,'Create Account');
+  try{
+    const r=await post('/auth/register',{name:n,email:em,password:pw,confirm_password:rc.value,role,invite_code:role==='admin'?inv:undefined});
+    if(r.status===409){reset();bad('re','ere','An account with this email already exists. Sign in instead.');$('#re').focus();return}
+    if(r.status===403){reset();bad('ri','eri','This invitation code isn’t valid. Ask a workspace owner for a new one.');$('#ri').focus();return}
+    if(r.status===422){reset();let m='Check the highlighted fields and try again.';try{const d=await r.json();if(typeof d.detail==='string')m=d.detail}catch(_){}banner('b2',m);return}
+    if(!r.ok)throw 0;
+    const d=await r.json().catch(()=>({}));
+    reset();
+    if(d.access_token||d.token)done(d.user||{email:em,name:n,role},d.access_token||d.token,false,'b2');
+    else created(em);
+  }catch(err){
+    reset();
+    if(role==='admin'){banner('b2','Admin accounts need an invitation checked by the server, which isn’t connected right now. Try again when the backend is running.');return}
+    const all=US.get();
+    if(all[em]||MOCK[em]){bad('re','ere','An account with this email already exists. Sign in instead.');$('#re').focus();return}
+    try{
+      const salt=[...crypto.getRandomValues(new Uint8Array(12))].map(x=>x.toString(16).padStart(2,'0')).join('');
+      all[em]={name:n,role,salt,hash:await sha(salt+pw)};US.set(all);
+    }catch(_){banner('b2','This browser blocked secure storage, so a sandbox account can’t be created. Open the page over localhost or https.');return}
+    created(em);
+  }
+};
+$('#gbtn').onclick=()=>{location.href=CFG.API+'/auth/google'};
+</script>
+</body>
+</html>

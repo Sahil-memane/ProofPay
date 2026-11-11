@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import styles from './Toast.module.css';
 
 let _addToast = null;
@@ -15,7 +15,7 @@ export function ToastContainer() {
   return (
     <div className={styles.container}>
       {toasts.map(t => (
-        <div key={t.id} className={`${styles.toast} ${styles[t.type]}`}>
+        <div key={t.id} className={`${styles.toast} ${styles[t.type] || styles.success}`}>
           {t.msg}
         </div>
       ))}
@@ -28,3 +28,9 @@ export function showToast(msg, type = 'success') {
   else console.log(`[Toast] ${type}: ${msg}`);
 }
 
+export const toast = {
+  success: (msg) => showToast(msg, 'success'),
+  warning: (msg) => showToast(msg, 'warning'),
+  error: (msg) => showToast(msg, 'danger'),
+  info: (msg) => showToast(msg, 'info'),
+};

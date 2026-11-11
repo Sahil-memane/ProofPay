@@ -175,54 +175,36 @@ A persistent floating pill or top banner accessible on every page to give hackat
 
 # PART 4 — PAGE DESIGN SPECIFICATION
 
-PAGE 00 — PROOFPAY LANDING PAGE
-- HTML Target: landing.html
-- Route: /
-- Primary Persona: Hackathon Judges, Potential Customers, Freelancers & Businesses
-- Purpose: Public Product Homepage. Showcase ProofPay's AI-powered escrow and revenue recovery platform, its PayPal integration, benchmark results and core financial safeguards.
+PAGE 24 — LOGIN PAGE (USER AUTHENTICATION)
+- HTML Target: login.html
+- Route: /login
+- Primary Persona: Registered Users (Client, Freelancer, Merchant, Admin)
+- Purpose: Secure User Login. Allow existing users to authenticate and access their ProofPay workspace.
 Layout & Visual Design
-- Premium, modern fintech landing page inspired by Stripe, PayPal and Linear.
-- Deep navy (#003087), royal blue (#0070E0) and white color palette.
-- Clean typography, subtle gradients, elegant animations and responsive design.
-- Full-width hero section with a sophisticated dashboard preview or financial visualization.
-- No dashboard sidebar; use a sleek navigation bar.
+- Premium, minimal fintech design matching the ProofPay landing page.
+- Split-screen layout: login form on the left, elegant ProofPay branding and product illustration on the right.
+- Deep navy, royal blue and white color palette.
+- Display tagline: "Every Payment. Proven. Protected."
 Content Elements
-1. Navigation Header:
-- Left: ProofPay logo and brand name.
-- Right: Open Dashboard → button.
-2. Hero Section:
-- Headline: AI-Powered Escrow & Revenue Recovery
-- Description: "ProofPay combines autonomous failed-payment recovery with cryptographic freelance escrow — all powered by LangGraph agents and PayPal APIs."
-- CTAs: View Dashboard | See Benchmark Results
-3. Performance Metrics Section: Display four prominent KPI cards:
-- 28.67% — Agent Recovery Rate (vs 8% baseline).
-- 3.58× — More Revenue Recovered ($11,010 vs $2,560).
-- 0% — Wrongful Contacts (100% precision).
-- $200 — Mandate Guard Cap (Human-in-the-Loop above).
-4. Core Engines Section: Two large side-by-side feature cards.
-
-Engine 1 — PREVENT | Freelance Escrow
-- Dual cryptographic plan approval (SHA-256).
-- Milestone-based payment release.
-- AI work verification (LangGraph verifier).
-- Mandate Guard policy gating.
-- PayPal Orders v2 + Payouts.
-Engine 2 — RECOVER | Revenue Recovery
-- 3-stage autonomous contact ladder.
-- Root-cause diagnosis (LangGraph).
-- 3-way reconciliation (ProofPay ↔ PayPal ↔ Bank).
-- Quiet-hours & TCPA compliance.
-- 28.67% recovery vs 8% baseline.
-5. Trust & Technology Banner:
-- Prominent statement: "AI recommends. Policy decides. PayPal executes. Every action is auditable."
-- Link: API Docs → pointing to http://localhost:8000/docs.
+1. Login Form:
+   - Email Address
+   - Password with show/hide toggle
+   - Remember Me checkbox
+   - Forgot Password link
+   - Sign In primary button
+2. Alternative Access:
+   - Google sign-in option (only if supported).
+   - Link: "Don't have an account? Create Account."
+3. Trust Indicators:
+   - Secure Authentication
+   - PayPal-integrated Financial Operations
+   - Protected Workspace Access
 Functional Requirements
-- Open Dashboard and View Dashboard → Main ProofPay dashboard.
-- See Benchmark Results → Benchmark section or demo page.
-- API Docs → Backend API documentation.
-- Fully responsive with functional navigation and polished hover interactions.
-Design Objective: Reproduce the content hierarchy above in an exceptionally polished, visually striking fintech landing page. Make benchmark metrics immediately visible, give equal importance to PREVENT and RECOVER, and establish ProofPay's credibility within the first screen.
----
+- POST /auth/login — Authenticate user.
+- Validate credentials and display meaningful error messages.
+- Redirect successfully authenticated users to /dashboard.
+- Forgot password → /forgot-password.
+
 # PART 5 — GLOBAL INTERACTION AND COMPONENT REQUIREMENTS
 
 All 23 pages share a unified, reusable component architecture.
