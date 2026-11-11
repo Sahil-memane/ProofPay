@@ -238,6 +238,18 @@ class FakePayPal:
             log.warning("FakePayPal.emit_webhook DB unavailable (%s), using memory queue", exc)
             _PENDING_FAKE_WEBHOOKS.append({"event_id": event_id, "event_type": event_type, "payload": payload})
 
+        # In-process dispatch for fake-mode testing
+        try:
+            from backend.app.ingestion.normalizer import normalize
+            from backend.app.ingestion.handlers import dispatch
+            if "event_type" not in payload:
+                payload["event_type"] = event_type
+            normalised = normalize(payload, source="fake")
+            normalised["event_id"] = event_id
+            dispatch(normalised)
+        except Exception as exc2:
+            log.warning("FakePayPal.emit_webhook in-process dispatch error: %s", exc2)
+
 
 # In-memory queue for tests without DB
 _PENDING_FAKE_WEBHOOKS: list[dict[str, Any]] = []

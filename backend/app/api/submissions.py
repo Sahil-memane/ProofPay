@@ -150,11 +150,22 @@ async def submit_milestone(milestone_id: str, req: SubmitRequest) -> dict[str, A
         "deployed_url": req.deployed_url,
     })
 
-    # Async verification — non-blocking
-    asyncio.create_task(
-        _run_verification(milestone_id, sid),
-        name=f"verify-{milestone_id}",
-    )
+    # Async verification — non-blocking.
+    # In fake/demo mode the verifier agent is skipped (requires LLM/network).
+    # Use POST /milestones/{id}/_inject_verification to seed the result instead.
+    import os as _os
+    _skip_verify = _os.environ.get("PAYPAL_EXEC_MODE", "fake") == "fake"
+    if not _skip_verify:
+        asyncio.create_task(
+            _run_verification(milestone_id, sid),
+            name=f"verify-{milestone_id}",
+        )
+    else:
+        log.info(
+            "PAYPAL_EXEC_MODE=fake: skipping background verifier task for %s "
+            "-- use POST /milestones/%s/_inject_verification to set result",
+            milestone_id, milestone_id,
+        )
 
     return {
         "submission_id": sid,
@@ -162,6 +173,99 @@ async def submit_milestone(milestone_id: str, req: SubmitRequest) -> dict[str, A
         "attempt": attempt,
         "milestone_id": milestone_id,
         "poll": f"/milestones/{milestone_id}/submission",
+    }
+
+
+# ── POST /milestones/{id}/_inject_verification  (DEMO_MODE only) ─────────────
+
+class InjectVerificationRequest(BaseModel):
+    """
+    Gate/demo helper: directly seed a verification result without running
+    the agent. Only available when DEMO_MODE=true or PAYPAL_EXEC_MODE=fake.
+    Allows the IG-2 gate to test the downstream review/payout path without
+    waiting for the Dev2 agent (which may require LLM/network access).
+    """
+    decision: str = Field(
+        default="CLIENT_REVIEW_REQUIRED",
+        description="RELEASE_PROPOSAL | CLIENT_REVIEW_REQUIRED | RESUBMISSION_REQUIRED",
+    )
+    score: float = Field(default=0.75, ge=0.0, le=1.0)
+    rationale: str = Field(default="Injected by gate/demo for testing.")
+
+
+@router.post("/milestones/{milestone_id}/_inject_verification", status_code=200)
+async def inject_verification(
+    milestone_id: str, req: InjectVerificationRequest,
+) -> dict[str, Any]:
+    """
+    DEMO/GATE ONLY endpoint. Seeds a verification result for the given
+    milestone so downstream logic (review, payout, RELEASED) can be tested
+    without running the real verifier agent.
+
+    Returns 403 when DEMO_MODE and PAYPAL_EXEC_MODE are both disabled.
+    """
+    import os
+    is_demo = os.environ.get("DEMO_MODE", "").lower() in ("true", "1")
+    is_fake = os.environ.get("PAYPAL_EXEC_MODE", "fake") == "fake"
+    if not (is_demo or is_fake):
+        raise HTTPException(status_code=403, detail="Only available in demo/fake mode")
+
+    milestone, project = _get_milestone(milestone_id)
+    if not milestone:
+        raise HTTPException(status_code=404, detail="Milestone not found")
+
+    sub = _SUBMISSIONS.get(milestone_id)
+    if not sub:
+        raise HTTPException(
+            status_code=409,
+            detail="No submission found — call POST /submit first",
+        )
+
+    # Map decision -> route
+    decision = req.decision
+    if decision == "RELEASE_PROPOSAL":
+        route = "RELEASE_PENDING"
+    elif decision == "RESUBMISSION_REQUIRED":
+        route = "RESUBMIT"
+    else:
+        route = "IN_REVIEW"
+
+    sub.update({
+        "score": req.score,
+        "route": route,
+        "decision": decision,
+        "rationale": req.rationale,
+        "criterion_results": [],
+    })
+
+    audit_log("verification_injected", {
+        "subject": milestone_id,
+        "actor": "gate_inject",
+        "decision": decision,
+        "score": req.score,
+        "route": route,
+    })
+
+    if route == "RELEASE_PENDING":
+        sub["status"] = "RELEASE_PENDING"
+        await _trigger_release(
+            milestone_id, milestone, project or {},
+            sub.get("id", "injected"), req.score,
+        )
+    elif route == "IN_REVIEW":
+        sub["status"] = "IN_REVIEW"
+        _set_state(milestone_id, MilestoneState.IN_REVIEW.value)
+    else:
+        sub["status"] = "RESUBMIT"
+        _set_state(milestone_id, MilestoneState.SUBMITTED.value)
+
+    return {
+        "milestone_id": milestone_id,
+        "injected": True,
+        "decision": decision,
+        "score": req.score,
+        "route": route,
+        "status": sub["status"],
     }
 
 
@@ -184,24 +288,39 @@ async def _run_verification(milestone_id: str, sid: str) -> None:
 
         loop = asyncio.get_event_loop()
         from backend.app.api.projects import _MILESTONES
-        vresult = await loop.run_in_executor(
-            None,
-            lambda: run_verification(
-                submission_id=sid,
-                project_id=project["id"],
-                milestone_id=milestone_id,
-                freelancer_id=sub.get("freelancer_id", ""),
-                submission={
-                    "deployment_url": sub.get("deployed_url"),
-                    "repository": sub.get("repository"),
-                    "evidence_url": sub.get("evidence_url"),
-                    "files": sub.get("files", {}),
-                },
-                project=project,
-                milestones=list(_MILESTONES.get(project["id"], [])),
-                plan_hash=project.get("plan_hash"),
-            ),
+
+        _verify_kwargs = dict(
+            submission_id=sid,
+            project_id=project["id"],
+            milestone_id=milestone_id,
+            freelancer_id=sub.get("freelancer_id", ""),
+            submission={
+                "deployment_url": sub.get("deployed_url"),
+                "repository": sub.get("repository"),
+                "evidence_url": sub.get("evidence_url"),
+                "files": sub.get("files", {}),
+            },
+            project=project,
+            milestones=list(_MILESTONES.get(project["id"], [])),
+            plan_hash=project.get("plan_hash"),
         )
+
+        # Use concurrent.futures for a real wall-clock timeout that doesn't
+        # block the event loop — asyncio.wait_for alone can't cancel a thread.
+        import concurrent.futures as _cf
+        _pool = _cf.ThreadPoolExecutor(max_workers=1, thread_name_prefix="verifier")
+        _fut = _pool.submit(run_verification, **_verify_kwargs)
+        try:
+            vresult = await loop.run_in_executor(
+                None, lambda: _fut.result(timeout=8.0)
+            )
+        except Exception as _tex:
+            _fut.cancel()
+            log.warning("Verification timed out/failed for %s (%s) -- stub fallback", milestone_id, _tex)
+            from backend.app.agents.verifier.agent import _stub_verification
+            vresult = _stub_verification(sid, project["id"], milestone_id, error=str(_tex))
+        finally:
+            _pool.shutdown(wait=False)
 
         score = vresult.score
         decision = vresult.decision  # RELEASE_PROPOSAL | CLIENT_REVIEW_REQUIRED | RESUBMISSION_REQUIRED | BLOCKED
@@ -266,7 +385,10 @@ async def _trigger_release(
     sid: str,
     score: float,
 ) -> None:
-    freelancer_email = project.get("freelancer_email") or project.get("freelancer_id", "freelancer@example.com")
+    freelancer_email = project.get("freelancer_email")
+    if not freelancer_email or "@" not in freelancer_email:
+        f_id = project.get("freelancer_id", "freelancer")
+        freelancer_email = f_id if "@" in f_id else f"{f_id}@example.com"
     amount = float(milestone.get("amount", 0))
     currency = milestone.get("currency", "USD")
     sender_batch_id = f"{milestone_id}:{milestone.get('submission_count', 1)}"

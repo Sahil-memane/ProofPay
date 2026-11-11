@@ -63,7 +63,7 @@ async def execute(
         "actor": "executor",
         "action": proposal.action.value,
         "idempotency_key": idempotency_key,
-        "proposal": proposal.model_dump(),
+        "proposal": proposal.model_dump(mode="json"),
     })
 
     # ── Dispatch ──────────────────────────────────────────────────────────────
@@ -261,8 +261,8 @@ async def _record_action(
             stmt = pg_insert(ExecutorAction).values(
                 id=action_id,
                 idempotency_key=idempotency_key,
-                proposal=proposal.model_dump(),
-                decision=decision.model_dump(),
+                proposal=proposal.model_dump(mode="json"),
+                decision=decision.model_dump(mode="json"),
                 status="pending",
             ).on_conflict_do_nothing(index_elements=["idempotency_key"])
             await session.execute(stmt)

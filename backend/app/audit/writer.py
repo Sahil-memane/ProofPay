@@ -79,6 +79,10 @@ def write(
         "created_at": now.isoformat(),
     }
 
+    _fallback_events.append(record)
+    if len(_fallback_events) > 500:
+        _fallback_events.pop(0)
+
     try:
         from backend.app.db.session import get_sync_session
         from backend.app.db.models.audit_log import AuditLog
@@ -97,11 +101,10 @@ def write(
             )
             session.add(row)
             session.commit()
-        return record
     except Exception as exc:
         log.warning("audit.write DB unavailable, using fallback: %s", exc)
-        _fallback_events.append(record)
-        return record
+
+    return record
 
 
 def log_event(event_type: str, payload: dict[str, Any]) -> None:

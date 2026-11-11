@@ -94,11 +94,11 @@ async def create_project(req: CreateProjectRequest) -> dict[str, Any]:
 
     project_id = str(uuid.uuid4())
 
-    # Run scoping agent in a thread pool so we don't block the event loop
-    loop = asyncio.get_event_loop()
-    scoping_result = await loop.run_in_executor(
-        None,
-        lambda: run_scoping(
+    # In fake/demo mode call scoping synchronously -- the stub returns instantly.
+    # In rest mode use executor to keep event loop responsive.
+    import os as _os
+    if _os.environ.get('PAYPAL_EXEC_MODE', 'fake') == 'fake':
+        scoping_result = run_scoping(
             project_id=project_id,
             job_description=req.job_description,
             total_amount=req.total_amount,
@@ -106,8 +106,21 @@ async def create_project(req: CreateProjectRequest) -> dict[str, Any]:
             client_id=req.client_id,
             freelancer_id=req.freelancer_id,
             deadline=req.deadline,
-        ),
-    )
+        )
+    else:
+        loop = asyncio.get_event_loop()
+        scoping_result = await loop.run_in_executor(
+            None,
+            lambda: run_scoping(
+                project_id=project_id,
+                job_description=req.job_description,
+                total_amount=req.total_amount,
+                currency=req.currency,
+                client_id=req.client_id,
+                freelancer_id=req.freelancer_id,
+                deadline=req.deadline,
+            ),
+        )
 
     project: dict[str, Any] = {
         "id": project_id,

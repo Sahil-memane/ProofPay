@@ -830,6 +830,60 @@
         }
       }
     },
+    "/milestones/{milestone_id}/_inject_verification": {
+      "post": {
+        "tags": [
+          "submissions"
+        ],
+        "summary": "Inject Verification",
+        "description": "DEMO/GATE ONLY endpoint. Seeds a verification result for the given\nmilestone so downstream logic (review, payout, RELEASED) can be tested\nwithout running the real verifier agent.\n\nReturns 403 when DEMO_MODE and PAYPAL_EXEC_MODE are both disabled.",
+        "operationId": "inject_verification_milestones__milestone_id___inject_verification_post",
+        "parameters": [
+          {
+            "name": "milestone_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Milestone Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InjectVerificationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "title": "Response Inject Verification Milestones  Milestone Id   Inject Verification Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/milestones/{milestone_id}/submission": {
       "get": {
         "tags": [
@@ -1515,6 +1569,31 @@
         },
         "type": "object",
         "title": "InjectFailureRequest"
+      },
+      "InjectVerificationRequest": {
+        "properties": {
+          "decision": {
+            "type": "string",
+            "title": "Decision",
+            "description": "RELEASE_PROPOSAL | CLIENT_REVIEW_REQUIRED | RESUBMISSION_REQUIRED",
+            "default": "CLIENT_REVIEW_REQUIRED"
+          },
+          "score": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Score",
+            "default": 0.75
+          },
+          "rationale": {
+            "type": "string",
+            "title": "Rationale",
+            "default": "Injected by gate/demo for testing."
+          }
+        },
+        "type": "object",
+        "title": "InjectVerificationRequest",
+        "description": "Gate/demo helper: directly seed a verification result without running\nthe agent. Only available when DEMO_MODE=true or PAYPAL_EXEC_MODE=fake.\nAllows the IG-2 gate to test the downstream review/payout path without\nwaiting for the Dev2 agent (which may require LLM/network access)."
       },
       "RefundRequest": {
         "properties": {
