@@ -175,42 +175,53 @@ A persistent floating pill or top banner accessible on every page to give hackat
 
 # PART 4 — PAGE DESIGN SPECIFICATION
 
+PAGE 00 — PROOFPAY LANDING PAGE
+- HTML Target: landing.html
+- Route: /
+- Primary Persona: Hackathon Judges, Potential Customers, Freelancers & Businesses
+- Purpose: Public Product Homepage. Showcase ProofPay's AI-powered escrow and revenue recovery platform, its PayPal integration, benchmark results and core financial safeguards.
+Layout & Visual Design
+- Premium, modern fintech landing page inspired by Stripe, PayPal and Linear.
+- Deep navy (#003087), royal blue (#0070E0) and white color palette.
+- Clean typography, subtle gradients, elegant animations and responsive design.
+- Full-width hero section with a sophisticated dashboard preview or financial visualization.
+- No dashboard sidebar; use a sleek navigation bar.
+Content Elements
+1. Navigation Header:
+- Left: ProofPay logo and brand name.
+- Right: Open Dashboard → button.
+2. Hero Section:
+- Headline: AI-Powered Escrow & Revenue Recovery
+- Description: "ProofPay combines autonomous failed-payment recovery with cryptographic freelance escrow — all powered by LangGraph agents and PayPal APIs."
+- CTAs: View Dashboard | See Benchmark Results
+3. Performance Metrics Section: Display four prominent KPI cards:
+- 28.67% — Agent Recovery Rate (vs 8% baseline).
+- 3.58× — More Revenue Recovered ($11,010 vs $2,560).
+- 0% — Wrongful Contacts (100% precision).
+- $200 — Mandate Guard Cap (Human-in-the-Loop above).
+4. Core Engines Section: Two large side-by-side feature cards.
 
-## PAGE 23 — CUSTOMER PAYMENT RECOVERY PORTAL (DEBTOR CHECKOUT)
-- **HTML Target:** `pay.html` (or `payment-portal.html`)
-- **Route:** `/pay/{case_id}` or `pay.html?case_id=REC-2026-0042`
-- **Primary Persona:** **Customer / Debtor (External Public Page)**
-- **Purpose:** **The Customer-Facing Payment Checkout Link.** When the RECOVER Engine sends a recovery link via email/SMS, the customer clicks and opens this standalone, secure, mobile-optimized page to settle their overdue invoice or update their payment method in 1 click using PayPal.
-- **Backend API Endpoints:**
-  - `GET /cases/{case_id}` (Fetch invoice amount, merchant name, due date)
-  - `POST /cases/{case_id}/pay` (or PayPal Checkout Capture webhook)
-  - `POST /webhooks/paypal` (Receives `PAYMENT.CAPTURE.COMPLETED` and marks case `PAID`)
-
-### Layout & Visual Design
-- Clean, trustworthy, mobile-responsive layout (no internal navigation sidebar; centered card layout).
-- Top Header: Merchant Name & Logo (e.g. "Acme Cloud Services") + "Powered by ProofPay & PayPal".
-- Security Badges: `🔒 256-Bit SSL Encrypted` | `Verified by PayPal`.
-
-### Content Elements
-1. **Invoice Overview Card:**
-   - Outstanding Balance: **$350.00 USD**
-   - Invoice Reference: `INV-2026-1024`
-   - Due Date: `November 10, 2026 (Overdue)`
-   - Item Description: "Pro Cloud Subscription — Monthly Renewal (Failed Card Charge)"
-2. **Payment Options Container:**
-   - **Option A: 1-Click PayPal Checkout (PayPal Smart Payment Button):**
-     - Customer clicks yellow PayPal button.
-     - Authenticates and authorizes payment in PayPal popup.
-     - Instant settlement!
-   - **Option B: Update Credit/Debit Card Details:**
-     - Enter updated card details to update recurring billing subscription.
-3. **Payment Completion State (Live Feedback):**
-   - Upon successful payment:
-     - Card transitions to green success checkmark: `✅ Payment Successful! Thank You.`
-     - Displays PayPal Transaction ID: `PP-TXN-994102`.
-     - Confirmation note: "Your invoice has been marked PAID and your service remains uninterrupted."
-     - Triggers backend webhook callback -> Case `REC-2026-0042` transitions to `PAID` in `cases.html` and `dashboard.html`!
-
+Engine 1 — PREVENT | Freelance Escrow
+- Dual cryptographic plan approval (SHA-256).
+- Milestone-based payment release.
+- AI work verification (LangGraph verifier).
+- Mandate Guard policy gating.
+- PayPal Orders v2 + Payouts.
+Engine 2 — RECOVER | Revenue Recovery
+- 3-stage autonomous contact ladder.
+- Root-cause diagnosis (LangGraph).
+- 3-way reconciliation (ProofPay ↔ PayPal ↔ Bank).
+- Quiet-hours & TCPA compliance.
+- 28.67% recovery vs 8% baseline.
+5. Trust & Technology Banner:
+- Prominent statement: "AI recommends. Policy decides. PayPal executes. Every action is auditable."
+- Link: API Docs → pointing to http://localhost:8000/docs.
+Functional Requirements
+- Open Dashboard and View Dashboard → Main ProofPay dashboard.
+- See Benchmark Results → Benchmark section or demo page.
+- API Docs → Backend API documentation.
+- Fully responsive with functional navigation and polished hover interactions.
+Design Objective: Reproduce the content hierarchy above in an exceptionally polished, visually striking fintech landing page. Make benchmark metrics immediately visible, give equal importance to PREVENT and RECOVER, and establish ProofPay's credibility within the first screen.
 ---
 # PART 5 — GLOBAL INTERACTION AND COMPONENT REQUIREMENTS
 

@@ -31,3 +31,4 @@ export function usePageMeta() {
   const { pathname } = useLocation();
   return PAGE_META[pathname] ?? { title: 'ProofPay', sub: '' };
 }
+

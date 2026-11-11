@@ -30,3 +30,4 @@ Write-Host ""
 
 Set-Location $root
 python -m uvicorn backend.app.main:app --port 8000 --reload
+

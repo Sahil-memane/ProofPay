@@ -1,0 +1,401 @@
+.wrapper {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 16px 16px 100px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.portalHeader {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.merchantAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: var(--blue-dark);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 18px;
+}
+
+.merchantInfo {
+  flex: 1;
+}
+
+.merchantName {
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--blue-dark);
+}
+
+.poweredBy {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.secureBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  background: #E3F4EB;
+  color: #1E7A4C;
+  border-radius: 12px;
+  padding: 4px 10px;
+}
+
+.card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.balanceHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.balanceLabel {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.statusOverdue {
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 12px;
+  padding: 2px 10px;
+  background: #FBE5E6;
+  color: #B42830;
+}
+
+.amountTitle {
+  font-size: 36px;
+  font-weight: 600;
+  margin: 4px 0 0;
+  color: var(--blue-dark);
+  font-variant-numeric: tabular-nums;
+}
+
+.currencyText {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.invoiceDescription {
+  margin: 8px 0 16px;
+  color: #172B4D;
+  font-size: 14px;
+}
+
+.kvRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 0;
+  border-top: 1px solid var(--border);
+  font-size: 14px;
+}
+
+.mono {
+  font-family: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
+  font-size: 13px;
+  color: var(--blue-dark);
+}
+
+.chooseTitle {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0 0 12px;
+  color: var(--blue-dark);
+}
+
+.paypalBtn {
+  width: 100%;
+  height: 48px;
+  border: 0;
+  border-radius: 24px;
+  background: #FFC439;
+  color: #003087;
+  font: italic 700 18px Inter, sans-serif;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  transition: background 0.15s;
+}
+
+.paypalBtn:hover {
+  background: #f2ba36;
+}
+
+.paypalBtn b {
+  color: #003087;
+}
+
+.paypalBtn em {
+  color: #009CDE;
+  font-style: italic;
+}
+
+.instantNote {
+  font-size: 12px;
+  color: var(--muted);
+  text-align: center;
+  margin-top: 6px;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #8A94A6;
+  font-size: 12px;
+  margin: 16px 0 12px;
+}
+
+.dividerLine {
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.accordionBtn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+  font: 500 14px Inter, sans-serif;
+  color: #172B4D;
+  cursor: pointer;
+  text-align: left;
+}
+
+.accordionBtnOpen {
+  border-color: var(--blue);
+  background: #F4F9FF;
+}
+
+.cardForm {
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.label {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.input {
+  width: 100%;
+  height: 44px;
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font: 14px Inter, sans-serif;
+  color: #172B4D;
+  background: #fff;
+}
+
+.inputError {
+  border-color: #D9363E;
+}
+
+.errorText {
+  color: #B42830;
+  font-size: 12px;
+  min-height: 14px;
+}
+
+.twoCols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.payCardBtn {
+  width: 100%;
+  height: 44px;
+  border-radius: 8px;
+  border: 1px solid var(--blue);
+  background: var(--blue);
+  color: #fff;
+  font: 600 14px Inter, sans-serif;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: background 0.15s;
+}
+
+.payCardBtn:hover {
+  background: #005fc0;
+}
+
+.payCardBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.demoDisclaimer {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 6px 0 0;
+  line-height: 1.4;
+}
+
+.guarantees {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding-top: 12px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* Success Card */
+.successCard {
+  background: #fff;
+  border: 1px solid #2E9D65;
+  border-radius: 12px;
+  padding: 28px;
+  text-align: center;
+}
+
+.successIcon {
+  width: 56px;
+  height: 56px;
+  border-radius: 28px;
+  background: #E3F4EB;
+  color: #1E7A4C;
+  margin: 0 auto 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.successTitle {
+  font-size: 22px;
+  margin: 0;
+  color: #1E7A4C;
+  font-weight: 600;
+}
+
+.successSub {
+  margin: 8px 0 16px;
+  color: var(--muted);
+  font-size: 15px;
+}
+
+/* Floating Evaluator Demo Bar */
+.demoBar {
+  position: fixed;
+  left: 50%;
+  bottom: 16px;
+  transform: translateX(-50%);
+  z-index: 20;
+  background: #001C64;
+  color: #fff;
+  border-radius: 28px;
+  padding: 8px 12px 8px 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: calc(100% - 24px);
+  box-shadow: 0 4px 16px rgba(0, 28, 100, 0.3);
+}
+
+.demoBarTag {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+
+.demoBarClock {
+  font-family: 'JetBrains Mono', Consolas, monospace;
+  font-size: 12px;
+  color: #BFD3F2;
+}
+
+.demoBarBtn {
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 16px;
+  border: 1px solid #2A4A9A;
+  background: transparent;
+  color: #fff;
+  font: 500 12px Inter, sans-serif;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.demoBarBtn:hover {
+  background: #0A3F9E;
+}
+
+/* Modal */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 37, 64, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 30;
+}
+
+.modalDialog {
+  background: #fff;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 400px;
+  padding: 28px;
+  text-align: center;
+}
+
+.spinner {
+  width: 28px;
+  height: 28px;
+  border: 3px solid #E5E9F0;
+  border-top-color: var(--blue);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
