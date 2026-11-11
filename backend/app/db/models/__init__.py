@@ -13,6 +13,14 @@ from backend.app.db.models.support import (
     ScheduledAction,
 )
 from backend.app.db.models.webhooks import ExecutorAction, WebhookEvent
+from backend.app.db.models.users import User
+from backend.app.db.models.entities import (
+    Customer,
+    Invoice,
+    Subscription,
+    PayPalTransaction,
+    MerchantSale,
+)
 
 __all__ = [
     "AuditLog",
@@ -31,4 +39,10 @@ __all__ = [
     "ReconMatch",
     "EvalRun",
     "ApprovalTask",
+    "User",
+    "Customer",
+    "Invoice",
+    "Subscription",
+    "PayPalTransaction",
+    "MerchantSale",
 ]

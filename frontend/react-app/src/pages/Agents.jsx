@@ -1,6 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from '../components/ui/Toast';
+import { useApi } from '../api/useApi';
+import { endpoints } from '../api/endpoints';
 import styles from './Agents.module.css';
 
 const INITIAL_AGENTS = [
@@ -77,9 +79,33 @@ const INITIAL_LOGS = [
 
 export default function Agents() {
   const [agents, setAgents] = useState(INITIAL_AGENTS);
-  const [logs] = useState(INITIAL_LOGS);
+  const [logs, setLogs] = useState(INITIAL_LOGS);
   const [isKillModalOpen, setIsKillModalOpen] = useState(false);
   const [healthStatus, setHealthStatus] = useState('Live API');
+
+  // Wire agent activity logs from DB audit log
+  const { data: apiAuditLog } = useApi(() => endpoints.auditLog.list({ limit: 10 }));
+  useEffect(() => {
+    if (!apiAuditLog || !apiAuditLog.events || apiAuditLog.events.length === 0) return;
+    const mapped = apiAuditLog.events.slice(0, 8).map(ev => ({
+      time: ev.created_at ? new Date(ev.created_at).toTimeString().slice(0, 8) : '14:00:00',
+      agent: ev.actor === 'verifier_agent' ? 'Milestone Verification'
+           : ev.actor === 'diagnosis_agent' ? 'Recovery Diagnosis'
+           : ev.actor === 'reconciliation_agent' ? 'Reconciliation Matching'
+           : ev.actor === 'contact_ladder' ? 'Contact Ladder'
+           : ev.actor === 'mandate_guard' ? 'Mandate Guard'
+           : 'AI Scoping',
+      prop: `${ev.entity_id || 'ENT'} → ${ev.action || 'ACTION'}`,
+      outColor: ev.decision && ev.decision.includes('ALLOWED') ? 'g'
+              : ev.decision && ev.decision.includes('BLOCKED') ? 'r' : 'a',
+      outMain: ev.decision && ev.decision.includes('ALLOWED') ? 'ALLOWED'
+             : ev.decision && ev.decision.includes('BLOCKED') ? 'BLOCKED'
+             : ev.decision && ev.decision.includes('PAID') ? 'PAID' : 'PROCESSED',
+      outSub: ev.decision || '—',
+      hash: ev.id ? ev.id.slice(0, 4) + '…' + ev.id.slice(-4) : '0000…0000',
+    }));
+    if (mapped.length > 0) setLogs(mapped);
+  }, [apiAuditLog]);
 
   const onlineCount = agents.filter(a => !a.paused).length;
   const isFleetPaused = agents.slice(0, 5).every(a => a.paused);

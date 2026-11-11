@@ -1,5 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useApi } from '../api/useApi';
+import { endpoints } from '../api/endpoints';
 import { showToast } from '../components/ui/Toast';
 import styles from './Milestones.module.css';
 
@@ -167,7 +169,27 @@ const fmt = n => '$' + Number(n).toLocaleString('en-US', { minimumFractionDigits
 
 export default function Milestones() {
   const navigate = useNavigate();
-  const [milestones] = useState(DEMO_MILESTONES);
+  const { data: apiMilestones } = useApi(() => endpoints.milestonesList.list());
+  const [milestones, setMilestones] = useState(DEMO_MILESTONES);
+
+  useEffect(() => {
+    if (apiMilestones && Array.isArray(apiMilestones) && apiMilestones.length > 0) {
+      setMilestones(apiMilestones.map(m => ({
+        id: m.id,
+        project: `Project ${m.project_id}`,
+        name: m.title || 'Deliverable',
+        amount: m.amount || 0,
+        due: m.deadline ? m.deadline.split('T')[0] : '2026-12-01',
+        status: m.state || 'FUNDED',
+        score: m.state === 'RELEASED' ? '96% - AUTO_APPROVE' : (m.state === 'DISPUTED' ? '42% - AUTO_REJECT' : '—'),
+        scoreCls: m.state === 'RELEASED' ? 'g' : (m.state === 'DISPUTED' ? 'r' : 'muted'),
+        actions: [
+          { label: 'View Project', href: `/projects` },
+          { label: 'Review Submission', href: `/submissions` }
+        ]
+      })));
+    }
+  }, [apiMilestones]);
 
   const handleExportCsv = () => {
     const header = ['Milestone ID', 'Project Title', 'Milestone Name', 'Amount', 'Due Date', 'Status', 'AI Score'];

@@ -1,5 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { showToast } from '../components/ui/Toast';
+import { useApi } from '../api/useApi';
+import { endpoints } from '../api/endpoints';
 import styles from './RecoveryOverview.module.css';
 
 const FUNNEL_STAGES = [
@@ -36,6 +38,7 @@ const STATUS_BADGE = {
 const fmt = n => '$' + Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 export default function RecoveryOverview() {
+  const { data: apiOverview } = useApi(() => endpoints.recovery.overview());
   const [funnelIdx, setFunnelIdx] = useState(3);
   const [diagIdx, setDiagIdx] = useState(0);
   const [sortKey, setSortKey] = useState('conv');
@@ -58,6 +61,14 @@ export default function RecoveryOverview() {
     { n: 'Smart Scheduled Retry', conv: 58, hrs: 48, u: 'Insufficient funds' },
     { n: 'Polite In-App Reminder', conv: 62, hrs: 26, u: 'Low-urgency, active users' }
   ].sort((a, b) => (sortKey === 'conv' ? b.conv - a.conv : a.hrs - b.hrs));
+
+  // Wire DB data into state
+  useEffect(() => {
+    if (!apiOverview) return;
+    if (apiOverview.recent_cases && Array.isArray(apiOverview.recent_cases) && apiOverview.recent_cases.length > 0) {
+      setCases(apiOverview.recent_cases);
+    }
+  }, [apiOverview]);
 
   const handleBenchmark = () => {
     if (benchRunning) return;

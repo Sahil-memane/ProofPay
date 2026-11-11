@@ -33,6 +33,17 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     configure_root_logging()
     log.info("ProofPay API starting up (DEMO_MODE=%s)", settings.demo_mode)
 
+    # Ensure database tables exist and seed default demo data if needed
+    try:
+        from backend.app.db.base import Base
+        from backend.app.db.session import sync_engine
+        import backend.app.db.models  # noqa: F401
+        Base.metadata.create_all(bind=sync_engine)
+        from backend.scripts.seed_postgres import run as run_seed
+        run_seed()
+    except Exception as exc:
+        log.warning("Database init/seed notice: %s", exc)
+
     # Start APScheduler
     from backend.app.scheduler.core import start as scheduler_start
     scheduler_start()
@@ -83,6 +94,9 @@ from backend.app.api.submissions import router as submissions_router  # noqa: E4
 from backend.app.ingestion.receiver import router as ingestion_router  # noqa: E402
 from backend.app.api.dashboard import router as dashboard_router  # noqa: E402
 from backend.app.api.fixtures import router as fixtures_router  # noqa: E402
+from backend.app.api.auth import router as auth_router  # noqa: E402
+from backend.app.api.data_views import router as data_views_router  # noqa: E402
+from backend.app.api.data_views_ext import router as data_views_ext_router  # noqa: E402
 
 app.include_router(cases.router)
 app.include_router(sim.router)
@@ -92,6 +106,9 @@ app.include_router(ingestion_router)
 app.include_router(reputation_router)
 app.include_router(dashboard_router)
 app.include_router(fixtures_router)
+app.include_router(auth_router)
+app.include_router(data_views_router)
+app.include_router(data_views_ext_router)
 
 
 # ── Health check ──────────────────────────────────────────────────────────────

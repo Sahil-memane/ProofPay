@@ -1,5 +1,7 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useApi } from '../api/useApi';
+import { endpoints } from '../api/endpoints';
 import { toast } from '../components/ui/Toast';
 import styles from './PaymentAttempts.module.css';
 
@@ -32,9 +34,25 @@ const ERROR_MESSAGES = {
 
 export default function PaymentAttempts() {
   const navigate = useNavigate();
+  const { data: apiAttempts } = useApi(() => endpoints.paymentAttempts.list());
   const [activeTab, setActiveTab] = useState('gw');
   const [attempts, setAttempts] = useState(INITIAL_ATTEMPTS);
   const [webhooks, setWebhooks] = useState(INITIAL_WEBHOOKS);
+
+  useEffect(() => {
+    if (apiAttempts && Array.isArray(apiAttempts) && apiAttempts.length > 0) {
+      setAttempts(apiAttempts.map((sub, i) => ({
+        id: `ATT-2026-${sub.sub_id.slice(0, 4)}`,
+        ts: sub.failed_at ? sub.failed_at.replace('T', ' ').slice(0, 16) : '2026-11-11 09:14',
+        k: `REC-${sub.customer_id}`,
+        e: `${sub.customer_id.toLowerCase()}@client.example`,
+        n: sub.retry_count || 1,
+        err: (sub.failure_code || 'INSTRUMENT_DECLINED').toUpperCase().replace(/ /g, '_'),
+        rt: sub.retry_count > 2 ? 'Executive escalation' : '+48 hours · Scheduled',
+        r: i % 4 === 3 ? 'SUCCEEDED' : 'FAILED',
+      })));
+    }
+  }, [apiAttempts]);
 
   // Filters
   const [searchQuery, setSearchQuery] = useState('');

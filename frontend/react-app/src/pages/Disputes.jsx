@@ -1,6 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from '../components/ui/Toast';
+import { useApi } from '../api/useApi';
+import { endpoints } from '../api/endpoints';
 import styles from './Disputes.module.css';
 
 const INITIAL_DISPUTES = [
@@ -39,11 +41,33 @@ const INITIAL_DISPUTES = [
 ];
 
 export default function Disputes() {
+  const { data: apiDisputes } = useApi(() => endpoints.disputes.list());
   const [disputes, setDisputes] = useState(INITIAL_DISPUTES);
   const [evidencePacks, setEvidencePacks] = useState({});
   const [activeDrawer, setActiveDrawer] = useState(null);
   const [isCompiling, setIsCompiling] = useState(false);
   const [refundTarget, setRefundTarget] = useState(null);
+
+  useEffect(() => {
+    if (!apiDisputes || !Array.isArray(apiDisputes) || apiDisputes.length === 0) return;
+    const mapped = apiDisputes.map((d, i) => ({
+      id: d.id || `DISP-2026-0${12 + i}`,
+      pp: `PP-D-${998241 + i}`,
+      ref: d.customer_id ? `${d.customer_id} / Case` : `REC-${(d.case_id || '').slice(0, 8).toUpperCase()}`,
+      href: '/cases',
+      party: d.customer_id || 'Customer',
+      amt: d.amount || 600,
+      reason: d.reason || 'Payment Dispute',
+      days: d.days || 4,
+      esc: d.esc || 'FROZEN',
+      rec: d.rec || 'CAMPAIGN HALTED',
+      st: d.state === 'OPEN' ? 'OPEN' : (d.state === 'ESCALATED' ? 'ESCALATED' : 'OPEN'),
+      hash: 'db' + (d.case_id || '0'.repeat(8)).slice(0, 8) + '0'.repeat(55),
+      score: null,
+      pr: null,
+    }));
+    setDisputes(mapped);
+  }, [apiDisputes]);
 
   const openDisputes = disputes.filter(d => d.st !== 'REFUNDED');
   const heldAmount = openDisputes.filter(d => d.esc !== 'N/A').reduce((acc, d) => acc + d.amt, 0);

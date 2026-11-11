@@ -1,5 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { showToast } from '../components/ui/Toast';
+import { useApi } from '../api/useApi';
+import { endpoints } from '../api/endpoints';
 import styles from './Audit.module.css';
 
 const TEMPLATES = [
@@ -51,6 +53,7 @@ function shortHash(h) {
 }
 
 export default function Audit() {
+  const { data: apiAuditLog } = useApi(() => endpoints.auditLog.list({ limit: 200, page: 0 }));
   const [events, setEvents] = useState([]);
   const [verifyStatus, setVerifyStatus] = useState([]);
   const [verifiedCount, setVerifiedCount] = useState(0);
@@ -63,43 +66,63 @@ export default function Audit() {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [drawerComputed, setDrawerComputed] = useState(null);
 
-  // Initialize chain
+  // Initialize chain — prefer DB data, fall back to templates
   useEffect(() => {
     let active = true;
     const buildChain = async () => {
       let prev = ZERO_HASH;
-      const t0 = Date.UTC(2026, 10, 12, 14, 30, 12, 418);
       const list = [];
 
-      for (let i = 1; i <= N; i++) {
-        const x = i > N - LAST_TEMPLATES.length
-          ? LAST_TEMPLATES[i - (N - LAST_TEMPLATES.length) - 1]
-          : TEMPLATES[(i * 7) % TEMPLATES.length];
-
-        let id = x[1];
-        if (i <= N - LAST_TEMPLATES.length && x[0] !== 'project') {
-          id = id.replace(/\d+$/, n => String(+n + (i % 9)).padStart(n.length, '0'));
+      // Try DB audit log first
+      if (apiAuditLog && apiAuditLog.events && apiAuditLog.events.length > 0) {
+        const dbEvents = apiAuditLog.events;
+        for (let i = 0; i < dbEvents.length; i++) {
+          const ev = dbEvents[i];
+          const rec = {
+            actor: ev.actor || 'system',
+            action: ev.action || 'SYSTEM_EVENT',
+            decision: ev.decision || '—',
+            entity_id: ev.entity_id || `ENT-${i}`,
+            entity_type: ev.entity_type || 'system',
+            event_id: ev.id || `AUD-${String(i).padStart(5, '0')}`,
+            prev_hash: prev,
+            ts: ev.created_at || new Date().toISOString(),
+          };
+          const rh = await sha256(canonicalJson(rec));
+          list.push({ rec, rh });
+          prev = rh;
         }
-
-        const rec = {
-          actor: x[2],
-          action: x[3],
-          decision: x[4],
-          entity_id: id,
-          entity_type: x[0],
-          event_id: 'AUD-' + String(i).padStart(5, '0'),
-          prev_hash: prev,
-          ts: new Date(t0 - (N - i) * 437213).toISOString()
-        };
-        const rh = await sha256(canonicalJson(rec));
-        list.push({ rec, rh });
-        prev = rh;
+      } else {
+        // Fallback: generate from templates
+        const t0 = Date.UTC(2026, 10, 12, 14, 30, 12, 418);
+        for (let i = 1; i <= N; i++) {
+          const x = i > N - LAST_TEMPLATES.length
+            ? LAST_TEMPLATES[i - (N - LAST_TEMPLATES.length) - 1]
+            : TEMPLATES[(i * 7) % TEMPLATES.length];
+          let id = x[1];
+          if (i <= N - LAST_TEMPLATES.length && x[0] !== 'project') {
+            id = id.replace(/\d+$/, n => String(+n + (i % 9)).padStart(n.length, '0'));
+          }
+          const rec = {
+            actor: x[2],
+            action: x[3],
+            decision: x[4],
+            entity_id: id,
+            entity_type: x[0],
+            event_id: 'AUD-' + String(i).padStart(5, '0'),
+            prev_hash: prev,
+            ts: new Date(t0 - (N - i) * 437213).toISOString()
+          };
+          const rh = await sha256(canonicalJson(rec));
+          list.push({ rec, rh });
+          prev = rh;
+        }
       }
 
       if (!active) return;
       setEvents(list);
 
-      // Verify initial chain
+      // Verify chain
       let ok = 0;
       const statuses = [];
       for (let i = 0; i < list.length; i++) {
@@ -117,7 +140,7 @@ export default function Audit() {
 
     buildChain();
     return () => { active = false; };
-  }, []);
+  }, [apiAuditLog]);
 
   const actors = useMemo(() => {
     return Array.from(new Set(events.map(e => e.rec.actor))).sort();

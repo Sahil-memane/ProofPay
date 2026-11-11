@@ -1,7 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { toast } from '../components/ui/Toast';
+import { useApi } from '../api/useApi';
+import { endpoints } from '../api/endpoints';
 import styles from './Integrations.module.css';
 
 const APIS = [
@@ -40,6 +42,14 @@ export default function Integrations() {
   const [csvMatched] = useState(14);
 
   const canManage = role === 'admin' || role === 'risk_officer';
+
+  // Wire webhook events from DB
+  const { data: apiWebhookEvents } = useApi(() => endpoints.webhookEvents.list({ limit: 20 }));
+  useEffect(() => {
+    if (apiWebhookEvents && Array.isArray(apiWebhookEvents) && apiWebhookEvents.length > 0) {
+      setEvents(apiWebhookEvents);
+    }
+  }, [apiWebhookEvents]);
 
   const handleTestConnection = () => {
     setIsTesting(true);

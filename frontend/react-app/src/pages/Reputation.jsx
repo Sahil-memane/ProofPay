@@ -1,4 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useApi } from '../api/useApi';
+import { endpoints } from '../api/endpoints';
 import { showToast } from '../components/ui/Toast';
 import styles from './Reputation.module.css';
 
@@ -102,10 +104,18 @@ function getTier(score) {
 const fmt = n => '$' + Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' USD';
 
 export default function Reputation() {
+  const { data: apiRep } = useApi(() => endpoints.reputation.all());
   const [selectedIdx, setSelectedIdx] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
   const [hoveredMonth, setHoveredMonth] = useState(11);
   const [notFound, setNotFound] = useState(false);
+  const [dbEvents, setDbEvents] = useState([]);
+
+  useEffect(() => {
+    if (apiRep && apiRep.events) {
+      setDbEvents(apiRep.events);
+    }
+  }, [apiRep]);
 
   const subject = SUBJECTS[selectedIdx] || SUBJECTS[0];
   const tier = getTier(subject.score);

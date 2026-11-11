@@ -56,6 +56,44 @@ export const endpoints = {
   },
   reputation: {
     get: (subject) => api.get(`/reputation/${subject}`),
+    all: () => api.get('/reputation'),
+  },
+  invoices: {
+    list: (params) => api.get('/invoices', params),
+    create: (body) => api.post('/invoices', body),
+  },
+  paymentAttempts: {
+    list: (params) => api.get('/payment-attempts', params),
+  },
+  reconciliationRecords: {
+    list: (params) => api.get('/reconciliation', params),
+  },
+  ledger: {
+    list: (params) => api.get('/ledger', params),
+  },
+  customers: {
+    list: (params) => api.get('/customers', params),
+  },
+  milestonesList: {
+    list: (params) => api.get('/milestones', params),
+  },
+  analytics: {
+    summary: () => api.get('/analytics/summary'),
+  },
+  disputes: {
+    list: (params) => api.get('/disputes', params),
+  },
+  recovery: {
+    overview: () => api.get('/recovery/overview'),
+  },
+  auditLog: {
+    list: (params) => api.get('/audit-log', params),
+  },
+  webhookEvents: {
+    list: (params) => api.get('/webhook-events', params),
+  },
+  merchantSales: {
+    list: (params) => api.get('/merchant-sales', params),
   },
   sim: {
     events: (body) => api.post('/sim/events', body),
@@ -72,4 +110,3 @@ export const endpoints = {
     escrow:    () => api.get('/fixtures/escrow'),
   },
 };
-

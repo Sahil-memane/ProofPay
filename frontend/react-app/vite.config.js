@@ -17,11 +17,11 @@ export default defineConfig({
   server: {
     port: 5173,
     proxy: {
-      // During dev: proxy all API calls to FastAPI
       '/healthz':              apiProxy,
       '/dashboard':            apiProxy,
       '/eval':                 apiProxy,
       '/audit':                apiProxy,
+      '/audit-log':            apiProxy,
       '/projects':             apiProxy,
       '/milestones':           apiProxy,
       '/cases':                apiProxy,
@@ -34,6 +34,17 @@ export default defineConfig({
       '/fixtures':             apiProxy,
       '/webhooks':             apiProxy,
       '/sim':                  apiProxy,
+      '/auth':                 apiProxy,
+      '/invoices':             apiProxy,
+      '/payment-attempts':     apiProxy,
+      '/subscriptions':        apiProxy,
+      '/ledger':               apiProxy,
+      '/customers':            apiProxy,
+      '/analytics':            apiProxy,
+      '/disputes':             apiProxy,
+      '/recovery':             apiProxy,
+      '/merchant-sales':       apiProxy,
+      '/webhook-events':       apiProxy,
     },
   },
   build: {

@@ -59,13 +59,13 @@ export default function Landing() {
                 <span style={{ color: '#C5D3F0', fontSize: 13, fontWeight: 500 }}>
                   {user?.name || user?.email?.split('@')[0]}
                 </span>
-                <button
-                  type="button"
+                <Link
+                  to="/dashboard"
                   className={styles.btnOpenDashboard}
-                  onClick={() => navigate('/dashboard')}
+                  style={{ textDecoration: 'none' }}
                 >
                   Dashboard →
-                </button>
+                </Link>
                 <button
                   type="button"
                   className={styles.btnSignInNav}
@@ -77,20 +77,20 @@ export default function Landing() {
               </div>
             ) : (
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <button
-                  type="button"
+                <Link
+                  to="/login"
                   className={styles.btnSignInNav}
-                  onClick={() => navigate('/login')}
+                  style={{ textDecoration: 'none' }}
                 >
                   Sign In
-                </button>
-                <button
-                  type="button"
+                </Link>
+                <Link
+                  to="/login"
                   className={styles.btnOpenDashboard}
-                  onClick={() => handleAuthNavigation('/dashboard')}
+                  style={{ textDecoration: 'none' }}
                 >
                   Open Dashboard →
-                </button>
+                </Link>
               </div>
             )}
           </nav>
@@ -114,15 +114,6 @@ export default function Landing() {
               >
                 View Dashboard
               </button>
-              {!isAuthenticated && (
-                <button
-                  type="button"
-                  className={styles.btnSignInHero}
-                  onClick={() => navigate('/login')}
-                >
-                  Sign In / Register
-                </button>
-              )}
               <a className={styles.btnSecondary} href="#benchmarks">
                 See Benchmark Results
               </a>

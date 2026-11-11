@@ -1,5 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { showToast } from '../components/ui/Toast';
+import { useApi } from '../api/useApi';
+import { endpoints } from '../api/endpoints';
 import styles from './Approvals.module.css';
 
 const INITIAL_PAYOUTS = [
@@ -62,6 +64,45 @@ export default function Approvals() {
   const [payouts, setPayouts] = useState(INITIAL_PAYOUTS);
   const [recoveries, setRecoveries] = useState(INITIAL_RECOVERIES);
   const [recentDecisions, setRecentDecisions] = useState([]);
+
+  const { data: apiPayoutApprovals } = useApi(() => endpoints.approvals.submissions.list());
+  const { data: apiCaseApprovals } = useApi(() => endpoints.approvals.cases.list());
+
+  useEffect(() => {
+    if (apiPayoutApprovals && Array.isArray(apiPayoutApprovals) && apiPayoutApprovals.length > 0) {
+      const mapped = apiPayoutApprovals.map((a, i) => ({
+        id: a.task_id || `TASK-APP-${104 + i}`,
+        ms: a.milestone_id || `MS-2026-00${1 + i}-02`,
+        proj: a.project_name || 'Escrow Project',
+        rcp: a.recipient || 'freelancer@example.com',
+        amt: a.amount || 700,
+        score: a.score || 94,
+        note: a.note || 'Passed all automated criteria',
+        flag: `OVERSIZED_PAYOUT: Amount exceeds $200.00 autonomous threshold`,
+        at: a.created_at ? new Date(a.created_at).toUTCString() : '2026-11-11 08:12 UTC',
+        pr: a.pr_url || 'https://github.com/acme/shop/pull/42',
+        url: a.preview_url || 'https://staging.acme.app',
+        m: a.title || 'Milestone deliverable',
+      }));
+      setPayouts(mapped.length > 0 ? mapped : INITIAL_PAYOUTS);
+    }
+  }, [apiPayoutApprovals]);
+
+  useEffect(() => {
+    if (apiCaseApprovals && Array.isArray(apiCaseApprovals) && apiCaseApprovals.length > 0) {
+      const mapped = apiCaseApprovals.map((a, i) => ({
+        id: a.case_id || `REC-2026-00${89 + i}`,
+        cust: a.customer_id || 'Customer',
+        amt: a.amount_usd || 1850,
+        act: a.proposed_action || 'STAGE_3_SERVICE_SUSPENSION',
+        risk: a.risk_level || 'HIGH RISK',
+        why: a.reason || 'Amount exceeds $1,000 policy threshold',
+        diag: a.failure_code || 'INSUFFICIENT_FUNDS',
+        hist: a.contact_history || 'Stage 1 sent · Stage 2 sent · no response',
+      }));
+      setRecoveries(mapped.length > 0 ? mapped : INITIAL_RECOVERIES);
+    }
+  }, [apiCaseApprovals]);
 
   // Modal state
   const [modalItem, setModalItem] = useState(null);

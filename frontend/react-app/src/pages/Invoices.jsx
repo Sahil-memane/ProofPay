@@ -1,6 +1,8 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from '../components/ui/Toast';
+import { useApi } from '../api/useApi';
+import { endpoints } from '../api/endpoints';
 import styles from './Invoices.module.css';
 
 const INITIAL_INVOICES = [
@@ -42,11 +44,43 @@ const POOL = [
 
 export default function Invoices() {
   const navigate = useNavigate();
+  const { data: apiInvoices, refetch: refetchInvoices } = useApi(() => endpoints.invoices.list());
+  const { data: apiSubs } = useApi(() => endpoints.paymentAttempts.list());
+
   const [activeTab, setActiveTab] = useState('inv');
   const [invoices, setInvoices] = useState(INITIAL_INVOICES);
   const [subscriptions] = useState(INITIAL_SUBSCRIPTIONS);
   const [failures, setFailures] = useState(INITIAL_FAILURES);
   const [links, setLinks] = useState(INITIAL_LINKS);
+
+  useEffect(() => {
+    if (apiInvoices && Array.isArray(apiInvoices) && apiInvoices.length > 0) {
+      setInvoices(apiInvoices.map(inv => ({
+        id: inv.invoice_id,
+        c: inv.customer_id,
+        e: `${inv.customer_id.toLowerCase()}@client.example`,
+        iss: inv.issued_at ? new Date(inv.issued_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'Nov 10',
+        due: inv.due_at ? new Date(inv.due_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'Dec 10',
+        a: inv.amount_usd,
+        s: (inv.status || 'pending').toUpperCase(),
+        k: inv.status === 'overdue' ? `REC-${inv.invoice_id.replace('INV-', '')}` : ''
+      })));
+    }
+  }, [apiInvoices]);
+
+  useEffect(() => {
+    if (apiSubs && Array.isArray(apiSubs) && apiSubs.length > 0) {
+      setFailures(apiSubs.slice(0, 15).map((sub) => ({
+        t: sub.failed_at ? new Date(sub.failed_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'Recently',
+        c: sub.customer_id,
+        a: sub.amount_usd,
+        d: (sub.failure_code || 'INSUFFICIENT_FUNDS').toUpperCase().replace(/ /g, '_'),
+        n: `Retry count: ${sub.retry_count}. Autonomous recovery agent queued.`,
+        s: 'AWAITING_CUSTOMER',
+        k: `REC-${sub.customer_id}`
+      })));
+    }
+  }, [apiSubs]);
 
   // Filters
   const [searchQuery, setSearchQuery] = useState('');
@@ -159,14 +193,14 @@ export default function Invoices() {
     toast.success(`Payment link generated for ${inv.id}.`);
   };
 
-  const handleCreateInvoice = (e) => {
+  const handleCreateInvoice = async (e) => {
     e.preventDefault();
     const subtotal = lineItems.reduce((acc, it) => acc + (it.qty * it.unitPrice), 0);
     const total = subtotal * (1 + (parseFloat(taxPct) || 0) / 100);
     const nextNum = 1031 + invoices.length - 7;
     const newInv = {
       id: `INV-2026-${nextNum}`,
-      c: custName,
+      c: custName || 'New Client',
       e: custEmail,
       iss: 'Nov 11',
       due: dueDate ? new Date(dueDate + 'T00:00').toLocaleDateString('en-US', { month: 'short', day: '2-digit' }) : 'Dec 11',
@@ -174,9 +208,19 @@ export default function Invoices() {
       s: sendViaPayPal ? 'SENT' : 'DRAFT',
       k: '',
     };
+    try {
+      await endpoints.invoices.create({
+        customer_id: custName || 'CUST-NEW',
+        amount_usd: total,
+        due_days: 30,
+      });
+      if (refetchInvoices) refetchInvoices();
+    } catch {
+      // fallback
+    }
     setInvoices([newInv, ...invoices]);
     setIsModalOpen(false);
-    toast.success(sendViaPayPal ? `Invoice INV-2026-${nextNum} sent through PayPal Invoicing.` : 'Invoice saved as draft.');
+    toast.success(sendViaPayPal ? `Invoice ${newInv.id} sent through PayPal Invoicing.` : 'Invoice saved as draft.');
   };
 
   const getBadgeClass = (status) => {

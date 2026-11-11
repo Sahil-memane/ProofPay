@@ -164,15 +164,34 @@ async def create_project(req: CreateProjectRequest) -> dict[str, Any]:
 
 @router.get("/projects")
 async def list_projects() -> list[dict[str, Any]]:
-    return list(_PROJECTS.values())
+    projects_map = {}
+    try:
+        from backend.app.db.repositories.project_repo import project_repo
+        for p in project_repo.list_all():
+            projects_map[p["id"]] = p
+    except Exception:
+        pass
+    for pid, p in _PROJECTS.items():
+        projects_map[pid] = p
+    return list(projects_map.values())
 
 
 @router.get("/projects/{project_id}")
 async def get_project(project_id: str) -> dict[str, Any]:
     project = _PROJECTS.get(project_id)
+    milestones = _MILESTONES.get(project_id, [])
+    if not project:
+        try:
+            from backend.app.db.repositories.project_repo import project_repo
+            project = project_repo.get(project_id)
+            if project:
+                from backend.app.db.repositories.milestone_repo import milestone_repo
+                milestones = milestone_repo.list_for_project(project_id)
+        except Exception:
+            pass
     if not project:
         raise HTTPException(status_code=404, detail=f"Project {project_id} not found")
-    return {"project": project, "milestones": _MILESTONES.get(project_id, [])}
+    return {"project": project, "milestones": milestones}
 
 
 @router.patch("/projects/{project_id}/milestones/{milestone_id}")

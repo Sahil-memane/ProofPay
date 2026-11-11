@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
 import { useApi } from '../api/useApi';
 import { endpoints } from '../api/endpoints';
 import styles from './Dashboard.module.css';
@@ -40,6 +41,7 @@ function Ico({ d, amber }) {
 
 export default function Dashboard() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [dateRange, setDateRange] = useState('30');
   const { data: headline } = useApi(() => endpoints.dashboard.headline());
   const { data: audit } = useApi(() => endpoints.audit.list({ limit: 6 }));
@@ -55,8 +57,9 @@ export default function Dashboard() {
 
   const hour = new Date().getHours();
   const greeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
+  const displayName = user?.name || user?.email?.split('@')[0] || 'Sahil';
 
-  const activityItems = [
+  const defaultActivity = [
     { icon: 'shield', text: 'Project', bold: '#PRJ-102', suffix: ' funded', badge: 'g', label: 'Funded', time: '2 min ago' },
     { icon: 'check', text: 'Milestone', bold: '#MS-204', suffix: ' verified', badge: 'g', label: 'Verified', time: '18 min ago' },
     { icon: 'arrow', text: 'Payout of', bold: '$450', suffix: ' released', badge: 'g', label: 'Released', time: '42 min ago' },
@@ -65,12 +68,24 @@ export default function Dashboard() {
     { icon: 'ban', text: 'Policy blocked a release of', bold: '$850', suffix: '', badge: 'r', label: 'Blocked', time: 'Yesterday', red: true },
   ];
 
+  const activityItems = (audit && Array.isArray(audit) && audit.length > 0)
+    ? audit.slice(0, 6).map(e => ({
+        icon: e.event_type?.includes('capture') ? 'shield' : (e.event_type?.includes('payout') || e.event_type?.includes('release') ? 'arrow' : 'check'),
+        text: e.actor || 'System',
+        bold: e.event_type?.replace(/_/g, ' ') || 'Audit event',
+        suffix: e.subject ? ` · ${String(e.subject).slice(0, 12)}` : '',
+        badge: e.event_type?.includes('denied') || e.event_type?.includes('blocked') ? 'r' : 'g',
+        label: e.event_type?.includes('denied') || e.event_type?.includes('blocked') ? 'Blocked' : 'Verified',
+        time: e.timestamp ? new Date(e.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Recently'
+      }))
+    : defaultActivity;
+
   return (
     <div className={styles.page}>
       {/* Page heading */}
       <div className={styles.pageHeader}>
         <div>
-          <h1 className={styles.h1}>{greeting}, Sahil</h1>
+          <h1 className={styles.h1}>{greeting}, {displayName}</h1>
           <p className={styles.sub}>Here's what's happening across your payments today.</p>
         </div>
         <div className={styles.headerActions}>

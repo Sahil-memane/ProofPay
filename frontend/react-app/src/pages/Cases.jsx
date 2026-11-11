@@ -54,36 +54,25 @@ export default function Cases() {
 
   const { data: apiData } = useApi(() => endpoints.cases.list());
 
-  // Merge API data when available
+  // Populate from PostgreSQL cases API
   useEffect(() => {
     if (apiData && Array.isArray(apiData) && apiData.length > 0) {
-      setCases(prev => {
-        const merged = [...prev];
-        apiData.forEach(ac => {
-          const idx = merged.findIndex(c => c.id === ac.case_id || c.id === ac.id);
-          const mapped = {
-            id: ac.case_id || ac.id,
-            n: ac.customer_name || ac.customer_email || 'Customer',
-            e: ac.customer_email || 'customer@example.com',
-            inv: ac.invoice_id || 'INV-2026',
-            a: ac.amount || 250,
-            dx: ac.diagnosis || 'EXPIRED_CARD',
-            st: ac.stage || 1,
-            q: ac.quiet_hours ?? false,
-            rc: ac.reconciliation_status || 'MATCHED',
-            s: ac.state || ac.status || 'ACTIVE',
-            m: ac.next_action_minutes || 600,
-            ev: ac.audit_events || [],
-            pend: null
-          };
-          if (idx >= 0) {
-            merged[idx] = { ...merged[idx], ...mapped };
-          } else {
-            merged.unshift(mapped);
-          }
-        });
-        return merged;
-      });
+      const mapped = apiData.map(ac => ({
+        id: ac.case_id || ac.id,
+        n: ac.customer_name || ac.customer_id || 'Customer',
+        e: ac.customer_email || `${(ac.customer_id || 'customer').toLowerCase()}@proofpay-client.invalid`,
+        inv: ac.invoice_id || (ac.payload?.sub_id ? `SUB-${ac.payload.sub_id.slice(0, 8)}` : 'INV-2026'),
+        a: ac.amount_usd ?? ac.amount ?? 250,
+        dx: typeof ac.diagnosis === 'string' ? ac.diagnosis : (ac.payload?.failure_code || 'INSUFFICIENT_FUNDS').toUpperCase().replace(/ /g, '_'),
+        st: ac.stage || (ac.contact_count > 0 ? Math.min(ac.contact_count, 3) : 1),
+        q: ac.quiet_hours ?? false,
+        rc: ac.state === 'PAID_ELSEWHERE' ? 'PAID_ELSEWHERE' : 'MATCHED',
+        s: ac.state === 'OPEN' ? 'ACTIVE' : (ac.state === 'RECOVERED' ? 'PAID' : (ac.state || 'ACTIVE')),
+        m: ac.next_action_minutes || 600,
+        ev: ac.history || [],
+        pend: null
+      }));
+      setCases(mapped);
     }
   }, [apiData]);
 

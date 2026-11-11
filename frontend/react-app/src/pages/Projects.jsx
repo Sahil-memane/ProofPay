@@ -150,35 +150,24 @@ export default function Projects() {
     total_amount_usd: ''
   });
 
-  // Merge API projects if any exist
+  // Populate from PostgreSQL API
   useEffect(() => {
     if (apiProjects && Array.isArray(apiProjects) && apiProjects.length > 0) {
-      setProjects(prev => {
-        const merged = [...prev];
-        apiProjects.forEach(ap => {
-          const idx = merged.findIndex(p => p.id === ap.id);
-          const mapped = {
-            id: ap.id,
-            title: ap.title,
-            description: ap.description || 'Project deliverables and milestones',
-            client_email: ap.client_email,
-            freelancer_email: ap.freelancer_email,
-            total_amount_usd: ap.total_amount_usd || 0,
-            funded_amount_usd: ap.funded_amount_usd || 0,
-            released_amount_usd: ap.released_amount_usd || 0,
-            hashStatus: ap.client_approved && ap.freelancer_approved ? 'Both Approved' : 'Pending',
-            hashVariant: ap.client_approved && ap.freelancer_approved ? 'g' : 'a',
-            state: ap.state || 'DRAFT',
-            stateVariant: ap.state === 'FUNDED' ? 'g' : ap.state === 'AWAITING_PAYPAL' ? 'a' : 'x'
-          };
-          if (idx >= 0) {
-            merged[idx] = { ...merged[idx], ...mapped };
-          } else {
-            merged.unshift(mapped);
-          }
-        });
-        return merged;
-      });
+      const mappedList = apiProjects.map(ap => ({
+        id: ap.id,
+        title: ap.title || ap.job_description?.split(':')[1]?.trim() || ap.job_description || `Project ${ap.id}`,
+        description: ap.description || ap.job_description || 'Project deliverables and milestones',
+        client_email: ap.client_email || ap.client_id || 'client@example.com',
+        freelancer_email: ap.freelancer_email || ap.freelancer_id || 'freelancer@example.com',
+        total_amount_usd: ap.total_amount_usd ?? ap.total_amount ?? 0,
+        funded_amount_usd: ap.funded_amount_usd ?? (ap.state === 'FUNDED' || ap.state === 'COMPLETED' ? (ap.total_amount ?? 0) : 0),
+        released_amount_usd: ap.released_amount_usd ?? (ap.state === 'COMPLETED' ? (ap.total_amount ?? 0) : 0),
+        hashStatus: (ap.client_approved && ap.freelancer_approved) || ap.state === 'FUNDED' || ap.state === 'COMPLETED' ? 'Both Approved' : 'Pending',
+        hashVariant: (ap.client_approved && ap.freelancer_approved) || ap.state === 'FUNDED' || ap.state === 'COMPLETED' ? 'g' : 'a',
+        state: ap.state || 'DRAFT',
+        stateVariant: ap.state === 'FUNDED' || ap.state === 'COMPLETED' ? 'g' : ap.state === 'DISPUTED' ? 'r' : 'a'
+      }));
+      setProjects(mappedList);
     }
   }, [apiProjects]);
 

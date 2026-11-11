@@ -6,6 +6,7 @@ import { PageLoader } from './components/ui/Spinner';
 
 // ── Lazy-loaded pages (code splitting → small initial bundle) ─────────────
 const Landing             = lazy(() => import('./pages/Landing'));
+const Login               = lazy(() => import('./pages/Login'));
 const Dashboard           = lazy(() => import('./pages/Dashboard'));
 const Projects            = lazy(() => import('./pages/Projects'));
 const ProjectDetails      = lazy(() => import('./pages/ProjectDetails'));
@@ -39,9 +40,15 @@ export default function App() {
     <BrowserRouter>
       <ToastContainer />
       <Routes>
-        {/* Landing — no shell */}
+        {/* Public pages — no shell */}
         <Route path="/" element={
           <Suspense fallback={<Loading />}><Landing /></Suspense>
+        } />
+        <Route path="/login" element={
+          <Suspense fallback={<Loading />}><Login /></Suspense>
+        } />
+        <Route path="/register" element={
+          <Suspense fallback={<Loading />}><Login /></Suspense>
         } />
 
         {/* All app pages inside AppShell */}
@@ -70,10 +77,10 @@ export default function App() {
           <Route path="/settings"              element={<Suspense fallback={<Loading />}><Settings /></Suspense>} />
           <Route path="/help"                  element={<Suspense fallback={<Loading />}><Help /></Suspense>} />
           <Route path="/create-project-wizard" element={<Suspense fallback={<Loading />}><CreateProjectWizard /></Suspense>} />
-
-          {/* Catch-all → dashboard */}
-          <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Route>
+
+        {/* Catch-all → dashboard */}
+        <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
     </BrowserRouter>
   );

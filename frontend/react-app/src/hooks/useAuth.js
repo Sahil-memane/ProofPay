@@ -162,3 +162,4 @@ export function useAuth() {
     canAccess: (path) => canAccessRoute(session?.role, path),
   };
 }
+

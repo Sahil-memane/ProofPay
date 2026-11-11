@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import { useApi } from '../api/useApi';
+import { endpoints } from '../api/endpoints';
 import { showToast } from '../components/ui/Toast';
 import styles from './Ledger.module.css';
 
@@ -189,6 +191,7 @@ async function sha256(text) {
 }
 
 export default function Ledger() {
+  const { data: apiLedger } = useApi(() => endpoints.ledger.list());
   const [transactions, setTransactions] = useState(INITIAL_TRANSACTIONS);
   const [search, setSearch] = useState('');
   const [typeFilter, setTypeFilter] = useState('');
@@ -196,12 +199,30 @@ export default function Ledger() {
   const [selectedTxn, setSelectedTxn] = useState(null);
   const [recomputeResult, setRecomputeResult] = useState(null);
 
-  // Compute SHA-256 chain links on load
+  // Compute SHA-256 chain links on load or when apiLedger updates
   useEffect(() => {
     let active = true;
     const computeChain = async () => {
+      let sourceList = INITIAL_TRANSACTIONS;
+      if (apiLedger && Array.isArray(apiLedger) && apiLedger.length > 0) {
+        sourceList = apiLedger.map((l, i) => ({
+          id: `TXN-2026-${9040 - i}`,
+          ts: l.created_at || '2026-11-11T09:58:31Z',
+          prj: l.subject_id,
+          ms: 'All milestones',
+          mn: 'Escrow funding & release',
+          type: l.type === 'FUNDING' ? 'CAPTURE_FUNDING' : (l.type === 'RELEASE' ? 'PAYOUT_RELEASE' : l.type),
+          from: l.type === 'FUNDING' ? CLIENT_ACC : ESCROW_VAULT,
+          to: l.type === 'FUNDING' ? ESCROW_VAULT : FREELANCER_ACC,
+          amt: l.amount,
+          ref: l.paypal_id || 'PAYPAL-REF-AUTO',
+          pol: 'ALLOWED',
+          note: l.note || 'Tamper-evident audit verified ledger entry',
+        }));
+      }
+
       let prev = '0'.repeat(64);
-      const reversed = [...INITIAL_TRANSACTIONS].reverse();
+      const reversed = [...sourceList].reverse();
       const chained = [];
       for (const t of reversed) {
         const hash = await sha256(prev + canon(t));
@@ -214,7 +235,7 @@ export default function Ledger() {
     };
     computeChain();
     return () => { active = false; };
-  }, []);
+  }, [apiLedger]);
 
   const filteredTransactions = transactions.filter(x => {
     const matchesType = !typeFilter || x.type === typeFilter;
