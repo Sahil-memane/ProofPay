@@ -91,6 +91,8 @@ export default function Login() {
     setSignInErrors({});
     setIsSigningIn(true);
 
+    const redirectTo = location.state?.from?.pathname || '/dashboard';
+
     try {
       // Check live backend if configured
       const res = await fetch('http://localhost:8000/auth/login', {
@@ -106,8 +108,10 @@ export default function Login() {
         const storage = rememberMe ? localStorage : sessionStorage;
         storage.setItem('pp_session', JSON.stringify({ user, token: data.access_token || 'token', role: user.role }));
         sessionStorage.setItem('pp_role', user.role);
+        localStorage.setItem('proofpay_role', user.role);
+        window.dispatchEvent(new Event('authChanged'));
         setSignInBanner({ show: true, msg: 'Authentication successful. Redirecting…', type: 'info' });
-        setTimeout(() => navigate('/dashboard'), 500);
+        setTimeout(() => navigate(redirectTo), 500);
         return;
       }
     } catch (_) {
@@ -120,8 +124,10 @@ export default function Login() {
       const storage = rememberMe ? localStorage : sessionStorage;
       storage.setItem('pp_session', JSON.stringify({ user: { email, ...mock }, role: mock.role, offline: true }));
       sessionStorage.setItem('pp_role', mock.role);
+      localStorage.setItem('proofpay_role', mock.role);
+      window.dispatchEvent(new Event('authChanged'));
       setSignInBanner({ show: true, msg: 'Signed in with sandbox persona. Redirecting…', type: 'info' });
-      setTimeout(() => navigate('/dashboard'), 450);
+      setTimeout(() => navigate(redirectTo), 450);
       setIsSigningIn(false);
       return;
     }
@@ -134,8 +140,10 @@ export default function Login() {
         const storage = rememberMe ? localStorage : sessionStorage;
         storage.setItem('pp_session', JSON.stringify({ user: { email, name: u.name, role: u.role }, role: u.role, offline: true }));
         sessionStorage.setItem('pp_role', u.role);
+        localStorage.setItem('proofpay_role', u.role);
+        window.dispatchEvent(new Event('authChanged'));
         setSignInBanner({ show: true, msg: 'Signed in successfully. Redirecting…', type: 'info' });
-        setTimeout(() => navigate('/dashboard'), 450);
+        setTimeout(() => navigate(redirectTo), 450);
         setIsSigningIn(false);
         return;
       }

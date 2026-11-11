@@ -37,20 +37,40 @@
 .actions {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   margin-left: auto;
 }
-.roleLabel { font-size: 12px; font-weight: 500; color: var(--muted); white-space: nowrap; }
-.roleSelect {
-  height: 36px;
-  padding: 0 10px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  font: 500 13px var(--font-ui);
-  color: var(--text);
-  background: var(--white);
-  cursor: pointer;
+
+.roleBadge {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  background: #E6F0FC;
+  color: #005BB5;
+  border: 1px solid #BFD3F2;
+  white-space: nowrap;
+  text-transform: capitalize;
 }
+
+.roleBadgeAdmin {
+  background: #FEF1D9;
+  color: #8A5A00;
+  border-color: #F8D896;
+}
+
+.roleBadgeFreelancer {
+  background: #E3F4EB;
+  color: #1E7A4C;
+  border-color: #A3E0C1;
+}
+
+.roleBadgeMerchant {
+  background: #F0EAF8;
+  color: #5C2D91;
+  border-color: #D3C0EA;
+}
+
 .statusPill {
   display: flex;
   align-items: center;
@@ -67,6 +87,14 @@
   border-radius: 50%;
   background: var(--green);
 }
+
+.userProfile {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 4px;
+}
+
 .avatar {
   width: 32px; height: 32px;
   border-radius: 50%;
@@ -77,10 +105,37 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.userName {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.signOutBtn {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  border-radius: var(--radius-md);
+  padding: 5px 10px;
+  font-size: 12px;
+  font-weight: 500;
   cursor: pointer;
+  transition: all .15s;
+}
+
+.signOutBtn:hover {
+  background: #FBE5E6;
+  color: #D9363E;
+  border-color: #F5B0B4;
 }
 
 @media (max-width: 900px) {
   .search { display: none; }
+  .userName { display: none; }
 }
-

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useAuth } from '../hooks/useAuth';
 import { showToast } from '../components/ui/Toast';
 import styles from './Submissions.module.css';
 
@@ -34,7 +35,7 @@ const STATUS_ICONS = {
 };
 
 export default function Submissions() {
-  const [role, setRole] = useState('client');
+  const { role } = useAuth();
   const [scenarioKey, setScenarioKey] = useState('0.95');
   const [statusBadge, setStatusBadge] = useState({ text: 'SUBMITTED', cls: 'b' });
   const [amountOption, setAmountOption] = useState('700');
@@ -144,19 +145,6 @@ export default function Submissions() {
           </p>
         </div>
         <div className={styles.headerActions}>
-          <label className={styles.roleLabel}>View as</label>
-          <select
-            className={styles.btn}
-            value={role}
-            onChange={e => {
-              setRole(e.target.value);
-              showToast(`Role switched to ${e.target.options[e.target.selectedIndex].text.replace(/^\S+\s/, '')}`, 'info');
-            }}
-          >
-            <option value="client">👤 Client (Buyer)</option>
-            <option value="freelancer">🛠️ Freelancer (Contractor)</option>
-            <option value="admin">🛡️ Risk Officer / Admin</option>
-          </select>
           {role === 'freelancer' && (
             <button className={`${styles.btn} ${styles.btnP}`} onClick={() => setModalOpen(true)}>
               Submit Deliverable

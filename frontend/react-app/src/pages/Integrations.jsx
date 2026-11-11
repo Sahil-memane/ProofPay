@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
 import { toast } from '../components/ui/Toast';
 import styles from './Integrations.module.css';
 
@@ -25,8 +26,7 @@ const REPOS = [
 ];
 
 export default function Integrations() {
-  const [role, setRole] = useState('admin');
-  const [roleMenuOpen, setRoleMenuOpen] = useState(false);
+  const { role } = useAuth();
   const [isTesting, setIsTesting] = useState(false);
   const [hooksOpen, setHooksOpen] = useState(false);
   const [sigVerifyOn, setSigVerifyOn] = useState(true);
@@ -72,53 +72,6 @@ export default function Integrations() {
           <p>Connection health, API scopes, evidence connectors and the live webhook feed that drives escrow, payouts and recovery.</p>
         </div>
         <div className={styles.actionsGroup}>
-          {/* Role selector */}
-          <div style={{ position: 'relative' }}>
-            <button
-              className={styles.btn}
-              style={{ background: '#E6F0FC', borderColor: '#BBD6F7', color: 'var(--blue-dark)' }}
-              onClick={() => setRoleMenuOpen(!roleMenuOpen)}
-            >
-              Role: {role === 'admin' ? 'Risk Officer / Admin' : role === 'merchant' ? 'Merchant' : 'Freelancer'} ▾
-            </button>
-            {roleMenuOpen && (
-              <div style={{
-                position: 'absolute',
-                right: 0,
-                top: 48,
-                background: '#fff',
-                border: '1px solid var(--border)',
-                borderRadius: 8,
-                boxShadow: '0 8px 24px rgba(10,37,64,0.15)',
-                padding: 6,
-                zIndex: 30,
-                width: 200,
-              }}>
-                <button
-                  className={styles.btn}
-                  style={{ width: '100%', justifyContent: 'flex-start', border: 0, height: 36, fontSize: 13 }}
-                  onClick={() => { setRole('admin'); setRoleMenuOpen(false); }}
-                >
-                  Risk Officer / Admin
-                </button>
-                <button
-                  className={styles.btn}
-                  style={{ width: '100%', justifyContent: 'flex-start', border: 0, height: 36, fontSize: 13 }}
-                  onClick={() => { setRole('merchant'); setRoleMenuOpen(false); }}
-                >
-                  Merchant
-                </button>
-                <button
-                  className={styles.btn}
-                  style={{ width: '100%', justifyContent: 'flex-start', border: 0, height: 36, fontSize: 13 }}
-                  onClick={() => { setRole('freelancer'); setRoleMenuOpen(false); }}
-                >
-                  Freelancer
-                </button>
-              </div>
-            )}
-          </div>
-
           <button
             className={styles.btn}
             onClick={handleTestConnection}
@@ -511,3 +464,4 @@ export default function Integrations() {
     </div>
   );
 }
+
