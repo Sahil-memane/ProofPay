@@ -1,0 +1,101 @@
+{
+  "info": {
+    "name": "ProofPay API",
+    "_postman_id": "proofpay-hackathon-2026",
+    "description": "AI-powered escrow & revenue recovery — PayPal AI Hackathon 2026",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base", "value": "http://localhost:8000", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "Health & Meta",
+      "item": [
+        { "name": "Health Check", "request": { "method": "GET", "url": "{{base}}/healthz" } },
+        { "name": "Audit Log", "request": { "method": "GET", "url": { "raw": "{{base}}/audit?limit=20", "query": [{ "key": "limit", "value": "20" }] } } },
+        { "name": "Dashboard Headline", "request": { "method": "GET", "url": "{{base}}/dashboard/headline" } },
+        { "name": "Eval Latest", "request": { "method": "GET", "url": "{{base}}/eval/latest" } },
+        { "name": "Internal Tick", "request": { "method": "POST", "url": "{{base}}/internal/tick", "header": [{ "key": "X-Tick-Token", "value": "{{tick_token}}" }] } }
+      ]
+    },
+    {
+      "name": "Projects (Escrow)",
+      "item": [
+        { "name": "List Projects", "request": { "method": "GET", "url": "{{base}}/projects" } },
+        { "name": "Create Project", "request": { "method": "POST", "url": "{{base}}/projects", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"title\": \"E-commerce Website\",\n  \"description\": \"Storefront + admin\",\n  \"client_email\": \"client@example.com\",\n  \"freelancer_email\": \"freelancer@example.com\",\n  \"total_amount_usd\": 2400.00\n}" } } },
+        { "name": "Get Project", "request": { "method": "GET", "url": "{{base}}/projects/{{project_id}}" } },
+        { "name": "Approve Project", "request": { "method": "POST", "url": "{{base}}/projects/{{project_id}}/approve", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{ \"role\": \"client\" }" } } },
+        { "name": "Fund Project (PayPal)", "request": { "method": "POST", "url": "{{base}}/projects/{{project_id}}/fund", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{}" } } },
+        { "name": "Capture Payment", "request": { "method": "POST", "url": "{{base}}/projects/{{project_id}}/capture", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{ \"token\": \"PAYPAL-ORDER-TOKEN\" }" } } },
+        { "name": "Patch Milestone", "request": { "method": "PATCH", "url": "{{base}}/milestones/{{milestone_id}}", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{ \"due_date\": \"2026-12-01\" }" } } }
+      ]
+    },
+    {
+      "name": "Submissions & Verification",
+      "item": [
+        { "name": "Submit Work", "request": { "method": "POST", "url": "{{base}}/milestones/{{milestone_id}}/submit", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{ \"evidence_url\": \"https://github.com/example/pr/1\", \"notes\": \"All acceptance criteria met\" }" } } },
+        { "name": "Get Submission", "request": { "method": "GET", "url": "{{base}}/milestones/{{milestone_id}}/submission" } },
+        { "name": "Review Submission", "request": { "method": "POST", "url": "{{base}}/milestones/{{milestone_id}}/review", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{ \"approved\": true, \"comment\": \"Looks great\" }" } } },
+        { "name": "Refund Milestone", "request": { "method": "POST", "url": "{{base}}/milestones/{{milestone_id}}/refund", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{}" } } },
+        { "name": "Inject Verification Scenario", "request": { "method": "POST", "url": "{{base}}/milestones/{{milestone_id}}/_inject_verification", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{ \"scenario\": \"AUTO_APPROVE\" }" } } }
+      ]
+    },
+    {
+      "name": "Approvals (HITL)",
+      "item": [
+        { "name": "List Submission Approvals", "request": { "method": "GET", "url": "{{base}}/submission-approvals" } },
+        { "name": "Decide Submission Approval", "request": { "method": "POST", "url": "{{base}}/submission-approvals/{{task_id}}/decide", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{ \"approved\": true, \"comment\": \"Approved by Risk Officer\" }" } } },
+        { "name": "List Case Approvals", "request": { "method": "GET", "url": "{{base}}/approvals" } },
+        { "name": "Decide Case Approval", "request": { "method": "POST", "url": "{{base}}/approvals/{{case_id}}/decide", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{ \"approved\": true }" } } }
+      ]
+    },
+    {
+      "name": "Recovery Cases",
+      "item": [
+        { "name": "List Cases", "request": { "method": "GET", "url": "{{base}}/cases" } },
+        { "name": "Get Case", "request": { "method": "GET", "url": "{{base}}/cases/{{case_id}}" } },
+        { "name": "Reopen Case", "request": { "method": "POST", "url": "{{base}}/cases/{{case_id}}/reopen", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{}" } } },
+        { "name": "Sim Events", "request": { "method": "POST", "url": "{{base}}/sim/events", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{ \"case_id\": \"{{case_id}}\", \"event_type\": \"payment_received\" }" } } }
+      ]
+    },
+    {
+      "name": "Reconciliation",
+      "item": [
+        { "name": "Reconciliation Summary", "request": { "method": "GET", "url": "{{base}}/reconciliation/summary" } },
+        { "name": "Outbox", "request": { "method": "GET", "url": "{{base}}/outbox" } }
+      ]
+    },
+    {
+      "name": "Reputation",
+      "item": [
+        { "name": "Get Reputation", "request": { "method": "GET", "url": "{{base}}/reputation/freelancer@example.com" } }
+      ]
+    },
+    {
+      "name": "Webhooks",
+      "item": [
+        { "name": "PayPal Webhook", "request": { "method": "POST", "url": "{{base}}/webhooks/paypal", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"event_type\": \"PAYMENT.CAPTURE.COMPLETED\",\n  \"resource\": { \"id\": \"ORDER-123\", \"custom_id\": \"PRJ-2026-001\" }\n}" } } }
+      ]
+    },
+    {
+      "name": "Demo Controls",
+      "item": [
+        { "name": "Inject Failure", "request": { "method": "POST", "url": "{{base}}/demo/inject-failure", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"customer_id\": \"CUST-DEMO-01\",\n  \"failure_code\": \"INSUFFICIENT_FUNDS\",\n  \"amount_usd\": 125.0,\n  \"currency\": \"USD\"\n}" } } },
+        { "name": "Advance Clock +24h", "request": { "method": "POST", "url": "{{base}}/demo/advance-clock", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{ \"hours\": 24 }" } } },
+        { "name": "Advance Clock +48h", "request": { "method": "POST", "url": "{{base}}/demo/advance-clock", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{ \"hours\": 48 }" } } },
+        { "name": "Run Simulator", "request": { "method": "POST", "url": "{{base}}/demo/run-simulator", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{ \"case_id\": \"{{case_id}}\", \"action\": \"send_reminder\", \"seed\": 42 }" } } },
+        { "name": "Reset Demo", "request": { "method": "POST", "url": "{{base}}/demo/reset", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{}" } } }
+      ]
+    },
+    {
+      "name": "Fixtures",
+      "item": [
+        { "name": "List Customers", "request": { "method": "GET", "url": "{{base}}/fixtures/customers" } },
+        { "name": "List Invoices", "request": { "method": "GET", "url": "{{base}}/fixtures/invoices" } },
+        { "name": "List Escrow Projects", "request": { "method": "GET", "url": "{{base}}/fixtures/escrow" } },
+        { "name": "List Traps", "request": { "method": "GET", "url": "{{base}}/fixtures/traps" } }
+      ]
+    }
+  ]
+}
