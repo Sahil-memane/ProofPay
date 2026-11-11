@@ -15,3 +15,4 @@
 .crAmt { color: var(--green); font-weight: 600; font-variant-numeric: tabular-nums; }
 .drAmt { color: var(--red); font-weight: 600; font-variant-numeric: tabular-nums; }
 .zero { color: var(--muted); }
+

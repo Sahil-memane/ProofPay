@@ -27,3 +27,4 @@
 .allowed .simDecision { color: var(--green); }
 .denied .simDecision { color: var(--red); }
 .simReason { font-size: 13px; color: var(--text); }
+

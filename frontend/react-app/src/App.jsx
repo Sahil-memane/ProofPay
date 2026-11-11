@@ -1,64 +1,34 @@
+import { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AppShell } from './components/layout/AppShell';
 import { ToastContainer } from './components/ui/Toast';
+import { PageLoader } from './components/ui/Spinner';
 
-// Pages
-import Landing          from './pages/Landing';
-import Dashboard        from './pages/Dashboard';
-import Projects         from './pages/Projects';
-import ProjectDetails   from './pages/ProjectDetails';
-import Milestones       from './pages/Milestones';
-import Submissions      from './pages/Submissions';
-import Approvals        from './pages/Approvals';
-import Cases            from './pages/Cases';
-import RecoveryOverview from './pages/RecoveryOverview';
-import Reconciliation   from './pages/Reconciliation';
-import MandateGuard     from './pages/MandateGuard';
-import Analytics        from './pages/Analytics';
-import Audit            from './pages/Audit';
-import Reputation       from './pages/Reputation';
-import Ledger           from './pages/Ledger';
-import {
+// ── Lazy-loaded pages (code splitting → smaller initial bundle) ─────────────
+const Landing          = lazy(() => import('./pages/Landing'));
+const Dashboard        = lazy(() => import('./pages/Dashboard'));
+const Projects         = lazy(() => import('./pages/Projects'));
+const ProjectDetails   = lazy(() => import('./pages/ProjectDetails'));
+const Milestones       = lazy(() => import('./pages/Milestones'));
+const Submissions      = lazy(() => import('./pages/Submissions'));
+const Approvals        = lazy(() => import('./pages/Approvals'));
+const Cases            = lazy(() => import('./pages/Cases'));
+const RecoveryOverview = lazy(() => import('./pages/RecoveryOverview'));
+const Reconciliation   = lazy(() => import('./pages/Reconciliation'));
+const MandateGuard     = lazy(() => import('./pages/MandateGuard'));
+const Analytics        = lazy(() => import('./pages/Analytics'));
+const Audit            = lazy(() => import('./pages/Audit'));
+const Reputation       = lazy(() => import('./pages/Reputation'));
+const Ledger           = lazy(() => import('./pages/Ledger'));
+
+// Stubs imported eagerly (small file, shared)
+const {
   Agents, Assistant, Disputes, Invoices, Pay,
   PaymentAttempts, Integrations, Settings, Help, CreateProjectWizard,
-} from './pages/StubPages';
+} = await import('./pages/StubPages').then(m => m);
 
-const ROUTES = [
-  { path: '/dashboard',          el: <Dashboard />,        title: 'Dashboard',              sub: 'Escrow Prevent' },
-  { path: '/projects',           el: <Projects />,          title: 'Projects & Contracts',   sub: 'Escrow Prevent' },
-  { path: '/project-details',    el: <ProjectDetails />,    title: 'Project Details',        sub: 'Escrow Prevent' },
-  { path: '/milestones',         el: <Milestones />,        title: 'Milestones',             sub: 'Escrow Prevent' },
-  { path: '/submissions',        el: <Submissions />,       title: 'Submissions & Verification', sub: 'Escrow Prevent' },
-  { path: '/ledger',             el: <Ledger />,            title: 'Escrow Ledger',          sub: 'Escrow Prevent' },
-  { path: '/recovery-overview',  el: <RecoveryOverview />,  title: 'Recovery Overview',      sub: 'Revenue Recover' },
-  { path: '/cases',              el: <Cases />,             title: 'Recovery Cases',         sub: 'Revenue Recover' },
-  { path: '/invoices',           el: <Invoices />,          title: 'Invoices',               sub: 'Revenue Recover' },
-  { path: '/payment-attempts',   el: <PaymentAttempts />,   title: 'Payment Attempts',       sub: 'Revenue Recover' },
-  { path: '/reconciliation',     el: <Reconciliation />,    title: 'Reconciliation (3-Way)', sub: 'Trust & Governance' },
-  { path: '/disputes',           el: <Disputes />,          title: 'Disputes',               sub: 'Trust & Governance' },
-  { path: '/mandate-guard',      el: <MandateGuard />,      title: 'Mandate Guard',          sub: 'Trust & Governance' },
-  { path: '/reputation',         el: <Reputation />,        title: 'Reputation Ledger',      sub: 'Trust & Governance' },
-  { path: '/approvals',          el: <Approvals />,         title: 'Approvals Queue (HITL)', sub: 'Trust & Governance' },
-  { path: '/agents',             el: <Agents />,            title: 'AI Agent Center',        sub: 'Intelligence' },
-  { path: '/analytics',          el: <Analytics />,         title: 'Analytics & Reports',    sub: 'Intelligence' },
-  { path: '/audit',              el: <Audit />,             title: 'Audit Trail (SHA-256)',   sub: 'Intelligence' },
-  { path: '/assistant',          el: <Assistant />,         title: 'AI Assistant',           sub: 'Intelligence' },
-  { path: '/pay',                el: <Pay />,               title: 'Pay',                    sub: 'System' },
-  { path: '/integrations',       el: <Integrations />,      title: 'Integrations',           sub: 'System' },
-  { path: '/settings',           el: <Settings />,          title: 'Settings',               sub: 'System' },
-  { path: '/help',               el: <Help />,              title: 'Help & Support',         sub: 'System' },
-  { path: '/create-project-wizard', el: <CreateProjectWizard />, title: 'Create Project',   sub: 'Escrow Prevent' },
-];
-
-function ShellRoute({ title, sub, children }) {
-  return (
-    <Routes>
-      <Route element={<AppShell title={title} subtitle={sub} />}>
-        <Route index element={children} />
-      </Route>
-    </Routes>
-  );
-}
+// Fallback while a chunk loads
+function Loading() { return <PageLoader />; }
 
 export default function App() {
   return (
@@ -66,21 +36,38 @@ export default function App() {
       <ToastContainer />
       <Routes>
         {/* Landing — no shell */}
-        <Route path="/" element={<Landing />} />
+        <Route path="/" element={
+          <Suspense fallback={<Loading />}><Landing /></Suspense>
+        } />
 
-        {/* Shell routes */}
-        <Route element={<AppShell title="ProofPay" subtitle="" />}>
-          {ROUTES.map(r => (
-            <Route
-              key={r.path}
-              path={r.path}
-              element={
-                // Pass title/subtitle via context — AppShell uses them from route
-                // Simple approach: just render with AppShell, header gets updated per nav
-                r.el
-              }
-            />
-          ))}
+        {/* All app pages inside AppShell */}
+        <Route element={<AppShell />}>
+          <Route path="/dashboard"          element={<Suspense fallback={<Loading />}><Dashboard /></Suspense>} />
+          <Route path="/projects"           element={<Suspense fallback={<Loading />}><Projects /></Suspense>} />
+          <Route path="/project-details"    element={<Suspense fallback={<Loading />}><ProjectDetails /></Suspense>} />
+          <Route path="/milestones"         element={<Suspense fallback={<Loading />}><Milestones /></Suspense>} />
+          <Route path="/submissions"        element={<Suspense fallback={<Loading />}><Submissions /></Suspense>} />
+          <Route path="/ledger"             element={<Suspense fallback={<Loading />}><Ledger /></Suspense>} />
+          <Route path="/recovery-overview"  element={<Suspense fallback={<Loading />}><RecoveryOverview /></Suspense>} />
+          <Route path="/cases"              element={<Suspense fallback={<Loading />}><Cases /></Suspense>} />
+          <Route path="/invoices"           element={<Suspense fallback={<Loading />}><Invoices /></Suspense>} />
+          <Route path="/payment-attempts"   element={<Suspense fallback={<Loading />}><PaymentAttempts /></Suspense>} />
+          <Route path="/reconciliation"     element={<Suspense fallback={<Loading />}><Reconciliation /></Suspense>} />
+          <Route path="/disputes"           element={<Suspense fallback={<Loading />}><Disputes /></Suspense>} />
+          <Route path="/mandate-guard"      element={<Suspense fallback={<Loading />}><MandateGuard /></Suspense>} />
+          <Route path="/reputation"         element={<Suspense fallback={<Loading />}><Reputation /></Suspense>} />
+          <Route path="/approvals"          element={<Suspense fallback={<Loading />}><Approvals /></Suspense>} />
+          <Route path="/agents"             element={<Suspense fallback={<Loading />}><Agents /></Suspense>} />
+          <Route path="/analytics"          element={<Suspense fallback={<Loading />}><Analytics /></Suspense>} />
+          <Route path="/audit"              element={<Suspense fallback={<Loading />}><Audit /></Suspense>} />
+          <Route path="/assistant"          element={<Suspense fallback={<Loading />}><Assistant /></Suspense>} />
+          <Route path="/pay"                element={<Suspense fallback={<Loading />}><Pay /></Suspense>} />
+          <Route path="/integrations"       element={<Suspense fallback={<Loading />}><Integrations /></Suspense>} />
+          <Route path="/settings"           element={<Suspense fallback={<Loading />}><Settings /></Suspense>} />
+          <Route path="/help"               element={<Suspense fallback={<Loading />}><Help /></Suspense>} />
+          <Route path="/create-project-wizard" element={<Suspense fallback={<Loading />}><CreateProjectWizard /></Suspense>} />
+
+          {/* Catch-all → dashboard */}
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Route>
       </Routes>
