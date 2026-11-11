@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ProofPay — Approvals Queue</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0;font-family:Inter,system-ui,sans-serif;color:#172B4D;background:#F5F7FA;font-size:14px}
+*{box-sizing:border-box}
+a{color:#0070E0;text-decoration:none}a:hover{text-decoration:underline}
+.i{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.nv{display:flex;align-items:center;gap:12px;height:40px;padding:0 12px;border-radius:8px;color:#D6E2F5;font-size:14px}
+.nv:hover{background:#0A3F9E;text-decoration:none;color:#fff}
+.nv.on{background:#0070E0;color:#fff}
+.nv b{margin-left:auto;background:#F5A623;color:#172B4D;font-size:11px;font-weight:600;border-radius:10px;padding:1px 7px}
+.gl{font-size:11px;letter-spacing:.08em;color:#9DB6E0;padding:16px 12px 6px;font-weight:600}
+.card{background:#fff;border:1px solid #E5E9F0;border-radius:12px;padding:20px}
+.n{font-variant-numeric:tabular-nums}
+.btn{height:44px;padding:0 16px;border-radius:8px;border:1px solid #E5E9F0;background:#fff;color:#172B4D;font:600 14px Inter,sans-serif;cursor:pointer}
+.btn:hover{background:#F0F3F8}
+.btn.p{background:#0070E0;border-color:#0070E0;color:#fff}.btn.p:hover{background:#005fc0}
+.lb{font-size:12px;color:#64748B}
+.h2{font-size:20px;font-weight:600;margin:0;color:#003087}
+.ct{font-size:15px;font-weight:600;margin:0}
+.big{font-size:28px;font-weight:600;margin:4px 0}
+.up{font-size:12px;color:#1E7A4C;font-weight:500}
+.ico{width:36px;height:36px;border-radius:10px;background:#E6F0FC;color:#0070E0;display:flex;align-items:center;justify-content:center}
+.row{display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid #E5E9F0}
+.tab{height:32px;padding:0 12px;border-radius:8px;border:0;background:transparent;color:#64748B;font:500 13px Inter,sans-serif;cursor:pointer}
+.tab.on{background:#E6F0FC;color:#0070E0}
+.bd{font-size:12px;font-weight:600;border-radius:12px;padding:2px 10px;white-space:nowrap}
+.g{background:#E3F4EB;color:#1E7A4C}.a{background:#FEF1D9;color:#8A5A00}.r{background:#FBE5E6;color:#B42830}.b{background:#E6F0FC;color:#005BB5}
+.ib{width:44px;height:44px;border-radius:8px;border:0;background:transparent;color:#64748B;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.ib:hover{background:#F0F3F8}
+.grid{display:grid;gap:24px}
+@media (max-width:900px){.side{display:none!important}.srch{display:none!important}}
+.mono{font-family:'JetBrains Mono','SF Mono',Consolas,monospace;font-size:12px;color:#003087}.f{display:block;width:100%;height:44px;margin-top:4px;padding:0 12px;border:1px solid #E5E9F0;border-radius:8px;font:14px Inter,sans-serif;color:#172B4D;background:#fff}[hidden]{display:none!important}.btn:focus-visible,.f:focus-visible,.nv:focus-visible,a:focus-visible{outline:2px solid #0070E0;outline-offset:2px}
+.th{padding:10px 12px;font-size:12px;font-weight:600;color:#64748B}.td{padding:12px;border-top:1px solid #E5E9F0;font-size:14px}.fr:hover,.dl:hover{background:#F0F3F8!important}
+.gy{background:#F0F3F8;color:#64748B}.lbl{display:block;font-size:12px;font-weight:500;color:#64748B}.ta{display:block;width:100%;min-height:96px;margin-top:4px;padding:10px 12px;border:1px solid #E5E9F0;border-radius:8px;font:14px Inter,sans-serif;color:#172B4D;resize:vertical}.ta:focus-visible{outline:2px solid #0070E0;outline-offset:2px}.opt{display:flex;gap:10px;align-items:center;flex:1 1 200px;min-height:44px;padding:0 14px;border:1px solid #E5E9F0;border-radius:8px;cursor:pointer;font-weight:500}.opt:has(input:checked){border-width:2px}.opt.ap:has(input:checked){border-color:#2E9D65;background:#F3FBF6}.opt.dn:has(input:checked){border-color:#D9363E;background:#FEF6F6}.kv{display:grid;grid-template-columns:140px 1fr;gap:4px 12px;font-size:13px}.kv dt{color:#64748B}.kv dd{margin:0;word-break:break-all}.btn.p.red{background:#D9363E;border-color:#D9363E}.btn:disabled{opacity:.6;cursor:not-allowed}</style>
+</head>
+<body>
+<div style="display:flex;min-height:100vh">
+<aside class="side" style="width:250px;flex:none;background:#003087;color:#fff;display:flex;flex-direction:column;padding:16px 12px;position:sticky;top:0;height:100vh;overflow-y:auto">
+<div style="display:flex;align-items:center;gap:10px;padding:4px 12px 12px">
+<div style="width:32px;height:32px;border-radius:8px;background:#0070E0;display:flex;align-items:center;justify-content:center"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6zM9 12l2 2 4-4"></path></svg></div>
+<div style="font-size:18px;font-weight:600;flex:1">ProofPay</div>
+<button class="ib" aria-label="Collapse sidebar" style="color:#D6E2F5;width:32px;height:32px"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg></button>
+</div>
+<nav aria-label="Main">
+<div class="gl">OVERVIEW</div>
+<a class="nv" href="index.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3h7v9H3zM14 3h7v5h-7zM14 12h7v9h-7zM3 16h7v5H3z"></path></svg>Dashboard</a>
+<div class="gl">ESCROW MANAGEMENT</div>
+<a class="nv" href="projects.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6a2 2 0 0 1 2-2h4l2 3h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>Projects</a>
+<a class="nv" href="milestones.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V4M5 4h12l-2 4 2 4H5"></path></svg>Milestones</a>
+<a class="nv" href="submissions.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9zM9 14l2 2 4-4"></path></svg>Submissions &amp; Verification<b>5</b></a>
+<a class="nv" href="ledger.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2zM4 19a2 2 0 0 0 2 2h13"></path></svg>Escrow Ledger</a>
+<div class="gl">REVENUE RECOVERY</div>
+<a class="nv" href="recovery-overview.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8M15 7h6v6"></path></svg>Recovery Overview</a>
+<a class="nv" href="cases.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8h18v12H3zM9 8V5h6v3"></path></svg>Recovery Cases<b>12</b></a>
+<a class="nv" href="invoices.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6"></path></svg>Invoices &amp; Subscriptions</a>
+<a class="nv" href="payment-attempts.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18v12H3zM3 10h18"></path></svg>Payment Attempts</a>
+<div class="gl">TRUST &amp; GOVERNANCE</div>
+<a class="nv" href="reconciliation.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h14l-3-3M20 16H6l3 3"></path></svg>Reconciliation<b>4</b></a>
+<a class="nv" href="disputes.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l10 18H2zM12 10v5M12 18h.01"></path></svg>Disputes<b>2</b></a>
+<a class="nv" href="mandate-guard.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"></path></svg>Mandate Guard</a>
+<a class="nv" href="reputation.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.8 5.8 6.2.9-4.5 4.4 1 6.2-5.5-3 -5.5 3 1-6.2L3 9.7l6.2-.9z"></path></svg>Reputation</a>
+<a class="nv on" href="approvals.html" aria-current="page"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 13l5 5L20 7"></path></svg>Approvals<b id="nb">3</b></a>
+<div class="gl">INTELLIGENCE</div>
+<a class="nv" href="agents.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8h14v10H5zM12 8V4M9 13h.01M15 13h.01"></path></svg>AI Agents</a>
+<a class="nv" href="analytics.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V10M12 21V4M19 21v-8"></path></svg>Analytics &amp; Reports</a>
+<a class="nv" href="audit.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"></path></svg>Audit Trail</a>
+<a class="nv" href="assistant.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"></path></svg>AI Assistant</a>
+<div class="gl">SYSTEM</div>
+<a class="nv" href="integrations.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3v5M15 3v5M6 8h12v4a6 6 0 0 1-12 0zM12 18v3"></path></svg>Integrations</a>
+<a class="nv" href="settings.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10M14 5v4M6 15v4"></path></svg>Settings</a>
+<a class="nv" href="help.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .8-1 1.7M12 17h.01"></path></svg>Help &amp; Support</a>
+</nav>
+<div style="margin-top:auto;padding-top:16px">
+<button style="display:flex;align-items:center;gap:12px;width:100%;height:56px;padding:0 12px;border-radius:8px;border:0;background:#0A3F9E;color:#fff;cursor:pointer;text-align:left;font-family:Inter,sans-serif">
+<span style="width:32px;height:32px;border-radius:16px;background:#009CDE;color:#001C64;font-weight:600;display:flex;align-items:center;justify-content:center">S</span>
+<span style="flex:1"><span style="display:block;font-size:13px;font-weight:600">Sahil</span><span style="display:block;font-size:12px;color:#C9D8F2">Workspace Owner</span></span>
+<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 15l6-6 6 6"></path></svg></button>
+</div>
+</aside>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column">
+<header style="height:68px;flex:none;background:#fff;border-bottom:1px solid #E5E9F0;display:flex;align-items:center;gap:16px;padding:0 32px;position:sticky;top:0;z-index:5">
+<div style="min-width:140px"><div class="lb">Trust &amp; Governance /</div><div style="font-weight:600;font-size:15px">Approvals Queue</div></div>
+<div class="srch" style="flex:1;max-width:480px;margin:0 auto;position:relative">
+<svg class="i" viewBox="0 0 24 24" aria-hidden="true" style="position:absolute;left:12px;top:13px;color:#64748B"><path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM21 21l-5-5"></path></svg>
+<label for="gs" style="position:absolute;left:-9999px">Global search</label>
+<input id="gs" placeholder="Search projects, invoices, cases, audit hashes (Ctrl+K)..." style="width:100%;height:44px;padding:0 12px 0 40px;border:1px solid #E5E9F0;border-radius:10px;background:#F0F3F8;font:14px Inter,sans-serif;color:#172B4D">
+</div>
+<span class="bd a" style="margin-left:auto">Sandbox</span>
+<span style="display:flex;align-items:center;gap:6px;font-size:13px;font-weight:500;white-space:nowrap"><span style="width:8px;height:8px;border-radius:4px;background:#2E9D65"></span>PayPal Connected</span>
+<button class="ib" aria-label="Notifications, 3 unread" style="position:relative"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 21h4"></path></svg><span style="position:absolute;top:10px;right:11px;width:8px;height:8px;border-radius:4px;background:#D9363E"></span></button>
+<button class="ib" aria-label="Help"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .8-1 1.7M12 17h.01"></path></svg></button>
+<button class="ib" aria-label="Account menu" style="width:36px;height:36px;border-radius:18px;background:#003087;color:#fff;font:600 14px Inter,sans-serif">S</button>
+</header>
+<main style="padding:32px;max-width:1280px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:24px">
+<div style="max-width:760px"><h1 style="font-size:28px;font-weight:600;margin:0;color:#003087">Human Approvals Queue &amp; Governance Inbox</h1><p style="margin:4px 0 0;color:#64748B">Human-in-the-Loop decision center for high-value payouts, borderline AI scores, and sensitive recovery interventions.</p></div>
+<div id="alerts" style="display:flex;flex-wrap:wrap;gap:8px" aria-live="polite"></div>
+
+<section class="card" style="padding:0;overflow:hidden">
+<div role="tablist" aria-label="Approval queues" style="display:flex;gap:4px;padding:12px 16px;border-bottom:1px solid #E5E9F0;flex-wrap:wrap">
+<button class="tab on" role="tab" id="t1" aria-selected="true" aria-controls="p1">Escrow Milestone Payout Approvals <span class="bd a" id="c1"></span></button>
+<button class="tab" role="tab" id="t2" aria-selected="false" aria-controls="p2">Recovery Intervention Approvals <span class="bd a" id="c2"></span></button></div>
+<div id="p1" role="tabpanel" aria-labelledby="t1" style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;min-width:1240px;text-align:left"><thead style="background:#F0F3F8"><tr><th class="th">Task ID</th><th class="th">Milestone / Project</th><th class="th">Freelancer Recipient</th><th class="th">Amount</th><th class="th">AI Verification Score</th><th class="th">Flag Reason</th><th class="th">Submitted</th><th class="th">Actions</th></tr></thead><tbody id="b1"></tbody></table></div>
+<div id="p2" role="tabpanel" aria-labelledby="t2" hidden style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;min-width:1100px;text-align:left"><thead style="background:#F0F3F8"><tr><th class="th">Case ID</th><th class="th">Customer / Company</th><th class="th">Amount at Risk</th><th class="th">Proposed Action</th><th class="th">Risk Level</th><th class="th">Reason for Human Review</th><th class="th">Actions</th></tr></thead><tbody id="b2"></tbody></table></div>
+<div id="empty" hidden style="padding:40px;text-align:center"><b>Queue clear</b><div class="lb" style="margin-top:4px">No items awaiting human review in this queue.</div></div></section>
+
+<section class="card"><h2 class="h2">Recent Decisions</h2><div id="log" style="margin-top:8px"><div class="lb" style="padding:12px 0">No decisions yet this session.</div></div></section>
+</main></div></div>
+
+<div id="modal" style="display:none;position:fixed;inset:0;background:rgba(10,37,64,.4);z-index:20;align-items:center;justify-content:center;padding:16px" role="dialog" aria-modal="true" aria-labelledby="mt">
+<div class="card" style="max-width:680px;width:100%;max-height:92vh;overflow-y:auto"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px"><div><div class="lb" id="msub"></div><h2 class="h2" id="mt">Human Decision</h2></div><button class="ib" id="mx" aria-label="Close" style="font-size:22px">×</button></div>
+<div id="mb"></div></div></div>
+<div id="toasts" aria-live="polite" style="position:fixed;top:80px;right:24px;z-index:40;display:grid;gap:8px"></div>
+<script>
+const $=s=>document.querySelector(s),fmt=n=>'$'+n.toLocaleString('en-US',{minimumFractionDigits:2})+' USD';
+const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function toast(t,k){const d=document.createElement('div');d.className='card';d.style.cssText='padding:12px 16px;border-left:4px solid '+(k==='w'?'#F5A623':'#2E9D65')+';box-shadow:0 4px 12px rgba(0,0,0,.1);max-width:340px';d.textContent=t;$('#toasts').append(d);setTimeout(()=>d.remove(),4500)}
+let P=[
+{id:'TASK-APP-104',ms:'MS-2026-001-02',proj:'E-commerce Web App',rcp:'freelancer@example.com',amt:700,score:94,note:'Passed all automated criteria',flag:'OVERSIZED_PAYOUT: Amount exceeds $200.00 autonomous threshold',at:'2026-11-11 08:12 UTC',pr:'https://github.com/acme/shop/pull/42',url:'https://staging-shop.acme.app',m:'Frontend Integration & API Client'},
+{id:'TASK-APP-105',ms:'MS-2026-005-01',proj:'Brand Identity Pack',rcp:'designer@example.com',amt:850,score:88,note:'Passed 7 of 8 criteria',flag:'OVERSIZED_PAYOUT: Amount exceeds $200.00 autonomous threshold',at:'2026-11-11 10:47 UTC',pr:'https://github.com/acme/brand/pull/9',url:'https://staging-brand.acme.app',m:'Logo system & guidelines'}];
+let Rc=[{id:'REC-2026-0089',cust:'Acme Corp',amt:1850,act:'STAGE_3_SERVICE_SUSPENSION',risk:'HIGH RISK',why:'Amount exceeds $1,000 policy threshold; service suspension requested',diag:'INSUFFICIENT_FUNDS',hist:'Stage 1 link sent 11-04 · Stage 2 firm warning sent 11-08 · no response'}];
+const LOG=[];let tab=1,cur=null;
+function sync(){const n=P.length+Rc.length;$('#nb').textContent=n;$('#c1').textContent=P.length;$('#c2').textContent=Rc.length;
+$('#alerts').innerHTML=(P.length?`<span class="bd a" style="padding:8px 14px;font-size:13px">⚠️ ${P.length} Milestone Payout${P.length>1?'s':''} Awaiting Review (Oversized &gt; $200.00 Limit)</span>`:'')+(Rc.length?`<span class="bd a" style="padding:8px 14px;font-size:13px">⚠️ ${Rc.length} Recovery Escalation${Rc.length>1?'s':''} Awaiting Sign-off (Stage 3 Account Suspension)</span>`:'')+(n?'':'<span class="bd g" style="padding:8px 14px;font-size:13px">✓ All clear: nothing awaiting review</span>')}
+function draw(){sync();
+$('#b1').innerHTML=P.map(p=>`<tr class="fr"><td class="td"><a class="mono" href="audit.html#${p.id}">${p.id}</a></td><td class="td"><code class="mono">${p.ms}</code><div>${p.proj}</div></td><td class="td">${p.rcp}</td><td class="td n"><b>${fmt(p.amt)}</b><div><span class="bd r">Exceeds $200 Cap</span></div></td><td class="td"><b class="n">${p.score}%</b> - ${p.note}</td><td class="td"><code class="mono" style="color:#B42830">${p.flag.split(':')[0]}</code><div class="lb">${p.flag.split(': ')[1]}</div></td><td class="td n">${p.at}</td><td class="td"><button class="btn p" data-k="p" data-id="${p.id}">Review &amp; Decide</button></td></tr>`).join('');
+$('#b2').innerHTML=Rc.map(r=>`<tr class="fr"><td class="td"><a href="cases.html">${r.id}</a></td><td class="td">${r.cust}</td><td class="td n"><b>${fmt(r.amt)}</b></td><td class="td"><code class="mono">${r.act}</code></td><td class="td"><span class="bd r">${r.risk}</span></td><td class="td">${r.why}</td><td class="td"><button class="btn p" data-k="r" data-id="${r.id}">Review &amp; Decide</button></td></tr>`).join('');
+$('#empty').hidden=(tab===1?P:Rc).length>0;$('#p1').hidden=tab!==1||!P.length;$('#p2').hidden=tab!==2||!Rc.length;
+document.querySelectorAll('[data-k]').forEach(b=>b.onclick=()=>openM(b.dataset.k,b.dataset.id))}
+function setTab(n){tab=n;[1,2].forEach(i=>{const t=$('#t'+i);t.classList.toggle('on',i===n);t.setAttribute('aria-selected',i===n)});draw()}
+$('#t1').onclick=()=>setTab(1);$('#t2').onclick=()=>setTab(2);
+function openM(k,id){const p=k==='p'?P.find(x=>x.id===id):Rc.find(x=>x.id===id);cur={k,p};const isP=k==='p';
+$('#msub').textContent=isP?p.id+' · '+p.ms:p.id;$('#mt').textContent=isP?'Review Milestone Payout':'Review Recovery Intervention';
+const top=isP?[['Milestone Amount',fmt(p.amt)],['Recipient',p.rcp],['Project',p.proj]]:[['Amount at Risk',fmt(p.amt)],['Customer',p.cust],['Proposed Action',p.act]];
+const flag=isP?`Policy blocked autonomous payout because amount (${fmt(p.amt)}) exceeds $200.00 cap. Human confirmation required.`:`Policy blocked autonomous action: ${p.why}. Human sign-off required.`;
+const ev=isP?`<dt>GitHub PR</dt><dd><a href="${p.pr}" target="_blank" rel="noopener">${p.pr}</a></dd><dt>Staging URL</dt><dd><a href="${p.url}" target="_blank" rel="noopener">${p.url}</a> <span class="bd g">HTTP 200 OK</span></dd><dt>Verifier Score</dt><dd><b>${p.score}/100</b> (${p.score>=90?'All critical tests passed':p.note})</dd><dt>Milestone</dt><dd>${p.m}</dd>`:`<dt>Diagnosis</dt><dd><code class="mono">${p.diag}</code></dd><dt>Contact ladder</dt><dd>${p.hist}</dd><dt>Reconciliation</dt><dd>3-way check: no bank or ERP match found</dd>`;
+$('#mb').innerHTML=`<div class="grid" style="grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px">${top.map(t=>`<div style="padding:10px 12px;background:#F0F3F8;border-radius:8px;min-width:0"><div class="lb">${t[0]}</div><b style="word-break:break-word">${t[1]}</b></div>`).join('')}</div>
+<div style="margin-top:12px;padding:12px 16px;border-left:4px solid #D9363E;background:#FEF6F6;border-radius:8px"><b style="color:#B42830">Mandate Guard Flag</b><div>${flag}</div></div>
+<h3 class="ct" style="margin-top:16px">Evidence Summary</h3><dl class="kv" style="margin:8px 0 0">${ev}</dl>
+<form id="df" style="margin-top:16px" novalidate><fieldset style="border:0;padding:0;margin:0"><legend class="lbl">Decision</legend><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
+<label class="opt ap"><input type="radio" name="d" value="APPROVE" checked>${isP?'Approve Payout':'Approve Action'}</label><label class="opt dn"><input type="radio" name="d" value="DENY">${isP?'Deny / Request Revisions':'Deny Action'}</label></div></fieldset>
+<label class="lbl" style="margin-top:12px" for="nt">Reviewer Notes (required)</label><textarea class="ta" id="nt" placeholder="${isP?'Reviewed PR code quality and live preview. Deliverable satisfies all milestone criteria.':'Reviewed contact history and customer record.'}" aria-describedby="ne"></textarea><div id="ne" role="alert" style="color:#B42830;font-size:12px;min-height:16px"></div>
+<div class="lb" style="margin-top:8px">API call</div><code class="mono" id="api" style="display:block;padding:8px 12px;background:#F0F3F8;border-radius:8px;word-break:break-all"></code>
+<div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px;flex-wrap:wrap"><button class="btn" type="button" id="mc">Cancel</button><button class="btn p" type="submit" id="mo"></button></div></form>`;
+const upd=()=>{const d=document.querySelector('[name=d]:checked').value,ok=d==='APPROVE';const url=isP?'/submission-approvals/'+p.id+'/decide':'/approvals/'+p.id+'/decide';
+$('#api').textContent='POST '+url+' '+JSON.stringify({decision:d,notes:$('#nt').value||'...'});
+const b=$('#mo');b.textContent=isP?(ok?'Confirm Decision & Execute PayPal Payout':'Confirm Decision & Request Revisions'):(ok?'Confirm Decision & Execute Action':'Confirm Decision & Cancel Action');b.classList.toggle('red',!ok)};
+document.querySelectorAll('[name=d]').forEach(r=>r.onchange=upd);$('#nt').oninput=upd;upd();
+$('#mc').onclick=closeM;$('#df').onsubmit=submit;$('#modal').style.display='flex';$('#nt').focus()}
+function closeM(){$('#modal').style.display='none'}$('#mx').onclick=closeM;document.addEventListener('keydown',e=>{if(e.key==='Escape')closeM()});
+async function sha(t){try{const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(t));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}catch(e){return Array.from({length:64},(_,i)=>((t.charCodeAt(i%t.length)*7+i*13)%16).toString(16)).join('')}}
+async function submit(e){e.preventDefault();const d=document.querySelector('[name=d]:checked').value,n=$('#nt').value.trim(),{k,p}=cur,ok=d==='APPROVE';
+if(n.length<10){$('#ne').textContent='Reviewer notes are required (at least 10 characters).';$('#nt').focus();return}
+$('#ne').textContent='';const b=$('#mo');b.disabled=true;b.textContent=ok&&k==='p'?'Dispatching PayPal Payout…':'Recording decision…';
+await new Promise(r=>setTimeout(r,900));
+const h=await sha(JSON.stringify({id:p.id,d,n,t:Date.now()})),batch='PAYOUTS-'+h.slice(0,10).toUpperCase();
+const steps=[['Decision recorded: '+d+' by Risk Officer',1],['Mandate Guard: human override logged against '+(k==='p'?'Rule 1':'recovery threshold'),1]];
+if(k==='p'){steps.push(ok?['PayPal Payout dispatched · batch <code class="mono">'+batch+'</code> · '+fmt(p.amt),1]:['No funds moved · freelancer notified to revise and resubmit',1]);steps.push(['Ledger '+(ok?'entry recorded':'unchanged: escrow remains held'),1])}
+else steps.push([ok?'Action executed: '+p.act:'Action cancelled; case returned to Stage 2 contact ladder',1]);
+steps.push(['Appended to SHA-256 audit chain · <a class="mono" href="audit.html#'+h+'">'+h.slice(0,12)+'… ↗</a>',1]);
+$('#mt').textContent=ok?'Decision Executed':'Decision Recorded';
+$('#mb').innerHTML=`<div style="margin-top:16px;padding:12px 16px;border-radius:8px;background:${ok?'#F3FBF6':'#FEF6F6'};font-weight:600;color:${ok?'#1E7A4C':'#B42830'}">${esc(p.id)}: ${ok?'APPROVED':'DENIED'}</div><div style="margin-top:8px">${steps.map(s=>`<div class="ev" style="display:flex;gap:12px;padding:10px 0;border-top:1px solid #E5E9F0"><span style="color:#2E9D65;font-weight:700">✓</span><span>${s[0]}</span></div>`).join('')}</div><div style="text-align:right;margin-top:16px"><button class="btn p" id="md">Done</button></div>`;
+$('#md').onclick=closeM;$('#md').focus();
+if(k==='p')P=P.filter(x=>x.id!==p.id);else Rc=Rc.filter(x=>x.id!==p.id);
+LOG.unshift({id:p.id,ok,amt:p.amt,n,h});$('#log').innerHTML=LOG.map(l=>`<div class="row"><span class="bd ${l.ok?'g':'r'}">${l.ok?'APPROVED':'DENIED'}</span><b>${esc(l.id)}</b><span class="n">${fmt(l.amt)}</span><span class="lb" style="flex:1;min-width:0">${esc(l.n)}</span><a class="mono" href="audit.html#${l.h}">${l.h.slice(0,8)}… ↗</a></div>`).join('');
+draw();toast(ok&&k==='p'?'Success: PayPal Payout dispatched for '+p.id+'.':'Decision recorded for '+p.id+'.',ok?'':'w')}
+draw();
+</script>
+</body>
+</html>

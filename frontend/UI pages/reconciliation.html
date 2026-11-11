@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ProofPay — Payment Reconciliation &amp; 3-Way Matching</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0;font-family:Inter,system-ui,sans-serif;color:#172B4D;background:#F5F7FA;font-size:14px}
+*{box-sizing:border-box}
+a{color:#0070E0;text-decoration:none}a:hover{text-decoration:underline}
+.i{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.nv{display:flex;align-items:center;gap:12px;height:40px;padding:0 12px;border-radius:8px;color:#D6E2F5;font-size:14px}
+.nv:hover{background:#0A3F9E;text-decoration:none;color:#fff}
+.nv.on{background:#0070E0;color:#fff}
+.nv b{margin-left:auto;background:#F5A623;color:#172B4D;font-size:11px;font-weight:600;border-radius:10px;padding:1px 7px}
+.gl{font-size:11px;letter-spacing:.08em;color:#9DB6E0;padding:16px 12px 6px;font-weight:600}
+.card{background:#fff;border:1px solid #E5E9F0;border-radius:12px;padding:20px}
+.n{font-variant-numeric:tabular-nums}
+.btn{height:44px;padding:0 16px;border-radius:8px;border:1px solid #E5E9F0;background:#fff;color:#172B4D;font:600 14px Inter,sans-serif;cursor:pointer}
+.btn:hover{background:#F0F3F8}
+.btn.p{background:#0070E0;border-color:#0070E0;color:#fff}.btn.p:hover{background:#005fc0}
+.lb{font-size:12px;color:#64748B}
+.h2{font-size:20px;font-weight:600;margin:0;color:#003087}
+.ct{font-size:15px;font-weight:600;margin:0}
+.big{font-size:28px;font-weight:600;margin:4px 0}
+.up{font-size:12px;color:#1E7A4C;font-weight:500}
+.ico{width:36px;height:36px;border-radius:10px;background:#E6F0FC;color:#0070E0;display:flex;align-items:center;justify-content:center}
+.row{display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid #E5E9F0}
+.tab{height:32px;padding:0 12px;border-radius:8px;border:0;background:transparent;color:#64748B;font:500 13px Inter,sans-serif;cursor:pointer}
+.tab.on{background:#E6F0FC;color:#0070E0}
+.bd{font-size:12px;font-weight:600;border-radius:12px;padding:2px 10px;white-space:nowrap}
+.g{background:#E3F4EB;color:#1E7A4C}.a{background:#FEF1D9;color:#8A5A00}.r{background:#FBE5E6;color:#B42830}.b{background:#E6F0FC;color:#005BB5}
+.ib{width:44px;height:44px;border-radius:8px;border:0;background:transparent;color:#64748B;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.ib:hover{background:#F0F3F8}
+.grid{display:grid;gap:24px}
+@media (max-width:900px){.side{display:none!important}.srch{display:none!important}}
+.mono{font-family:'JetBrains Mono','SF Mono',Consolas,monospace;font-size:12px;color:#003087}.f{display:block;width:100%;height:44px;margin-top:4px;padding:0 12px;border:1px solid #E5E9F0;border-radius:8px;font:14px Inter,sans-serif;color:#172B4D;background:#fff}[hidden]{display:none!important}.btn:focus-visible,.f:focus-visible,.nv:focus-visible,a:focus-visible{outline:2px solid #0070E0;outline-offset:2px}
+.th{padding:10px 12px;font-size:12px;font-weight:600;color:#64748B}.td{padding:12px;border-top:1px solid #E5E9F0;font-size:14px}.fr:hover,.dl:hover{background:#F0F3F8!important}
+.x{background:#F0F3F8;color:#64748B}.tab[role=tab]{display:inline-flex;align-items:center;gap:6px;height:40px}.tab .ct2{background:#F0F3F8;border-radius:10px;padding:0 7px;font-size:11px;font-weight:600;color:#64748B}.tab.on .ct2{background:#fff;color:#0070E0}.kp{flex:1 1 200px;min-width:0}.kp .lb{display:block}.sm{height:36px;font-size:13px;padding:0 12px}.tr:hover{background:#F8FAFC}.lk{display:inline-flex;align-items:center;gap:6px}.sk{height:14px;border-radius:7px;background:linear-gradient(90deg,#F0F3F8,#E5E9F0,#F0F3F8);margin:14px 12px}@media (prefers-reduced-motion:no-preference){#dr{transition:transform .2s}}
+</style>
+</head>
+<body>
+<div style="display:flex;min-height:100vh">
+<aside class="side" style="width:250px;flex:none;background:#003087;color:#fff;display:flex;flex-direction:column;padding:16px 12px;position:sticky;top:0;height:100vh;overflow-y:auto">
+<div style="display:flex;align-items:center;gap:10px;padding:4px 12px 12px">
+<div style="width:32px;height:32px;border-radius:8px;background:#0070E0;display:flex;align-items:center;justify-content:center"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6zM9 12l2 2 4-4"></path></svg></div>
+<div style="font-size:18px;font-weight:600;flex:1">ProofPay</div>
+<button class="ib" aria-label="Collapse sidebar" style="color:#D6E2F5;width:32px;height:32px"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg></button>
+</div>
+<nav aria-label="Main">
+<div class="gl">OVERVIEW</div>
+<a class="nv" href="index.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3h7v9H3zM14 3h7v5h-7zM14 12h7v9h-7zM3 16h7v5H3z"></path></svg>Dashboard</a>
+<div class="gl">ESCROW MANAGEMENT</div>
+<a class="nv" href="projects.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6a2 2 0 0 1 2-2h4l2 3h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>Projects</a>
+<a class="nv" href="milestones.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V4M5 4h12l-2 4 2 4H5"></path></svg>Milestones</a>
+<a class="nv" href="submissions.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9zM9 14l2 2 4-4"></path></svg>Submissions &amp; Verification<b>5</b></a>
+<a class="nv" href="ledger.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2zM4 19a2 2 0 0 0 2 2h13"></path></svg>Escrow Ledger</a>
+<div class="gl">REVENUE RECOVERY</div>
+<a class="nv" href="recovery-overview.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8M15 7h6v6"></path></svg>Recovery Overview</a>
+<a class="nv" href="cases.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8h18v12H3zM9 8V5h6v3"></path></svg>Recovery Cases<b>12</b></a>
+<a class="nv" href="invoices.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6"></path></svg>Invoices &amp; Subscriptions</a>
+<a class="nv" href="payment-attempts.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18v12H3zM3 10h18"></path></svg>Payment Attempts</a>
+<div class="gl">TRUST &amp; GOVERNANCE</div>
+<a class="nv on" href="reconciliation.html" aria-current="page"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h14l-3-3M20 16H6l3 3"></path></svg>Reconciliation<b>4</b></a>
+<a class="nv" href="disputes.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l10 18H2zM12 10v5M12 18h.01"></path></svg>Disputes<b>1</b></a>
+<a class="nv" href="mandate-guard.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"></path></svg>Mandate Guard</a>
+<a class="nv" href="reputation.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.8 5.8 6.2.9-4.5 4.4 1 6.2-5.5-3 -5.5 3 1-6.2L3 9.7l6.2-.9z"></path></svg>Reputation</a>
+<div class="gl">INTELLIGENCE</div>
+<a class="nv" href="agents.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8h14v10H5zM12 8V4M9 13h.01M15 13h.01"></path></svg>AI Agents</a>
+<a class="nv" href="analytics.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V10M12 21V4M19 21v-8"></path></svg>Analytics &amp; Reports</a>
+<a class="nv" href="audit.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"></path></svg>Audit Trail</a>
+<a class="nv" href="assistant.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"></path></svg>AI Assistant</a>
+<div class="gl">SYSTEM</div>
+<a class="nv" href="integrations.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3v5M15 3v5M6 8h12v4a6 6 0 0 1-12 0zM12 18v3"></path></svg>Integrations</a>
+<a class="nv" href="settings.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10M14 5v4M6 15v4"></path></svg>Settings</a>
+<a class="nv" href="help.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .8-1 1.7M12 17h.01"></path></svg>Help &amp; Support</a>
+</nav>
+<div style="margin-top:auto;padding-top:16px">
+<button style="display:flex;align-items:center;gap:12px;width:100%;height:56px;padding:0 12px;border-radius:8px;border:0;background:#0A3F9E;color:#fff;cursor:pointer;text-align:left;font-family:Inter,sans-serif">
+<span style="width:32px;height:32px;border-radius:16px;background:#009CDE;color:#001C64;font-weight:600;display:flex;align-items:center;justify-content:center">S</span>
+<span style="flex:1"><span style="display:block;font-size:13px;font-weight:600">Sahil</span><span style="display:block;font-size:12px;color:#C9D8F2">Workspace Owner</span></span>
+<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 15l6-6 6 6"></path></svg></button>
+</div>
+</aside>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column">
+<header style="height:68px;flex:none;background:#fff;border-bottom:1px solid #E5E9F0;display:flex;align-items:center;gap:16px;padding:0 32px;position:sticky;top:0;z-index:5">
+<div style="min-width:140px"><div class="lb">Trust &amp; Governance /</div><div style="font-weight:600;font-size:15px">Reconciliation</div></div>
+<div class="srch" style="flex:1;max-width:480px;margin:0 auto;position:relative">
+<svg class="i" viewBox="0 0 24 24" aria-hidden="true" style="position:absolute;left:12px;top:13px;color:#64748B"><path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM21 21l-5-5"></path></svg>
+<label for="gs" style="position:absolute;left:-9999px">Global search</label>
+<input id="gs" placeholder="Search projects, invoices, cases, audit hashes (Ctrl+K)..." style="width:100%;height:44px;padding:0 12px 0 40px;border:1px solid #E5E9F0;border-radius:10px;background:#F0F3F8;font:14px Inter,sans-serif;color:#172B4D">
+</div>
+<span class="bd a" style="margin-left:auto">Sandbox</span>
+<span style="display:flex;align-items:center;gap:6px;font-size:13px;font-weight:500;white-space:nowrap"><span style="width:8px;height:8px;border-radius:4px;background:#2E9D65"></span>PayPal Connected</span>
+<button class="ib" aria-label="Notifications, 3 unread" style="position:relative"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 21h4"></path></svg><span style="position:absolute;top:10px;right:11px;width:8px;height:8px;border-radius:4px;background:#D9363E"></span></button>
+<button class="ib" aria-label="Help"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .8-1 1.7M12 17h.01"></path></svg></button>
+<button class="ib" aria-label="Account menu" style="width:36px;height:36px;border-radius:18px;background:#003087;color:#fff;font:600 14px Inter,sans-serif">S</button>
+</header>
+
+<main style="padding:32px;max-width:1280px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:24px">
+<div style="display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;justify-content:space-between">
+<div style="max-width:680px"><h1 style="font-size:28px;font-weight:600;margin:0;color:#003087">Payment Reconciliation &amp; 3-Way Matching</h1><p style="margin:4px 0 0;color:#64748B">Automatically match bank statements and merchant ledgers against PayPal transactions to prevent wrongful dunning.</p></div>
+<div style="display:flex;flex-wrap:wrap;gap:8px"><button class="btn" id="bExp">Export report</button><button class="btn p" id="bRun">Run 3-Way Reconciliation Engine</button></div></div>
+
+<section class="grid" style="grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:16px" aria-label="Reconciliation summary">
+<div class="card"><span class="lb">Total ledger records</span><div class="n big">200</div><span class="lb" id="lastRun">Last run Nov 11, 07:55 UTC</span></div>
+<div class="card"><span class="lb">Perfect 3-way matches</span><div class="n big">168 <span class="lb" style="font-size:14px">84%</span></div><span class="bd g">MATCHED</span></div>
+<div class="card"><span class="lb">Unmatched invoices</span><div class="n big">24 <span class="lb" style="font-size:14px">12%</span></div><span class="bd a">NEEDS REVIEW</span></div>
+<div class="card" style="border-color:#0070E0;background:#F4F9FF"><span class="lb">Paid elsewhere (offline / wire)</span><div class="n big" style="color:#003087">8 <span class="lb" style="font-size:14px">4%</span></div><span class="bd b">Halted from dunning</span></div>
+<div class="card"><span class="lb">Matching confidence</span><div class="n big">98.5%</div><span class="lb">Average fuzzy score</span></div>
+</section>
+
+<section class="card" aria-label="Upload sources">
+<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px"><h2 class="h2">Reconciliation sources</h2><span class="lb">Drop a CSV on a source, or select it to browse</span></div>
+<div id="zones" class="grid" style="grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-top:16px"></div>
+<div id="prog" hidden style="margin-top:16px"><div class="lb" id="progT">Starting…</div><div style="height:8px;border-radius:4px;background:#E5E9F0;margin-top:6px;overflow:hidden"><div id="progB" style="width:0;height:100%;background:#0070E0"></div></div></div>
+</section>
+
+<section class="card" aria-label="Discrepancies">
+<div style="display:flex;gap:12px;align-items:center;padding:14px 16px;border-radius:8px;background:#E3F4EB;color:#1E7A4C;margin-bottom:16px"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6zM9 12l2 2 4-4"></path></svg><div><b>Safe!</b> Customer was NOT sent an embarrassing overdue notice. <span id="safeSum"></span></div></div>
+<div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;align-items:center"><div role="tablist" aria-label="Discrepancy views" style="display:flex;gap:4px"><button class="tab on" role="tab" aria-selected="true" data-t="pe">Paid elsewhere <span class="ct2">8</span></button><button class="tab" role="tab" aria-selected="false" data-t="un">Unmatched <span class="ct2">24</span></button></div>
+<label class="lb"><span style="position:absolute;left:-9999px">Filter</span><input class="f sm" id="q" placeholder="Filter by case or customer" style="margin:0;width:240px"></label></div>
+<div style="overflow-x:auto;margin-top:8px"><table style="width:100%;border-collapse:collapse;min-width:1040px"><thead><tr style="text-align:left;background:#F0F3F8"><th class="th">Case</th><th class="th">Customer</th><th class="th" style="text-align:right">Amount</th><th class="th">PayPal status</th><th class="th">Bank match</th><th class="th">Score</th><th class="th">System action</th></tr></thead><tbody id="tb"></tbody></table></div>
+<div style="text-align:center;margin-top:12px"><button class="btn sm" id="more" hidden>Show 10 more</button></div>
+</section>
+<div style="text-align:center;padding:8px 0 16px;color:#003087;font-weight:600">AI recommends. Policy decides. PayPal executes. Every action is auditable.<div class="lb" style="font-weight:400;margin-top:4px">ProofPay · Every Payment. Proven. Protected.</div></div>
+</main>
+
+<aside id="dr" aria-label="Match detail" style="position:fixed;top:0;right:0;bottom:0;width:min(640px,100%);background:#fff;border-left:1px solid #E5E9F0;box-shadow:-8px 0 24px rgba(10,37,64,.15);z-index:25;transform:translateX(100%);overflow-y:auto;padding:24px" aria-hidden="true"></aside>
+<div id="toasts" aria-live="polite" style="position:fixed;top:80px;right:24px;z-index:30;display:grid;gap:8px"></div>
+
+</div>
+</div>
+<script>
+const $=s=>document.querySelector(s),fmt=n=>'$'+n.toLocaleString('en-US',{minimumFractionDigits:2}),esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function toast(t,k){const d=document.createElement('div');d.className='card';d.style.cssText='padding:12px 16px;border-left:4px solid '+(k==='w'?'#F5A623':'#2E9D65')+';box-shadow:0 4px 12px rgba(0,0,0,.1);max-width:340px';d.textContent=t;$('#toasts').append(d);setTimeout(()=>d.remove(),4500)}
+const Z=[{k:'pp',t:'PayPal Gateway Report (.CSV)',f:'paypal_nov_2026.csv',n:184,u:'txns'},{k:'erp',t:'Merchant ERP Invoices (.CSV)',f:'erp_billing_nov.csv',n:200,u:'records'},{k:'bk',t:'Bank Offline Statement (.CSV)',f:'bank_statement_nov.csv',n:22,u:'wires'}];
+function rz(){$('#zones').innerHTML=Z.map((z,i)=>`<div class="zn" data-i="${i}" role="button" tabindex="0" aria-label="${z.t}: ${z.f?z.f+', '+z.n+' '+z.u:'no file'}. Select to replace" style="border:2px dashed ${z.f?'#2E9D65':'#C5CEDB'};border-radius:12px;padding:20px;background:${z.f?'#F7FCF9':'#F8FAFC'};cursor:pointer;min-height:150px"><div style="display:flex;align-items:center;gap:10px"><span class="ico"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5M4 20h16"></path></svg></span><b>${z.t}</b></div>${z.f?`<div style="margin-top:12px"><span class="bd g">UPLOADED</span></div><div class="mono" style="margin-top:8px">${esc(z.f)}</div><div class="lb">${z.n} ${z.u} · select to replace</div>`:`<div class="lb" style="margin-top:12px">No file yet. Drop a .csv here.</div>`}<input type="file" accept=".csv,text/csv" hidden></div>`).join('');
+document.querySelectorAll('.zn').forEach(el=>{const z=Z[el.dataset.i],inp=el.querySelector('input');
+el.onclick=e=>{if(e.target!==inp)inp.click()};el.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();inp.click()}};
+el.ondragover=e=>{e.preventDefault();el.style.borderColor='#0070E0'};el.ondragleave=()=>el.style.borderColor=z.f?'#2E9D65':'#C5CEDB';
+el.ondrop=e=>{e.preventDefault();take(z,e.dataTransfer.files[0])};inp.onchange=()=>take(z,inp.files[0])});$('#bRun').disabled=!Z.every(z=>z.f)}
+function take(z,f){if(!f)return;if(!/\.csv$/i.test(f.name)){toast('That file is not a .csv. Export it as CSV and try again.','w');rz();return}
+const r=new FileReader();r.onload=()=>{const n=r.result.split(/\r?\n/).filter(x=>x.trim()).length-1;if(n<1){toast(f.name+' has no data rows. Check the export and upload again.','w');rz();return}z.f=f.name;z.n=n;rz();toast(f.name+' uploaded: '+n+' '+z.u+'.')};r.onerror=()=>{toast('Could not read '+f.name+'. Try again.','w')};r.readAsText(f)}
+const FN=['Hannah Weiss','Carlos Ruiz','Aiko Tanaka','Daniel Okafor','Grace Liu','Samuel Reyes','Nora Ibrahim','Jonas Berg'],FA=[1200,275,640,129,890,350,520,310],FS=[99,97,96,94,98,93,91,95];
+let PE=[{c:'REC-2026-0051',n:'Michael Anderson',a:450,pp:'FAILED (Card Declined)',w:'WIRE-8891',d:'Nov 10',s:99,ok:true,inv:'INV-2026-1019'}].concat(FN.slice(0,7).map((n,i)=>({c:'REC-2026-00'+(52+i),n,a:FA[i],pp:['FAILED (Card Declined)','FAILED (Insufficient Funds)'][i%2],w:'WIRE-88'+(85-i),d:'Nov '+(10-(i>>1)),s:FS[i],ok:FS[i]>=93,inv:'INV-2026-10'+(40+i)})));
+const UN=['Elena Petrov','Mark Davis','Yuki Sato','Fatima Noor','Liam Walsh','Ana Costa','Ben Carter','Chloe Dubois','Ivan Novak','Maya Rao','Noah Fischer','Olivia Grant','Pablo Reyes','Quinn Adams','Rosa Lindqvist','Sven Holm','Tara Bhatt','Umar Sheikh','Vera Kovacs','Will Tran','Xena Moore','Yusuf Ali','Zoe Clark','Adam Brooks'].map((n,i)=>({c:'REC-2026-0'+(60+i).toString().padStart(3,'0'),n,a:[89,240,415,129,760,98,310,185][i%8],pp:i%5===0?'NO TRANSACTION':'FAILED (Card Declined)',w:'',d:'',s:[38,52,44,61,29][i%5],ok:false,inv:'INV-2026-11'+(10+i)}));
+let tabk='pe',shown=10;
+function rows(){const q=$('#q').value.toLowerCase();return(tabk==='pe'?PE:UN).filter(r=>!q||(r.c+r.n).toLowerCase().includes(q))}
+function rt(){const L=rows(),V=tabk==='pe'?L:L.slice(0,shown);
+$('#tb').innerHTML=V.length?V.map(r=>`<tr class="tr" tabindex="0" data-c="${r.c}" style="cursor:pointer"><td class="td"><code class="mono">${r.c}</code></td><td class="td"><b>${esc(r.n)}</b></td><td class="td n" style="text-align:right">${fmt(r.a)}</td><td class="td"><span class="bd r">${r.pp}</span></td><td class="td">${r.w?`<span class="bd b">MATCH FOUND</span><div class="lb">${r.w} · ${fmt(r.a)} received ${r.d==='Nov 10'?'yesterday':r.d}</div>`:'<span class="lb">No bank match found</span>'}</td><td class="td n">${r.s}%</td><td class="td">${r.w?`<span class="bd x">RECOVERY HALTED</span><div class="lb">${r.ok?'Match confirmed':'Awaiting manual confirm'}</div>`:'<span class="bd a">RECOVERY ACTIVE</span><div class="lb">Flagged for review</div>'}</td></tr>`).join(''):`<tr><td class="td" colspan="7" style="text-align:center;padding:32px"><b>No cases match.</b><div class="lb">Clear the filter to see all ${tabk==='pe'?'paid-elsewhere':'unmatched'} cases.</div></td></tr>`;
+$('#more').hidden=tabk==='pe'||L.length<=shown;
+$('#safeSum').textContent=PE.length+' customers ('+fmt(PE.reduce((s,r)=>s+r.a,0))+') protected from wrongful dunning.'}
+function tab(t){tabk=t;shown=10;document.querySelectorAll('[role=tab]').forEach(b=>{const o=b.dataset.t===t;b.classList.toggle('on',o);b.setAttribute('aria-selected',o)});rt()}
+document.querySelectorAll('[role=tab]').forEach(b=>b.onclick=()=>tab(b.dataset.t));$('#q').oninput=()=>{shown=10;rt()};$('#more').onclick=()=>{shown+=10;rt()};
+async function sha(o){try{const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(JSON.stringify(o)));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}catch(e){return 'Hash unavailable in this browser context'}}
+const DR=$('#dr');function closeDr(){DR.style.transform='translateX(100%)';DR.setAttribute('aria-hidden','true')}
+async function view(c){const r=PE.concat(UN).find(x=>x.c===c),m=!!r.w,
+col=(h,rows)=>`<div style="min-width:0"><div class="lb" style="font-weight:600;margin-bottom:6px">${h}</div><div style="display:grid;gap:8px">${rows.map(x=>`<div style="padding:8px 10px;border-radius:8px;background:#F0F3F8"><div class="lb">${x[0]}</div><div style="font-size:13px;word-break:break-word">${x[1]}</div></div>`).join('')}</div></div>`;
+const parts=m?[['Amount match',100],['Payer name similarity',Math.min(99,r.s+2)],['Date window',96],['Reference pattern',Math.max(60,r.s-6)]]:[];
+DR.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center"><h2 class="h2">${r.c}</h2><button class="ib" id="dx" aria-label="Close detail"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div><div class="lb" style="margin-top:4px">${esc(r.n)} · ${r.inv}</div>
+<div class="grid" style="grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:20px">${col('PayPal gateway',[['Amount',fmt(r.a)],['Status',r.pp],['Payer',esc(r.n)]])}${col('Merchant ERP',[['Amount',fmt(r.a)],['Invoice',r.inv],['Customer',esc(r.n)]])}${col('Bank statement',m?[['Amount',fmt(r.a)],['Reference',r.w+' · '+r.d],['Sender',esc(r.n.split(' ').reverse().join(', '))]]:[['Result','No matching transaction found']])}</div>
+<div style="margin-top:20px;display:flex;align-items:center;gap:12px"><div class="lb">Fuzzy match score</div><div class="n" style="font-size:28px;font-weight:600">${r.s}%</div><span class="bd ${r.s>=93?'g':r.s>=60?'a':'r'}">${r.s>=93?'HIGH CONFIDENCE':r.s>=60?'MEDIUM':'NO MATCH'}</span></div>
+${parts.map(p=>`<div style="display:flex;align-items:center;gap:12px;margin-top:8px;font-size:13px"><span style="width:180px">${p[0]}</span><span style="flex:1;height:8px;border-radius:4px;background:#E5E9F0;overflow:hidden"><span style="display:block;height:100%;width:${p[1]}%;background:#0070E0"></span></span><b class="n">${p[1]}%</b></div>`).join('')}
+<div style="margin-top:20px;padding:12px 16px;border-radius:8px;background:${m?'#E3F4EB':'#FEF1D9'}">${m?'<b>Recovery halted.</b> No reminders will be sent to this customer.':'<b>Recovery still active.</b> No bank payment found, so the contact ladder continues.'}</div>
+<div class="lb" style="margin-top:20px">Audit proof (SHA-256 of this match record)</div><code class="mono" id="dh" style="display:block;word-break:break-all;padding:12px;background:#F0F3F8;border-radius:8px;margin-top:4px">Computing…</code>
+<div style="display:flex;gap:8px;margin-top:20px;flex-wrap:wrap">${m&&!r.ok?'<button class="btn p" id="dOk">Confirm match</button>':m?'<span class="bd g" style="align-self:center">MATCH CONFIRMED</span>':''}<button class="btn" id="dAud">Open in audit trail</button></div>`;
+DR.style.transform='translateX(0)';DR.setAttribute('aria-hidden','false');$('#dx').focus();$('#dx').onclick=closeDr;$('#dAud').onclick=()=>location.href='audit.html';
+if($('#dOk'))$('#dOk').onclick=()=>{r.ok=true;rt();closeDr();toast(r.c+' confirmed as paid elsewhere. Outreach stays permanently halted.')};
+$('#dh').textContent=await sha({case:r.c,amount:r.a,bank_ref:r.w||null,score:r.s})}
+$('#tb').onclick=e=>{const t=e.target.closest('tr[data-c]');if(t)view(t.dataset.c)};$('#tb').onkeydown=e=>{if(e.key==='Enter'){const t=e.target.closest('tr[data-c]');if(t)view(t.dataset.c)}};
+$('#bRun').onclick=()=>{const b=$('#bRun'),S=['Matching PayPal against ERP invoices…','Matching bank wires against failed charges…','Scoring fuzzy matches…','Halting outreach on paid-elsewhere cases…'];b.disabled=true;$('#prog').hidden=false;let i=0;
+const t=setInterval(()=>{$('#progT').textContent=S[i];$('#progB').style.width=((i+1)/S.length*100)+'%';i++;if(i>S.length){clearInterval(t);b.disabled=false;$('#prog').hidden=true;$('#progB').style.width='0';$('#lastRun').textContent='Last run '+new Date().toISOString().slice(0,16).replace('T',' ')+' UTC';toast('Reconciliation: 3-way matching completed: 8 cases marked Paid Elsewhere.')}},600)};
+$('#bExp').onclick=()=>{const r=[['case','customer','amount','paypal_status','bank_ref','score','action']].concat(PE.concat(UN).map(x=>[x.c,x.n,x.a,x.pp,x.w,x.s,x.w?'HALTED':'ACTIVE']));const u=URL.createObjectURL(new Blob([r.map(x=>x.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\n')],{type:'text/csv'})),l=document.createElement('a');l.href=u;l.download='reconciliation.csv';l.click();URL.revokeObjectURL(u);toast('Reconciliation report exported.')};
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDr()});
+$('#tb').innerHTML='<tr><td colspan="7"><div class="sk"></div><div class="sk"></div><div class="sk"></div></td></tr>';
+setTimeout(()=>{rz();rt()},350);
+</script>
+</body>
+</html>

@@ -12,11 +12,13 @@ from __future__ import annotations
 
 import asyncio
 from contextlib import asynccontextmanager
+from pathlib import Path
 from typing import AsyncGenerator
 
 from fastapi import FastAPI, Header, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 
 from backend.app.core.config import settings
 from backend.app.core.errors import ProofPayError, generic_error_handler, proofpay_error_handler
@@ -63,7 +65,7 @@ app = FastAPI(
 # ── CORS ──────────────────────────────────────────────────────────────────────
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[settings.app_base_url, "http://localhost:3000", "http://localhost:8000"],  # Locked
+    allow_origins=["*"],  # Open for hackathon demo
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -79,6 +81,8 @@ from backend.app.api.projects import router as projects_router  # noqa: E402
 from backend.app.api.reputation import router as reputation_router  # noqa: E402
 from backend.app.api.submissions import router as submissions_router  # noqa: E402
 from backend.app.ingestion.receiver import router as ingestion_router  # noqa: E402
+from backend.app.api.dashboard import router as dashboard_router  # noqa: E402
+from backend.app.api.fixtures import router as fixtures_router  # noqa: E402
 
 app.include_router(cases.router)
 app.include_router(sim.router)
@@ -86,6 +90,8 @@ app.include_router(projects_router)
 app.include_router(submissions_router)
 app.include_router(ingestion_router)
 app.include_router(reputation_router)
+app.include_router(dashboard_router)
+app.include_router(fixtures_router)
 
 
 # ── Health check ──────────────────────────────────────────────────────────────
@@ -138,3 +144,9 @@ async def get_audit_log(
     from backend.app.audit import get_events
     events = get_events(case_id=case_id)
     return events[:limit]
+
+
+# ── Frontend static files (mount LAST — after all API routes) ─────────────────
+_FRONTEND_DIR = Path(__file__).resolve().parents[2] / "frontend" / "react-app" / "dist"
+if _FRONTEND_DIR.exists():
+    app.mount("/", StaticFiles(directory=str(_FRONTEND_DIR), html=True), name="frontend")

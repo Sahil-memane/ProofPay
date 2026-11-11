@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ProofPay — Dashboard</title>
+<script src="./vendor/react.js"></script>
+<script src="./vendor/react-dom.js"></script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0;font-family:Inter,system-ui,sans-serif;color:#172B4D;background:#F5F7FA;font-size:14px}
+*{box-sizing:border-box}
+a{color:#0070E0;text-decoration:none}a:hover{text-decoration:underline}
+.i{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.nv{display:flex;align-items:center;gap:12px;height:40px;padding:0 12px;border-radius:8px;color:#D6E2F5;font-size:14px}
+.nv:hover{background:#0A3F9E;text-decoration:none;color:#fff}
+.nv.on{background:#0070E0;color:#fff}
+.nv b{margin-left:auto;background:#F5A623;color:#172B4D;font-size:11px;font-weight:600;border-radius:10px;padding:1px 7px}
+.gl{font-size:11px;letter-spacing:.08em;color:#9DB6E0;padding:16px 12px 6px;font-weight:600}
+.card{background:#fff;border:1px solid #E5E9F0;border-radius:12px;padding:20px}
+.n{font-variant-numeric:tabular-nums}
+.btn{height:44px;padding:0 16px;border-radius:8px;border:1px solid #E5E9F0;background:#fff;color:#172B4D;font:600 14px Inter,sans-serif;cursor:pointer}
+.btn:hover{background:#F0F3F8}
+.btn.p{background:#0070E0;border-color:#0070E0;color:#fff}.btn.p:hover{background:#005fc0}
+.lb{font-size:12px;color:#64748B}
+.h2{font-size:20px;font-weight:600;margin:0;color:#003087}
+.ct{font-size:15px;font-weight:600;margin:0}
+.big{font-size:28px;font-weight:600;margin:4px 0}
+.up{font-size:12px;color:#1E7A4C;font-weight:500}
+.ico{width:36px;height:36px;border-radius:10px;background:#E6F0FC;color:#0070E0;display:flex;align-items:center;justify-content:center}
+.row{display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid #E5E9F0}
+.tab{height:32px;padding:0 12px;border-radius:8px;border:0;background:transparent;color:#64748B;font:500 13px Inter,sans-serif;cursor:pointer}
+.tab.on{background:#E6F0FC;color:#0070E0}
+.bd{font-size:12px;font-weight:600;border-radius:12px;padding:2px 10px;white-space:nowrap}
+.g{background:#E3F4EB;color:#1E7A4C}.a{background:#FEF1D9;color:#8A5A00}.r{background:#FBE5E6;color:#B42830}.b{background:#E6F0FC;color:#005BB5}
+.ib{width:44px;height:44px;border-radius:8px;border:0;background:transparent;color:#64748B;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.ib:hover{background:#F0F3F8}
+.grid{display:grid;gap:24px}
+@media (max-width:900px){.side{display:none!important}.srch{display:none!important}}
+</style>
+</helmet>
+<div style="display:flex;min-height:100vh">
+<!-- SIDEBAR -->
+<aside class="side" style="width:250px;flex:none;background:#003087;color:#fff;display:flex;flex-direction:column;padding:16px 12px;position:sticky;top:0;height:100vh;overflow-y:auto">
+<div style="display:flex;align-items:center;gap:10px;padding:4px 12px 12px">
+<div style="width:32px;height:32px;border-radius:8px;background:#0070E0;display:flex;align-items:center;justify-content:center"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6zM9 12l2 2 4-4"></path></svg></div>
+<div style="font-size:18px;font-weight:600;flex:1">ProofPay</div>
+<button class="ib" aria-label="Collapse sidebar" style="color:#D6E2F5;width:32px;height:32px"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg></button>
+</div>
+<button style="display:flex;align-items:center;gap:8px;width:100%;height:44px;margin-bottom:4px;padding:0 12px;border-radius:8px;border:1px solid #2A57A8;background:#0A3F9E;color:#fff;font:500 13px Inter,sans-serif;cursor:pointer;text-align:left"><span style="flex:1">Antigravity Workspace</span><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+<nav aria-label="Main">
+<div class="gl">OVERVIEW</div>
+<a class="nv on" href="#"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3h7v9H3zM14 3h7v5h-7zM14 12h7v9h-7zM3 16h7v5H3z"></path></svg>Dashboard</a>
+<div class="gl">ESCROW MANAGEMENT</div>
+<a class="nv" href="#"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6a2 2 0 0 1 2-2h4l2 3h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>Projects</a>
+<a class="nv" href="#"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V4M5 4h12l-2 4 2 4H5"></path></svg>Milestones</a>
+<a class="nv" href="#"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9zM9 14l2 2 4-4"></path></svg>Submissions &amp; Verification<b>5</b></a>
+<a class="nv" href="#"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2zM4 19a2 2 0 0 0 2 2h13"></path></svg>Escrow Ledger</a>
+<div class="gl">REVENUE RECOVERY</div>
+<a class="nv" href="#"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8M15 7h6v6"></path></svg>Recovery Overview</a>
+<a class="nv" href="#"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8h18v12H3zM9 8V5h6v3"></path></svg>Recovery Cases<b>12</b></a>
+<a class="nv" href="#"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6"></path></svg>Invoices &amp; Subscriptions</a>
+<a class="nv" href="#"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18v12H3zM3 10h18"></path></svg>Payment Attempts</a>
+<div class="gl">TRUST &amp; GOVERNANCE</div>
+<a class="nv" href="#"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h14l-3-3M20 16H6l3 3"></path></svg>Reconciliation<b>4</b></a>
+<a class="nv" href="#"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l10 18H2zM12 10v5M12 18h.01"></path></svg>Disputes<b>1</b></a>
+<a class="nv" href="#"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"></path></svg>Mandate Guard</a>
+<a class="nv" href="#"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.8 5.8 6.2.9-4.5 4.4 1 6.2-5.5-3 -5.5 3 1-6.2L3 9.7l6.2-.9z"></path></svg>Reputation</a>
+<div class="gl">INTELLIGENCE</div>
+<a class="nv" href="#"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8h14v10H5zM12 8V4M9 13h.01M15 13h.01"></path></svg>AI Agents</a>
+<a class="nv" href="#"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V10M12 21V4M19 21v-8"></path></svg>Analytics &amp; Reports</a>
+<a class="nv" href="#"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"></path></svg>Audit Trail</a>
+<a class="nv" href="#"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"></path></svg>AI Assistant</a>
+<div class="gl">SYSTEM</div>
+<a class="nv" href="#"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3v5M15 3v5M6 8h12v4a6 6 0 0 1-12 0zM12 18v3"></path></svg>Integrations</a>
+<a class="nv" href="#"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10M14 5v4M6 15v4"></path></svg>Settings</a>
+<a class="nv" href="#"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .8-1 1.7M12 17h.01"></path></svg>Help &amp; Support</a>
+</nav>
+<div style="margin-top:auto;padding-top:16px">
+<button style="display:flex;align-items:center;gap:12px;width:100%;height:56px;padding:0 12px;border-radius:8px;border:0;background:#0A3F9E;color:#fff;cursor:pointer;text-align:left;font-family:Inter,sans-serif">
+<span style="width:32px;height:32px;border-radius:16px;background:#009CDE;color:#001C64;font-weight:600;display:flex;align-items:center;justify-content:center">S</span>
+<span style="flex:1"><span style="display:block;font-size:13px;font-weight:600">Sahil</span><span style="display:block;font-size:12px;color:#C9D8F2">Workspace Owner</span></span>
+<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 15l6-6 6 6"></path></svg></button>
+</div>
+</aside><div style="flex:1;min-width:0;display:flex;flex-direction:column">
+<header style="height:68px;flex:none;background:#fff;border-bottom:1px solid #E5E9F0;display:flex;align-items:center;gap:16px;padding:0 32px;position:sticky;top:0;z-index:5">
+<div style="min-width:140px"><div class="lb">Overview /</div><div style="font-weight:600;font-size:15px">Dashboard</div></div>
+<div class="srch" style="flex:1;max-width:480px;margin:0 auto;position:relative">
+<svg class="i" viewBox="0 0 24 24" aria-hidden="true" style="position:absolute;left:12px;top:13px;color:#64748B"><path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM21 21l-5-5"></path></svg>
+<label for="gs" style="position:absolute;left:-9999px">Global search</label>
+<input id="gs" placeholder="Search projects, invoices, cases..." style="width:100%;height:44px;padding:0 12px 0 40px;border:1px solid #E5E9F0;border-radius:10px;background:#F0F3F8;font:14px Inter,sans-serif;color:#172B4D">
+</div>
+<span class="bd a" style="margin-left:auto">Sandbox</span>
+<span style="display:flex;align-items:center;gap:6px;font-size:13px;font-weight:500;white-space:nowrap"><span style="width:8px;height:8px;border-radius:4px;background:#2E9D65"></span>PayPal Connected</span>
+<button class="ib" aria-label="Notifications, 3 unread" style="position:relative"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 21h4"></path></svg><span style="position:absolute;top:10px;right:11px;width:8px;height:8px;border-radius:4px;background:#D9363E"></span></button>
+<button class="ib" aria-label="Help"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .8-1 1.7M12 17h.01"></path></svg></button>
+<button class="ib" aria-label="Account menu" style="width:36px;height:36px;border-radius:18px;background:#003087;color:#fff;font:600 14px Inter,sans-serif">S</button>
+</header>
+
+<main style="padding:32px;max-width:1280px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:24px">
+<div style="display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;justify-content:space-between">
+<div><h1 style="font-size:28px;font-weight:600;margin:0;color:#003087">Good afternoon, Sahil</h1><p style="margin:4px 0 0;color:#64748B">Here's what's happening across your payments today.</p></div>
+<div style="display:flex;flex-wrap:wrap;gap:8px">
+<label for="dr" style="position:absolute;left:-9999px">Date range</label>
+<select id="dr" class="btn" style="font-weight:500"><option>Last 30 days</option><option>Last 7 days</option><option>Last 90 days</option></select>
+<button class="btn">View Reports</button><button class="btn">Create Invoice</button><button class="btn p">Create Project</button>
+</div></div>
+
+<!-- A: HERO -->
+
+
+<!-- B: KPIs -->
+<section class="card" style="background:#001C64;border-color:#001C64;color:#fff;padding:28px;display:flex;flex-wrap:wrap;gap:32px;align-items:center">
+<div style="flex:1 1 340px">
+<div style="font-size:13px;color:#BFD3F2;font-weight:500">Revenue Recovered</div>
+<div class="n" style="font-size:48px;font-weight:600;margin:4px 0">$12,450</div>
+<div style="color:#D6E2F5">Recovered $12,450 of $18,600 at risk</div>
+<div style="height:10px;border-radius:5px;background:#2A4A9A;margin:16px 0 12px;overflow:hidden"><div style="width:67%;height:100%;background:#4CC38A"></div></div>
+<a href="#" style="color:#7FC4FF;font-weight:600">View Recovery Details →</a>
+</div>
+<div style="flex:1 1 380px;display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:16px">
+<div><div style="font-size:12px;color:#BFD3F2">Total at risk</div><div class="n" style="font-size:20px;font-weight:600">$18,600</div></div>
+<div><div style="font-size:12px;color:#BFD3F2">Recovered</div><div class="n" style="font-size:20px;font-weight:600">$12,450</div></div>
+<div><div style="font-size:12px;color:#BFD3F2">Remaining at risk</div><div class="n" style="font-size:20px;font-weight:600">$6,150</div></div>
+<div><div style="font-size:12px;color:#BFD3F2">Recovery rate</div><div class="n" style="font-size:20px;font-weight:600">67%</div></div>
+<div><div style="font-size:12px;color:#BFD3F2">Recovery cases</div><div class="n" style="font-size:20px;font-weight:600">150</div></div>
+</div>
+</section><section class="grid" style="grid-template-columns:repeat(auto-fit,minmax(250px,1fr))" aria-label="Key metrics">
+<div class="card"><div style="display:flex;justify-content:space-between"><div class="lb">Total Escrowed</div><div class="ico"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"></path></svg></div></div><div class="big n">$48,500</div><div class="up">▲ +12.5% this month</div><div style="margin-top:8px"><a href="#">Escrow Ledger →</a></div></div>
+<div class="card"><div style="display:flex;justify-content:space-between"><div class="lb">Released to Freelancers</div><div class="ico"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg></div></div><div class="big n">$31,200</div><div class="up">18 successful releases</div><div style="margin-top:8px"><a href="#">Milestones →</a></div></div>
+<div class="card"><div style="display:flex;justify-content:space-between"><div class="lb">Pending Escrow</div><div class="ico"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 7v5l3 2"></path></svg></div></div><div class="big n">$17,300</div><div class="lb" style="margin-top:2px">7 active milestones</div><div style="margin-top:8px"><a href="#">Projects →</a></div></div>
+<div class="card"><div style="display:flex;justify-content:space-between"><div class="lb">Revenue Recovered</div><div class="ico"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8M15 7h6v6"></path></svg></div></div><div class="big n">$12,450</div><div class="up">67% recovery rate</div><div style="margin-top:8px"><a href="#">Recovery Overview →</a></div></div>
+<div class="card"><div style="display:flex;justify-content:space-between"><div class="lb">Outstanding Payments</div><div class="ico" style="background:#FEF1D9;color:#8A5A00"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6"></path></svg></div></div><div class="big n">$6,150</div><div class="lb" style="margin-top:2px">12 active cases</div><div style="margin-top:8px"><a href="#">Recovery Cases →</a></div></div>
+<div class="card"><div style="display:flex;justify-content:space-between"><div class="lb">Disputes Avoided</div><div class="ico"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6zM9 12l2 2 4-4"></path></svg></div></div><div class="big n">8</div><div class="up">Compared with baseline</div><div style="margin-top:8px"><a href="#">Disputes →</a></div></div>
+</section>
+
+<!-- C + G -->
+<section class="grid" style="grid-template-columns:repeat(auto-fit,minmax(320px,1fr))">
+<div class="card" style="grid-column:span 2;min-width:0">
+<div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px">
+<h2 class="h2">Payment Performance</h2>
+<div><button class="tab">7 Days</button><button class="tab on">30 Days</button><button class="tab">90 Days</button><button class="tab">12 Months</button></div></div>
+<div style="display:flex;gap:16px;margin:8px 0;font-size:12px;color:#64748B;flex-wrap:wrap"><span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#009CDE;margin-right:6px"></span>Escrowed Amount</span><span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#003087;margin-right:6px"></span>Released Amount</span><span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#2E9D65;margin-right:6px"></span>Recovered Amount</span></div>
+<svg viewBox="0 0 760 260" style="width:100%;height:auto;display:block" role="img" aria-label="Line chart of escrowed, released and recovered amounts over 30 days">
+<g stroke="#E5E9F0"><line x1="48" y1="20" x2="750" y2="20"></line><line x1="48" y1="80" x2="750" y2="80"></line><line x1="48" y1="140" x2="750" y2="140"></line><line x1="48" y1="200" x2="750" y2="200"></line></g>
+<g font-size="11" fill="#64748B" font-family="Inter,sans-serif"><text x="40" y="24" text-anchor="end">$16k</text><text x="40" y="84" text-anchor="end">$12k</text><text x="40" y="144" text-anchor="end">$8k</text><text x="40" y="204" text-anchor="end">$4k</text><text x="48" y="228">Oct 12</text><text x="250" y="228">Oct 22</text><text x="450" y="228">Nov 1</text><text x="680" y="228">Nov 11</text></g>
+<path d="M48 150 L160 120 L270 128 L380 84 L490 96 L600 52 L750 40 L750 200 L48 200Z" fill="#009CDE" opacity=".12"></path>
+<polyline fill="none" stroke="#009CDE" stroke-width="2.5" points="48,150 160,120 270,128 380,84 490,96 600,52 750,40"></polyline>
+<polyline fill="none" stroke="#003087" stroke-width="2.5" points="48,176 160,160 270,150 380,132 490,120 600,100 750,84"></polyline>
+<polyline fill="none" stroke="#2E9D65" stroke-width="2.5" stroke-dasharray="6 4" points="48,192 160,186 270,176 380,170 490,156 600,150 750,128"></polyline>
+<circle cx="600" cy="52" r="5" fill="#009CDE"></circle><circle cx="600" cy="100" r="5" fill="#003087"></circle><circle cx="600" cy="150" r="5" fill="#2E9D65"></circle>
+<rect x="520" y="8" width="150" height="34" rx="8" fill="#172B4D"></rect><text x="532" y="22" font-size="11" fill="#fff" font-family="Inter,sans-serif">Nov 4 · Escrowed $14.2k</text><text x="532" y="36" font-size="11" fill="#C9D8F2" font-family="Inter,sans-serif">Released $9.6k · Recovered $5.1k</text>
+</svg>
+</div>
+<div class="card" style="min-width:0">
+<div style="display:flex;justify-content:space-between;align-items:center"><h2 class="h2">Attention Required</h2><span class="bd r">10 open</span></div>
+<div style="margin-top:8px">
+<div class="row"><span class="bd a">3</span><span style="flex:1">Pending human approvals</span><a href="#">View Details</a></div>
+<div class="row"><span class="bd a">2</span><span style="flex:1">Borderline verifications</span><a href="#">View Details</a></div>
+<div class="row"><span class="bd r">1</span><span style="flex:1">Active dispute</span><a href="#">View Details</a></div>
+<div class="row"><span class="bd b">4</span><span style="flex:1">Reconciliation exceptions</span><a href="#">View Details</a></div>
+</div>
+</div>
+</section>
+
+<!-- D: ESCROW OVERVIEW -->
+<section aria-label="Escrow overview">
+<h2 class="h2" style="margin-bottom:12px">Escrow Overview</h2>
+<div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:16px">
+<div class="card" style="padding:16px"><div class="lb">Active Projects</div><div class="big n">14</div></div>
+<div class="card" style="padding:16px"><div class="lb">Awaiting Funding</div><div class="big n">3</div><span class="bd a">Pending</span></div>
+<div class="card" style="padding:16px"><div class="lb">Pending Verification</div><div class="big n">5</div><span class="bd a">AI reviewing</span></div>
+<div class="card" style="padding:16px"><div class="lb">Awaiting Approval</div><div class="big n">3</div><span class="bd a">Human</span></div>
+<div class="card" style="padding:16px"><div class="lb">Completed Milestones</div><div class="big n">42</div><span class="bd g">Released</span></div>
+</div></section>
+
+<!-- E + F -->
+<section class="grid" style="grid-template-columns:repeat(auto-fit,minmax(320px,1fr))">
+<div class="card" style="min-width:0">
+<h2 class="h2">Recovery Performance</h2>
+<div style="display:flex;flex-wrap:wrap;gap:24px;align-items:center;margin-top:16px">
+<svg viewBox="0 0 100 100" width="150" height="150" role="img" aria-label="Donut chart of 150 recovery cases: 100 recovered, 12 active, 14 paid elsewhere, 9 halted, 15 escalated" style="flex:none">
+<g fill="none" stroke-width="14" transform="rotate(-90 50 50)">
+<circle cx="50" cy="50" r="40" stroke="#2E9D65" stroke-dasharray="167.5 251.3"></circle>
+<circle cx="50" cy="50" r="40" stroke="#0070E0" stroke-dasharray="20.1 251.3" stroke-dashoffset="-167.5"></circle>
+<circle cx="50" cy="50" r="40" stroke="#009CDE" stroke-dasharray="23.4 251.3" stroke-dashoffset="-187.6"></circle>
+<circle cx="50" cy="50" r="40" stroke="#F5A623" stroke-dasharray="15.1 251.3" stroke-dashoffset="-211"></circle>
+<circle cx="50" cy="50" r="40" stroke="#D9363E" stroke-dasharray="25.1 251.3" stroke-dashoffset="-226.1"></circle></g>
+<text x="50" y="48" text-anchor="middle" font-size="16" font-weight="600" fill="#172B4D" font-family="Inter,sans-serif">150</text><text x="50" y="60" text-anchor="middle" font-size="7" fill="#64748B" font-family="Inter,sans-serif">cases</text></svg>
+<div style="flex:1;min-width:150px;font-size:13px;display:grid;gap:6px">
+<div><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#2E9D65;margin-right:8px"></span>Recovered · 100</div>
+<div><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#0070E0;margin-right:8px"></span>Active · 12</div>
+<div><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#009CDE;margin-right:8px"></span>Paid elsewhere · 14</div>
+<div><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#F5A623;margin-right:8px"></span>Halted by policy · 9</div>
+<div><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#D9363E;margin-right:8px"></span>Escalated · 15</div></div></div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-top:20px;border-top:1px solid #E5E9F0;padding-top:16px">
+<div><div class="lb">Recovery success rate</div><div class="ct n">67%</div></div>
+<div><div class="lb">Avg. recovery time</div><div class="ct n">3.2 days</div></div>
+<div><div class="lb">Avg. contacts / recovery</div><div class="ct n">2.4</div></div>
+<div><div class="lb">Paid elsewhere</div><div class="ct n">14 cases</div></div>
+<div><div class="lb">Halted by policy</div><div class="ct n">9 cases</div></div></div>
+</div>
+<div class="card" style="min-width:0">
+<div style="display:flex;justify-content:space-between;align-items:center"><h2 class="h2">Recent Activity</h2><a href="#">View Audit Trail</a></div>
+<div style="margin-top:8px">
+<div class="row"><div class="ico"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"></path></svg></div><div style="flex:1"><div>Project <b>#PRJ-102</b> funded</div><div class="lb">2 min ago</div></div><span class="bd g">Funded</span></div>
+<div class="row"><div class="ico"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg></div><div style="flex:1"><div>Milestone <b>#MS-204</b> verified</div><div class="lb">18 min ago</div></div><span class="bd g">Verified</span></div>
+<div class="row"><div class="ico"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h14M13 6l6 6-6 6"></path></svg></div><div style="flex:1"><div>Payout of <b class="n">$450</b> released</div><div class="lb">42 min ago</div></div><span class="bd g">Released</span></div>
+<div class="row"><div class="ico"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8M15 7h6v6"></path></svg></div><div style="flex:1"><div>Invoice <b>#INV-1024</b> recovered</div><div class="lb">1 hr ago</div></div><span class="bd g">Recovered</span></div>
+<div class="row"><div class="ico" style="background:#FEF1D9;color:#8A5A00"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14M16 5v14"></path></svg></div><div style="flex:1"><div>Recovery case <b>#REC-42</b> halted</div><div class="lb">3 hr ago</div></div><span class="bd a">Halted</span></div>
+<div class="row"><div class="ico" style="background:#FBE5E6;color:#B42830"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM5.6 5.6l12.8 12.8"></path></svg></div><div style="flex:1"><div>Policy blocked a release of <b class="n">$850</b></div><div class="lb">Yesterday</div></div><span class="bd r">Blocked</span></div>
+</div></div>
+</section>
+
+<div style="text-align:center;padding:8px 0 16px;color:#003087;font-weight:600">AI recommends. Policy decides. PayPal executes. Every action is auditable.<div class="lb" style="font-weight:400;margin-top:4px">ProofPay · Every Payment. Proven. Protected.</div></div>
+</main>
+</div>
+<!-- MAIN -->
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1900}}'>
+class Component extends DCLogic {
+renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

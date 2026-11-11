@@ -1,0 +1,29 @@
+.page { display: flex; flex-direction: column; gap: 20px; }
+.h1 { font-size: 26px; font-weight: 600; margin: 0; }
+.sub { margin: 4px 0 0; color: var(--muted); }
+.rulesGrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+@media (max-width: 1000px) { .rulesGrid { grid-template-columns: repeat(2, 1fr); } }
+.ruleCard { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.ruleIcon { font-size: 24px; }
+.ruleLabel { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+.ruleValue { font-size: 20px; font-weight: 700; color: var(--navy); }
+.ruleDesc { font-size: 12px; color: var(--muted); line-height: 1.4; }
+.columns { display: grid; grid-template-columns: 1fr 320px; gap: 20px; align-items: start; }
+@media (max-width: 900px) { .columns { grid-template-columns: 1fr; } }
+.historyCard {}
+.tableHeader { padding: 12px 20px; border-bottom: 1px solid var(--border); font-size: 14px; font-weight: 600; }
+.table { width: 100%; border-collapse: collapse; min-width: 500px; }
+.table th { background: var(--bg); color: var(--muted); font-size: 12px; font-weight: 500; text-align: left; padding: 10px 12px; }
+.table td { padding: 11px 12px; border-top: 1px solid var(--border); font-size: 13px; }
+.simCard {}
+.simTitle { font-size: 14px; font-weight: 600; margin-bottom: 16px; }
+.simForm { display: flex; flex-direction: column; gap: 12px; }
+.field label { display: block; font-size: 12px; font-weight: 500; color: var(--muted); margin-bottom: 4px; }
+.input { width: 100%; height: 38px; padding: 0 10px; border: 1px solid var(--border); border-radius: var(--radius-md); font: 13px var(--font-ui); }
+.simResult { margin-top: 16px; padding: 14px; border-radius: var(--radius-md); }
+.allowed { background: var(--green-bg); border: 1px solid var(--green); }
+.denied { background: var(--red-bg); border: 1px solid var(--red); }
+.simDecision { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+.allowed .simDecision { color: var(--green); }
+.denied .simDecision { color: var(--red); }
+.simReason { font-size: 13px; color: var(--text); }

@@ -1,0 +1,22 @@
+.page { display: flex; flex-direction: column; gap: 20px; }
+.h1 { font-size: 26px; font-weight: 600; margin: 0; }
+.sub { margin: 4px 0 0; color: var(--muted); }
+.kpiGrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+@media (max-width: 900px) { .kpiGrid { grid-template-columns: repeat(2, 1fr); } }
+.kpi {}
+.kpiLabel { font-size: 12px; font-weight: 500; color: var(--muted); }
+.kpiValue { font-size: 24px; font-weight: 700; margin-top: 6px; font-variant-numeric: tabular-nums; }
+.funnelTitle { font-size: 14px; font-weight: 600; margin-bottom: 16px; }
+.funnel { display: flex; flex-direction: column; gap: 10px; }
+.funnelRow { display: grid; grid-template-columns: 160px 1fr 100px; gap: 12px; align-items: center; }
+.funnelLabel { font-size: 13px; font-weight: 500; }
+.funnelBar { height: 10px; background: var(--bg-hover); border-radius: 5px; overflow: hidden; }
+.funnelFill { height: 100%; border-radius: 5px; transition: width .4s; }
+.funnelCount { font-size: 12px; color: var(--muted); text-align: right; font-variant-numeric: tabular-nums; }
+.stageGrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+@media (max-width: 700px) { .stageGrid { grid-template-columns: 1fr; } }
+.stageCard { text-align: center; padding: 16px; background: var(--bg); border-radius: var(--radius-md); }
+.stageCount { font-size: 36px; font-weight: 700; color: var(--navy); }
+.stageLabel { font-size: 13px; font-weight: 600; margin-top: 4px; }
+.stageDesc { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.note { text-align: center; font-size: 13px; font-weight: 600; color: var(--navy); padding: 8px; }

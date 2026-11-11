@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ProofPay — Create Project Wizard</title>
+<script src="./vendor/react.js"></script>
+<script src="./vendor/react-dom.js"></script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400&amp;display=swap">
+<style>
+body{margin:0;font-family:Inter,-apple-system,"Segoe UI",Roboto,sans-serif;color:#172B4D;font-size:14px}
+*{box-sizing:border-box}
+.n{font-variant-numeric:tabular-nums}
+.ct{font-size:14px;font-weight:500}
+.mono{font-family:"JetBrains Mono","SF Mono",Consolas,monospace;font-size:12px;color:#003087}
+.btn{height:44px;padding:0 16px;border-radius:6px;border:1px solid #E5E9F0;background:#fff;color:#172B4D;font:500 14px Inter,sans-serif;cursor:pointer}
+.btn.p{background:#0070E0;border-color:#0070E0;color:#fff}
+.bd{font-size:12px;font-weight:500;border-radius:9999px;padding:4px 10px}
+.f label{display:block;font-size:12px;font-weight:500;color:#64748B;margin-bottom:4px}
+.f input,.f textarea{width:100%;border:1px solid #E5E9F0;border-radius:6px;padding:10px 12px;font:13px Inter,sans-serif;color:#172B4D;background:#fff}
+.f input{height:44px}
+</style>
+</helmet>
+<div style="width:880px;height:960px;background:#F5F7FA;display:flex;align-items:center;justify-content:center;position:relative">
+<div style="position:absolute;inset:0;background:rgba(10,37,64,.4)"></div>
+<div role="dialog" aria-label="Create Project" style="position:relative;width:800px;background:#fff;border-radius:12px;padding:24px;display:grid;gap:16px;box-shadow:0 12px 40px rgba(10,37,64,.25)">
+<div style="display:flex;justify-content:space-between;align-items:center"><div><div style="font-size:20px;font-weight:600">Create Project</div><div style="font-size:12px;color:#64748B">Step 5 of 5 · Milestone Allocation &amp; Acceptance Criteria</div></div><button aria-label="Close" style="width:44px;height:44px;border:0;background:transparent;font-size:22px;color:#64748B;cursor:pointer">×</button></div>
+<div style="display:flex;gap:8px"><div style="flex:1;display:flex;flex-direction:column;gap:6px"><div style="height:4px;border-radius:2px;background:#0070E0"></div><div style="font-size:12px;font-weight:500;color:#64748B">1. Basics</div></div><div style="flex:1;display:flex;flex-direction:column;gap:6px"><div style="height:4px;border-radius:2px;background:#0070E0"></div><div style="font-size:12px;font-weight:500;color:#64748B">2. Client</div></div><div style="flex:1;display:flex;flex-direction:column;gap:6px"><div style="height:4px;border-radius:2px;background:#0070E0"></div><div style="font-size:12px;font-weight:500;color:#64748B">3. Freelancer</div></div><div style="flex:1;display:flex;flex-direction:column;gap:6px"><div style="height:4px;border-radius:2px;background:#0070E0"></div><div style="font-size:12px;font-weight:500;color:#64748B">4. AI Scoping</div></div><div style="flex:1;display:flex;flex-direction:column;gap:6px"><div style="height:4px;border-radius:2px;background:#0070E0"></div><div style="font-size:12px;font-weight:600;color:#172B4D">5. Milestones</div></div></div>
+<div style="border:1px solid #E5E9F0;border-radius:10px;padding:16px;display:grid;gap:10px"><div style="display:grid;grid-template-columns:1fr 130px 150px;gap:12px"><div class="f"><label for="t1">Milestone 1 title</label><input id="t1" value="UI Design &amp; Figma Tokens"></div><div class="f"><label for="a1">Amount (USD)</label><input id="a1" value="400.00"></div><div class="f"><label for="d1">Due date</label><input id="d1" value="2026-11-20"></div></div><div class="f"><label for="c1">Acceptance criteria</label><textarea id="c1" rows="2">Figma file shared with tokens page; all 12 screens pass contrast checks</textarea></div></div>
+<div style="border:1px solid #E5E9F0;border-radius:10px;padding:16px;display:grid;gap:10px"><div style="display:grid;grid-template-columns:1fr 130px 150px;gap:12px"><div class="f"><label for="t2">Milestone 2 title</label><input id="t2" value="Frontend Integration &amp; API Client"></div><div class="f"><label for="a2">Amount (USD)</label><input id="a2" value="700.00"></div><div class="f"><label for="d2">Due date</label><input id="d2" value="2026-12-02"></div></div><div class="f"><label for="c2">Acceptance criteria</label><textarea id="c2" rows="2">Pages render from live API; PR merged with passing CI; staging URL reachable</textarea></div></div><div style="border:1px solid #E5E9F0;border-radius:10px;padding:12px 16px;display:flex;justify-content:space-between"><span class="ct">Milestone 3 · Backend &amp; PayPal Checkout</span><span class="n ct">$800.00</span></div><div style="border:1px solid #E5E9F0;border-radius:10px;padding:12px 16px;display:flex;justify-content:space-between"><span class="ct">Milestone 4 · QA, Testing &amp; Deployment</span><span class="n ct">$500.00</span></div>
+<button class="btn" style="justify-self:start">+ Add Milestone</button>
+<div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;background:#F0F3F8;border-radius:8px;padding:12px 16px"><div class="n ct">Allocated $2,400.00 of $2,400.00 USD</div><span class="bd" style="background:#E8F5E9;color:#1E7A4C">Totals match</span><div style="font-size:12px;color:#64748B">Plan Hash preview <span class="mono">0a8f9c2...4e1</span></div></div>
+<div style="display:flex;justify-content:space-between"><button class="btn">Back</button><button class="btn p">Submit &amp; Create Project</button></div>
+</div></div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":880,"height":960}}'>
+class Component extends DCLogic {
+renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

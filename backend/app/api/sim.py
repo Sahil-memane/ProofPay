@@ -26,7 +26,7 @@ from backend.app.stubs import audit, clock, llm, policy, repositories, scheduler
 router = APIRouter(tags=["demo"])
 
 # Demo mode toggle — defaults to False (or reads DEMO_MODE env)
-_DEMO_MODE: bool = os.getenv("DEMO_MODE", "false").lower() in ("true", "1", "yes")
+_DEMO_MODE: bool = os.getenv("DEMO_MODE", "true").lower() in ("true", "1", "yes")
 
 
 def set_demo_mode(enabled: bool) -> None:

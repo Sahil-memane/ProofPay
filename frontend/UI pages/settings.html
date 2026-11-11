@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ProofPay — Settings</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0;font-family:Inter,system-ui,sans-serif;color:#172B4D;background:#F5F7FA;font-size:14px}
+*{box-sizing:border-box}
+a{color:#0070E0;text-decoration:none}a:hover{text-decoration:underline}
+.i{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.nv{display:flex;align-items:center;gap:12px;height:40px;padding:0 12px;border-radius:8px;color:#D6E2F5;font-size:14px}
+.nv:hover{background:#0A3F9E;text-decoration:none;color:#fff}
+.nv.on{background:#0070E0;color:#fff}
+.nv b{margin-left:auto;background:#F5A623;color:#172B4D;font-size:11px;font-weight:600;border-radius:10px;padding:1px 7px}
+.gl{font-size:11px;letter-spacing:.08em;color:#9DB6E0;padding:16px 12px 6px;font-weight:600}
+.card{background:#fff;border:1px solid #E5E9F0;border-radius:12px;padding:20px}
+.n{font-variant-numeric:tabular-nums}
+.btn{height:44px;padding:0 16px;border-radius:8px;border:1px solid #E5E9F0;background:#fff;color:#172B4D;font:600 14px Inter,sans-serif;cursor:pointer}
+.btn:hover{background:#F0F3F8}
+.btn.p{background:#0070E0;border-color:#0070E0;color:#fff}.btn.p:hover{background:#005fc0}
+.btn.d{color:#B42830;border-color:#F3C5C8}.btn.d:hover{background:#FBE5E6}
+.btn.sm{height:34px;padding:0 12px;font-size:13px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.lb{font-size:12px;color:#64748B}
+.h2{font-size:20px;font-weight:600;margin:0;color:#003087}
+.ct{font-size:15px;font-weight:600;margin:0}
+.bd{font-size:12px;font-weight:600;border-radius:12px;padding:2px 10px;white-space:nowrap}
+.g{background:#E3F4EB;color:#1E7A4C}.a{background:#FEF1D9;color:#8A5A00}.r{background:#FBE5E6;color:#B42830}.b{background:#E6F0FC;color:#005BB5}.gy{background:#F0F3F8;color:#64748B}
+.ib{width:44px;height:44px;border-radius:8px;border:0;background:transparent;color:#64748B;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.ib:hover{background:#F0F3F8}
+.grid{display:grid;gap:24px}
+@media (max-width:900px){.side{display:none!important}.srch{display:none!important}.tabs{overflow-x:auto}}
+.mono{font-family:'JetBrains Mono','SF Mono',Consolas,monospace;font-size:12px;color:#003087}
+.f{display:block;width:100%;height:44px;margin-top:4px;padding:0 12px;border:1px solid #E5E9F0;border-radius:8px;font:14px Inter,sans-serif;color:#172B4D;background:#fff}
+.f[aria-invalid=true]{border-color:#D9363E}
+.err{color:#B42830;font-size:12px;margin-top:4px;min-height:0}
+[hidden]{display:none!important}
+.btn:focus-visible,.f:focus-visible,.nv:focus-visible,a:focus-visible,.tab:focus-visible,.sw:focus-visible{outline:2px solid #0070E0;outline-offset:2px}
+.th{padding:10px 12px;font-size:12px;font-weight:600;color:#64748B}.td{padding:12px;border-top:1px solid #E5E9F0;font-size:14px}
+.tab{height:40px;padding:0 16px;border:0;border-bottom:2px solid transparent;background:transparent;color:#64748B;font:500 14px Inter,sans-serif;cursor:pointer;white-space:nowrap}
+.tab:hover{color:#172B4D}
+.tab.on{color:#0070E0;border-bottom-color:#0070E0}
+.sw{position:relative;width:40px;height:22px;border-radius:11px;border:0;background:#C5CCD8;cursor:pointer;flex:none;padding:0}
+.sw::after{content:"";position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:9px;background:#fff;transition:left .15s}
+.sw[aria-checked=true]{background:#2E9D65}.sw[aria-checked=true]::after{left:20px}
+.row{display:flex;align-items:center;gap:12px;padding:14px 0;border-top:1px solid #E5E9F0}
+.row:first-of-type{border-top:0}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+</style>
+</head>
+<body>
+<div style="display:flex;min-height:100vh">
+<aside class="side" style="width:250px;flex:none;background:#003087;color:#fff;display:flex;flex-direction:column;padding:16px 12px;position:sticky;top:0;height:100vh;overflow-y:auto">
+<div style="display:flex;align-items:center;gap:10px;padding:4px 12px 12px">
+<div style="width:32px;height:32px;border-radius:8px;background:#0070E0;display:flex;align-items:center;justify-content:center"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6zM9 12l2 2 4-4"></path></svg></div>
+<div style="font-size:18px;font-weight:600;flex:1">ProofPay</div>
+<button class="ib" aria-label="Collapse sidebar" style="color:#D6E2F5;width:32px;height:32px"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg></button>
+</div>
+<nav aria-label="Main">
+<div class="gl">OVERVIEW</div>
+<a class="nv" href="index.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3h7v9H3zM14 3h7v5h-7zM14 12h7v9h-7zM3 16h7v5H3z"></path></svg>Dashboard</a>
+<div class="gl">ESCROW MANAGEMENT</div>
+<a class="nv" href="projects.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6a2 2 0 0 1 2-2h4l2 3h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>Projects</a>
+<a class="nv" href="milestones.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V4M5 4h12l-2 4 2 4H5"></path></svg>Milestones</a>
+<a class="nv" href="submissions.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9zM9 14l2 2 4-4"></path></svg>Submissions &amp; Verification<b>5</b></a>
+<a class="nv" href="ledger.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2zM4 19a2 2 0 0 0 2 2h13"></path></svg>Escrow Ledger</a>
+<div class="gl">REVENUE RECOVERY</div>
+<a class="nv" href="recovery-overview.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8M15 7h6v6"></path></svg>Recovery Overview</a>
+<a class="nv" href="cases.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8h18v12H3zM9 8V5h6v3"></path></svg>Recovery Cases<b>12</b></a>
+<a class="nv" href="invoices.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6"></path></svg>Invoices &amp; Subscriptions</a>
+<a class="nv" href="payment-attempts.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18v12H3zM3 10h18"></path></svg>Payment Attempts</a>
+<div class="gl">TRUST &amp; GOVERNANCE</div>
+<a class="nv" href="reconciliation.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h14l-3-3M20 16H6l3 3"></path></svg>Reconciliation<b>4</b></a>
+<a class="nv" href="disputes.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l10 18H2zM12 10v5M12 18h.01"></path></svg>Disputes<b>1</b></a>
+<a class="nv" href="mandate-guard.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"></path></svg>Mandate Guard</a>
+<a class="nv" href="reputation.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.8 5.8 6.2.9-4.5 4.4 1 6.2-5.5-3 -5.5 3 1-6.2L3 9.7l6.2-.9z"></path></svg>Reputation</a>
+<div class="gl">INTELLIGENCE</div>
+<a class="nv" href="agents.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8h14v10H5zM12 8V4M9 13h.01M15 13h.01"></path></svg>AI Agents</a>
+<a class="nv" href="analytics.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V10M12 21V4M19 21v-8"></path></svg>Analytics &amp; Reports</a>
+<a class="nv" href="audit.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"></path></svg>Audit Trail</a>
+<a class="nv" href="assistant.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"></path></svg>AI Assistant</a>
+<div class="gl">SYSTEM</div>
+<a class="nv" href="integrations.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3v5M15 3v5M6 8h12v4a6 6 0 0 1-12 0zM12 18v3"></path></svg>Integrations</a>
+<a class="nv on" href="settings.html" aria-current="page"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10M14 5v4M6 15v4"></path></svg>Settings</a>
+<a class="nv" href="help.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .8-1 1.7M12 17h.01"></path></svg>Help &amp; Support</a>
+</nav>
+<div style="margin-top:auto;padding-top:16px">
+<button style="display:flex;align-items:center;gap:12px;width:100%;height:56px;padding:0 12px;border-radius:8px;border:0;background:#0A3F9E;color:#fff;cursor:pointer;text-align:left;font-family:Inter,sans-serif">
+<span style="width:32px;height:32px;border-radius:16px;background:#009CDE;color:#001C64;font-weight:600;display:flex;align-items:center;justify-content:center">S</span>
+<span style="flex:1"><span style="display:block;font-size:13px;font-weight:600">Sahil</span><span style="display:block;font-size:12px;color:#C9D8F2">Workspace Owner</span></span>
+<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 15l6-6 6 6"></path></svg></button>
+</div>
+</aside>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column">
+<header style="height:68px;flex:none;background:#fff;border-bottom:1px solid #E5E9F0;display:flex;align-items:center;gap:16px;padding:0 32px;position:sticky;top:0;z-index:5">
+<div style="min-width:140px"><div class="lb">System /</div><div style="font-weight:600;font-size:15px">Settings</div></div>
+<div class="srch" style="flex:1;max-width:480px;margin:0 auto;position:relative">
+<svg class="i" viewBox="0 0 24 24" aria-hidden="true" style="position:absolute;left:12px;top:13px;color:#64748B"><path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM21 21l-5-5"></path></svg>
+<label for="gs" style="position:absolute;left:-9999px">Global search</label>
+<input id="gs" placeholder="Search projects, invoices, cases, audit hashes (Ctrl+K)..." style="width:100%;height:44px;padding:0 12px 0 40px;border:1px solid #E5E9F0;border-radius:10px;background:#F0F3F8;font:14px Inter,sans-serif;color:#172B4D">
+</div>
+<span class="bd a" style="margin-left:auto">Sandbox</span>
+<span style="display:flex;align-items:center;gap:6px;font-size:13px;font-weight:500;white-space:nowrap"><span style="width:8px;height:8px;border-radius:4px;background:#2E9D65"></span>PayPal Connected</span>
+<button class="ib" aria-label="Notifications, 3 unread" style="position:relative"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 21h4"></path></svg><span style="position:absolute;top:10px;right:11px;width:8px;height:8px;border-radius:4px;background:#D9363E"></span></button>
+<button class="ib" aria-label="Help"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .8-1 1.7M12 17h.01"></path></svg></button>
+<button class="ib" aria-label="Account menu" style="width:36px;height:36px;border-radius:18px;background:#003087;color:#fff;font:600 14px Inter,sans-serif">S</button>
+</header>
+
+<main style="padding:32px;max-width:1280px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:24px">
+<div style="display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;justify-content:space-between">
+<div style="max-width:640px"><h1 style="font-size:28px;font-weight:600;margin:0;color:#003087">Settings</h1><p style="margin:4px 0 0;color:#64748B">Manage your profile, workspace, team access, alerts, and security for ProofPay.</p></div>
+<span id="dirty" class="bd a" hidden>Unsaved changes</span></div>
+
+<div class="card" style="padding:0">
+<div class="tabs" role="tablist" aria-label="Settings sections" style="display:flex;gap:4px;padding:0 12px;border-bottom:1px solid #E5E9F0">
+<button class="tab on" role="tab" id="t-profile" aria-selected="true" aria-controls="p-profile" data-t="profile">Profile</button>
+<button class="tab" role="tab" id="t-workspace" aria-selected="false" aria-controls="p-workspace" data-t="workspace">Workspace</button>
+<button class="tab" role="tab" id="t-team" aria-selected="false" aria-controls="p-team" data-t="team">Team &amp; Permissions</button>
+<button class="tab" role="tab" id="t-notif" aria-selected="false" aria-controls="p-notif" data-t="notif">Notifications</button>
+<button class="tab" role="tab" id="t-security" aria-selected="false" aria-controls="p-security" data-t="security">Security &amp; Sessions</button>
+</div>
+
+<!-- PROFILE -->
+<section id="p-profile" role="tabpanel" aria-labelledby="t-profile" style="padding:24px">
+<form data-form class="grid" style="gap:20px;max-width:720px" novalidate>
+<div style="display:flex;align-items:center;gap:16px"><span style="width:64px;height:64px;border-radius:32px;background:#003087;color:#fff;font-size:24px;font-weight:600;display:flex;align-items:center;justify-content:center">S</span>
+<div><div class="ct">Sahil</div><div style="display:flex;gap:8px;margin-top:4px"><span class="bd b">Workspace Owner</span><span class="bd g">VERIFIED</span></div></div></div>
+<div class="two">
+<label class="lb">Full name<input class="f" name="name" required value="Sahil"><div class="err"></div></label>
+<label class="lb">Account email<input class="f" name="email" type="email" required value="sahil@acmeglobal.example"><div class="err"></div></label>
+</div>
+<div class="two">
+<label class="lb">PayPal recipient email<input class="f" name="paypal" type="email" required value="payouts@acmeglobal.example" aria-describedby="ppH"><div class="err"></div><span id="ppH" class="lb" style="display:block;margin-top:4px">Payouts and refunds are sent here. Mandate Guard requires a verified PayPal email.</span></label>
+<label class="lb">Timezone<select class="f" name="tz"><option>Asia/Kolkata (UTC+05:30)</option><option>UTC</option><option>America/New_York (UTC−05:00)</option><option>America/Los_Angeles (UTC−08:00)</option><option>Europe/London (UTC+00:00)</option><option>Europe/Berlin (UTC+01:00)</option></select></label>
+</div>
+<div style="display:flex;gap:8px"><button class="btn p" type="submit">Save Profile</button><button class="btn" type="reset">Discard</button></div>
+</form>
+</section>
+
+<!-- WORKSPACE -->
+<section id="p-workspace" role="tabpanel" aria-labelledby="t-workspace" style="padding:24px" hidden>
+<form data-form class="grid" style="gap:20px;max-width:720px" novalidate>
+<div class="two">
+<label class="lb">Business name<input class="f" name="biz" required value="Acme Global Solutions"><div class="err"></div></label>
+<label class="lb">Tax ID (EIN / GSTIN / VAT)<input class="f" name="tax" required value="94-3127741" pattern="[A-Za-z0-9\- ]{6,20}"><div class="err"></div></label>
+</div>
+<div class="two">
+<label class="lb">Default currency<select class="f" name="cur"><option>USD — US Dollar</option></select></label>
+<label class="lb">Workspace ID<input class="f mono" value="ws_acme_2026_001" readonly style="background:#F0F3F8"></label>
+</div>
+<div style="padding:12px 16px;border-radius:8px;background:#E6F0FC;font-size:13px">Currency is fixed to USD for this sandbox workspace. Mandate Guard limits ($200.00 per transaction, $5,000.00 per day) are managed in <a href="mandate-guard.html">Mandate Guard</a>.</div>
+<div style="display:flex;gap:8px"><button class="btn p" type="submit">Save Workspace</button><button class="btn" type="reset">Discard</button></div>
+</form>
+</section>
+
+<!-- TEAM -->
+<section id="p-team" role="tabpanel" aria-labelledby="t-team" style="padding:24px" hidden>
+<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px"><div><h2 class="h2">Team &amp; Permissions</h2><p class="lb" style="margin:4px 0 0">Control which personas can access each capability.</p></div><button class="btn p" id="invite">+ Invite Member</button></div>
+<div style="overflow-x:auto;margin-top:12px"><table style="width:100%;border-collapse:collapse;min-width:680px"><thead><tr style="text-align:left;background:#F0F3F8"><th class="th">Member</th><th class="th">Role</th><th class="th">Status</th><th class="th">Last active</th><th class="th"></th></tr></thead><tbody id="mem"></tbody></table></div>
+<h3 class="ct" style="margin:28px 0 8px">Role permissions</h3>
+<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;min-width:680px"><thead><tr style="text-align:left;background:#F0F3F8"><th class="th">Capability</th><th class="th">Client</th><th class="th">Freelancer</th><th class="th">Merchant</th><th class="th">Risk Officer</th></tr></thead><tbody id="perm"></tbody></table></div>
+</section>
+
+<!-- NOTIFICATIONS -->
+<section id="p-notif" role="tabpanel" aria-labelledby="t-notif" style="padding:24px" hidden>
+<form data-form style="max-width:720px" novalidate>
+<h2 class="h2">Alerts</h2><p class="lb" style="margin:4px 0 8px">Choose how you are notified about important events.</p>
+<div style="display:grid;grid-template-columns:1fr 64px 72px;gap:12px;font-size:12px;font-weight:600;color:#64748B;padding:8px 0"><span>Event</span><span>Email</span><span>Webhook</span></div>
+<div id="nl"></div>
+<div style="margin-top:16px"><label class="lb">Webhook endpoint URL<input class="f mono" name="wh" type="url" value="https://hooks.acmeglobal.example/proofpay"><div class="err"></div></label></div>
+<div style="display:flex;gap:8px;margin-top:20px;flex-wrap:wrap"><button class="btn p" type="submit">Save Notifications</button><button class="btn" type="button" id="testWh">Send Test Webhook</button></div>
+</form>
+</section>
+
+<!-- SECURITY -->
+<section id="p-security" role="tabpanel" aria-labelledby="t-security" style="padding:24px" hidden>
+<div class="grid" style="gap:28px;max-width:900px">
+<div>
+<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px"><div><h2 class="h2">API Keys</h2><p class="lb" style="margin:4px 0 0">Keys are shown once on creation. PayPal secrets are never stored in the browser.</p></div><button class="btn p" id="genKey">+ Generate Key</button></div>
+<div style="overflow-x:auto;margin-top:8px"><table style="width:100%;border-collapse:collapse;min-width:600px"><thead><tr style="text-align:left;background:#F0F3F8"><th class="th">Name</th><th class="th">Key</th><th class="th">Created</th><th class="th">Status</th><th class="th"></th></tr></thead><tbody id="keys"></tbody></table></div>
+</div>
+<div class="row" style="border:1px solid #E5E9F0;border-radius:12px;padding:16px">
+<div style="flex:1"><div class="ct">Two-factor authentication</div><div class="lb" id="tfaT" style="margin-top:2px">Authenticator app enabled.</div></div>
+<span id="tfaB" class="bd g">ENABLED</span><button class="btn sm" id="tfa">Disable</button></div>
+<div style="max-width:320px"><label class="lb">Session timeout<select class="f" id="to"><option>15 minutes</option><option selected>30 minutes</option><option>1 hour</option><option>8 hours</option></select></label></div>
+<div>
+<div style="display:flex;justify-content:space-between;align-items:center"><h3 class="ct">Active sessions</h3><button class="btn d sm" id="revAll">Sign out other sessions</button></div>
+<div id="ses"></div></div>
+</div>
+</section>
+</div>
+
+<div style="text-align:center;padding:8px 0 16px;color:#003087;font-weight:600">AI recommends. Policy decides. PayPal executes. Every action is auditable.<div class="lb" style="font-weight:400;margin-top:4px">ProofPay · Every Payment. Proven. Protected.</div></div>
+</main>
+
+<div id="modal" style="display:none;position:fixed;inset:0;background:rgba(10,37,64,.4);z-index:20;align-items:center;justify-content:center;padding:16px" role="dialog" aria-modal="true" aria-labelledby="mt">
+<form id="mf" class="card" style="width:100%;max-width:480px;display:grid;gap:12px" novalidate>
+<h2 class="h2" id="mt">Invite Member</h2>
+<label class="lb">Email<input class="f" id="ie" type="email" required placeholder="name@example.com"><div class="err" id="ieE"></div></label>
+<label class="lb">Role<select class="f" id="ir"><option>Client</option><option>Freelancer</option><option>Merchant</option><option>Risk Officer</option></select></label>
+<div style="display:flex;gap:8px;justify-content:flex-end"><button type="button" class="btn" id="mc">Cancel</button><button class="btn p">Send Invite</button></div>
+</form></div>
+<div id="toasts" aria-live="polite" style="position:fixed;top:80px;right:24px;z-index:30;display:grid;gap:8px"></div>
+</div>
+</div>
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+function toast(t,k){const d=document.createElement('div');d.className='card';d.style.cssText='padding:12px 16px;border-left:4px solid '+(k==='w'?'#F5A623':k==='e'?'#D9363E':'#2E9D65')+';box-shadow:0 4px 12px rgba(0,0,0,.1);max-width:340px';d.textContent=t;$('#toasts').append(d);setTimeout(()=>d.remove(),4500)}
+const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+/* tabs */
+const tabs=$$('.tab');
+function show(t){tabs.forEach(b=>{const on=b.dataset.t===t;b.classList.toggle('on',on);b.setAttribute('aria-selected',on);b.tabIndex=on?0:-1;$('#p-'+b.dataset.t).hidden=!on});try{history.replaceState(null,'','#'+t)}catch(e){}}
+tabs.forEach((b,i)=>{b.onclick=()=>show(b.dataset.t);b.onkeydown=e=>{if(e.key==='ArrowRight'||e.key==='ArrowLeft'){const n=tabs[(i+(e.key==='ArrowRight'?1:tabs.length-1))%tabs.length];n.focus();show(n.dataset.t)}}});
+show(tabs.some?.call(tabs,b=>b.dataset.t===location.hash.slice(1))?location.hash.slice(1):'profile');
+/* forms: validation + dirty */
+let dirty=0;const mark=v=>{dirty=v;$('#dirty').hidden=!v};
+$$('[data-form]').forEach(f=>{
+ f.addEventListener('input',()=>mark(1));f.addEventListener('change',()=>mark(1));
+ f.addEventListener('reset',()=>setTimeout(()=>{mark(0);f.querySelectorAll('.f').forEach(x=>{x.removeAttribute('aria-invalid');x.nextElementSibling&&x.nextElementSibling.classList.contains('err')&&(x.nextElementSibling.textContent='')})}));
+ f.addEventListener('submit',e=>{e.preventDefault();let ok=1;
+  f.querySelectorAll('input.f').forEach(x=>{const er=x.parentElement.querySelector('.err');let m='';
+   if(x.required&&!x.value.trim())m='This field is required.';else if(x.value&&!x.checkValidity())m=x.type==='email'?'Enter a valid email address.':x.type==='url'?'Enter a valid URL.':'Invalid format.';
+   x.setAttribute('aria-invalid',!!m);if(er)er.textContent=m;if(m&&ok){x.focus();ok=0}});
+  if(!ok)return toast('Fix the highlighted fields.','e');
+  const b=f.querySelector('[type=submit]');b.disabled=true;const o=b.textContent;b.textContent='Saving…';
+  setTimeout(()=>{b.disabled=false;b.textContent=o;mark(0);toast('Settings saved. Audit event recorded.')},700)})});
+addEventListener('beforeunload',e=>{if(dirty){e.preventDefault();e.returnValue=''}});
+/* team */
+let M=[['Sahil','sahil@acmeglobal.example','Workspace Owner','ACTIVE','Now'],['Acme Global Solutions','client@example.com','Client','ACTIVE','2 hours ago'],['Rahul Sharma','freelancer@example.com','Freelancer','ACTIVE','35 minutes ago'],['Billing Team','billing@acmeglobal.example','Merchant','ACTIVE','Yesterday'],['Risk Desk','risk@acmeglobal.example','Risk Officer','ACTIVE','3 hours ago']];
+function rm(){$('#mem').innerHTML=M.map((m,i)=>`<tr><td class="td"><b>${esc(m[0])}</b><div class="lb">${esc(m[1])}</div></td><td class="td">${m[2]==='Workspace Owner'?'<span class="bd b">Workspace Owner</span>':`<select class="f" style="height:36px;margin:0;width:150px" data-r="${i}">${['Client','Freelancer','Merchant','Risk Officer'].map(r=>`<option${r===m[2]?' selected':''}>${r}</option>`).join('')}</select>`}</td><td class="td"><span class="bd ${m[3]==='ACTIVE'?'g':'a'}">${m[3]==='ACTIVE'?'ACTIVE':'INVITED'}</span></td><td class="td lb">${m[4]}</td><td class="td">${m[2]==='Workspace Owner'?'':`<button class="btn d sm" data-x="${i}">Remove</button>`}</td></tr>`).join('');
+ $$('[data-r]').forEach(s=>s.onchange=()=>{M[+s.dataset.r][2]=s.value;toast('Role updated to '+s.value+'.')});
+ $$('[data-x]').forEach(b=>b.onclick=()=>{const m=M[+b.dataset.x];if(confirm('Remove '+m[0]+' from this workspace?')){M.splice(+b.dataset.x,1);rm();toast('Member removed.','w')}})}
+rm();
+const P=[['View projects & ledger',1,1,0,1],['Approve plan hash',1,1,0,0],['Fund escrow via PayPal',1,0,0,0],['Submit deliverables',0,1,0,0],['Release / refund funds',1,0,0,1],['Run reconciliation & recovery',0,0,1,1],['Decide in Approvals Queue',0,0,0,1],['Edit Mandate Guard policy',0,0,0,1],['Inspect SHA-256 audit trail',0,0,0,1]];
+$('#perm').innerHTML=P.map(p=>`<tr><td class="td">${p[0]}</td>${p.slice(1).map(v=>`<td class="td">${v?'<span class="bd g">Allowed</span>':'<span class="bd gy">—</span>'}</td>`).join('')}</tr>`).join('');
+const mo=$('#modal'),open=()=>{mo.style.display='flex';$('#ie').focus()},close=()=>mo.style.display='none';
+$('#invite').onclick=open;$('#mc').onclick=close;addEventListener('keydown',e=>{if(e.key==='Escape')close()});mo.onclick=e=>{if(e.target===mo)close()};
+$('#mf').onsubmit=e=>{e.preventDefault();const i=$('#ie');if(!i.value||!i.checkValidity()){$('#ieE').textContent='Enter a valid email address.';i.setAttribute('aria-invalid','true');return}
+ if(M.some(m=>m[1].toLowerCase()===i.value.toLowerCase())){$('#ieE').textContent='This person is already a member.';return}
+ M.push([i.value.split('@')[0],i.value,$('#ir').value,'INVITED','—']);rm();close();e.target.reset();$('#ieE').textContent='';i.removeAttribute('aria-invalid');toast('Invitation sent.')};
+/* notifications */
+const N=[['Dispute filed (escrow freeze)',1,1],['Verification failed / AUTO_REJECT',1,1],['Payout executed',1,1],['Payout routed to Approvals Queue',1,0],['Policy blocked by Mandate Guard',1,1],['Recovery case paid',0,1],['Paid elsewhere detected',1,0]];
+const sw=(on,l)=>`<button type="button" class="sw" role="switch" aria-checked="${!!on}" aria-label="${l}"></button>`;
+$('#nl').innerHTML=N.map(n=>`<div class="row" style="display:grid;grid-template-columns:1fr 64px 72px;gap:12px"><span>${n[0]}</span>${sw(n[1],n[0]+' email')}${sw(n[2],n[0]+' webhook')}</div>`).join('');
+document.addEventListener('click',e=>{const s=e.target.closest('.sw');if(s){s.setAttribute('aria-checked',s.getAttribute('aria-checked')!=='true');mark(1)}});
+$('#testWh').onclick=e=>{const b=e.target;b.disabled=true;b.textContent='Sending…';setTimeout(()=>{b.disabled=false;b.textContent='Send Test Webhook';toast('Test webhook delivered (HTTP 200).')},900)};
+/* security */
+let K=[['Production backend','pp_live_••••••••a91f','Oct 02, 2026','ACTIVE'],['CI / staging','pp_test_••••••••3c7d','Oct 18, 2026','ACTIVE']];
+function rk(){$('#keys').innerHTML=K.map((k,i)=>`<tr><td class="td"><b>${esc(k[0])}</b></td><td class="td"><code class="mono">${k[1]}</code></td><td class="td lb">${k[2]}</td><td class="td"><span class="bd ${k[3]==='ACTIVE'?'g':'gy'}">${k[3]==='ACTIVE'?'ACTIVE':'REVOKED'}</span></td><td class="td">${k[3]==='ACTIVE'?`<button class="btn d sm" data-k="${i}">Revoke</button>`:''}</td></tr>`).join('');
+ $$('[data-k]').forEach(b=>b.onclick=()=>{if(confirm('Revoke this key? Integrations using it will stop working.')){K[+b.dataset.k][3]='REVOKED';rk();toast('API key revoked.','w')}})}
+rk();
+$('#genKey').onclick=()=>{const n=prompt('Name for the new key:');if(!n||!n.trim())return;const id=Array.from(crypto.getRandomValues(new Uint8Array(4)),x=>x.toString(16).padStart(2,'0')).join('');K.unshift([n.trim(),'pp_test_••••••••'+id.slice(-4),'Nov 11, 2026','ACTIVE']);rk();toast('Key created. Copy it now — it will not be shown again.')};
+let tf=1;$('#tfa').onclick=()=>{if(tf&&!confirm('Disable two-factor authentication? This weakens account security.'))return;tf=!tf;$('#tfaB').className='bd '+(tf?'g':'r');$('#tfaB').textContent=tf?'ENABLED':'DISABLED';$('#tfa').textContent=tf?'Disable':'Enable';$('#tfaT').textContent=tf?'Authenticator app enabled.':'Not enabled. Enable it to protect payouts and approvals.';toast(tf?'Two-factor authentication enabled.':'Two-factor authentication disabled.',tf?'':'w')};
+$('#to').onchange=e=>toast('Session timeout set to '+e.target.value+'.');
+let S=[['Chrome on Windows','Pune, IN','Current session',1],['Safari on iPhone','Mumbai, IN','2 hours ago',0],['Firefox on macOS','Bengaluru, IN','Yesterday',0]];
+function rs(){$('#ses').innerHTML=S.map((s,i)=>`<div class="row"><div style="flex:1"><b>${s[0]}</b><div class="lb">${s[1]} · ${s[2]}</div></div>${s[3]?'<span class="bd g">THIS DEVICE</span>':`<button class="btn sm" data-s="${i}">Sign out</button>`}</div>`).join('');
+ $$('[data-s]').forEach(b=>b.onclick=()=>{S.splice(+b.dataset.s,1);rs();toast('Session signed out.')})}
+rs();$('#revAll').onclick=()=>{S=S.filter(s=>s[3]);rs();toast('All other sessions signed out.','w')};
+</script>
+</body>
+</html>

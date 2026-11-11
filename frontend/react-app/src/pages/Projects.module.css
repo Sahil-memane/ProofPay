@@ -1,0 +1,60 @@
+.page { display: flex; flex-direction: column; gap: 20px; }
+.pageHeader { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end; justify-content: space-between; }
+.h1 { font-size: 28px; font-weight: 600; margin: 0; }
+.sub { margin: 4px 0 0; color: var(--muted); }
+
+.filters { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.chip {
+  height: 36px; padding: 0 16px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border);
+  background: var(--white);
+  color: var(--text);
+  font: 500 13px var(--font-ui);
+  cursor: pointer;
+}
+.chip:hover { background: var(--bg); }
+.chipActive { background: var(--blue); border-color: var(--blue); color: #fff; }
+.searchBox {
+  height: 36px; padding: 0 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  font: 13px var(--font-ui);
+  color: var(--text);
+  background: var(--white);
+  min-width: 200px;
+  margin-left: auto;
+}
+
+.form {}
+.formGrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+@media (max-width: 700px) { .formGrid { grid-template-columns: 1fr; } }
+.field label { display: block; font-size: 12px; font-weight: 500; color: var(--muted); margin-bottom: 4px; }
+.field input, .field textarea {
+  width: 100%; border: 1px solid var(--border);
+  border-radius: var(--radius-md); padding: 10px 12px;
+  font: 13px var(--font-ui); color: var(--text); background: var(--white);
+}
+.field input { height: 40px; }
+.field textarea { resize: vertical; }
+
+.table { width: 100%; border-collapse: collapse; min-width: 1200px; }
+.table th {
+  background: var(--bg); color: var(--muted);
+  font-size: 12px; font-weight: 500;
+  text-align: left; padding: 10px 12px; white-space: nowrap;
+}
+.table td { padding: 12px; border-top: 1px solid var(--border); font-size: 13px; white-space: nowrap; }
+
+.link {
+  background: none; border: none; color: var(--blue);
+  font: 13px var(--font-ui); cursor: pointer; padding: 4px 8px;
+}
+.link:hover { text-decoration: underline; }
+
+.tableFooter {
+  display: flex; justify-content: space-between;
+  padding: 10px 16px; border-top: 1px solid var(--border);
+  font-size: 12px; color: var(--muted);
+}
+

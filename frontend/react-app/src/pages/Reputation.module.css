@@ -1,0 +1,23 @@
+.page { display: flex; flex-direction: column; gap: 20px; }
+.h1 { font-size: 26px; font-weight: 600; margin: 0; }
+.sub { margin: 4px 0 0; color: var(--muted); }
+.searchForm { display: flex; flex-direction: column; gap: 8px; }
+.label { font-size: 12px; font-weight: 500; color: var(--muted); }
+.row { display: flex; gap: 10px; align-items: flex-end; }
+.input { flex: 1; height: 40px; padding: 0 12px; border: 1px solid var(--border); border-radius: var(--radius-md); font: 13px var(--font-ui); }
+.results { display: grid; grid-template-columns: 280px 1fr; gap: 20px; align-items: start; }
+@media (max-width: 700px) { .results { grid-template-columns: 1fr; } }
+.scoreCard { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.scoreTitle { font-size: 13px; font-weight: 600; color: var(--muted); }
+.scoreWrap { display: flex; align-items: baseline; gap: 4px; flex-wrap: wrap; justify-content: center; }
+.scoreNum { font-size: 56px; font-weight: 700; line-height: 1; }
+.scoreLabel { font-size: 20px; color: var(--muted); }
+.scoreBar { width: 100%; height: 10px; background: var(--bg-hover); border-radius: 5px; overflow: hidden; }
+.scoreFill { height: 100%; border-radius: 5px; transition: width .4s; }
+.scoreSubject { font-size: 13px; color: var(--muted); }
+.statTitle { font-size: 14px; font-weight: 600; margin-bottom: 14px; }
+.statGrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+@media (max-width: 600px) { .statGrid { grid-template-columns: repeat(2, 1fr); } }
+.statItem {}
+.statLabel { font-size: 12px; color: var(--muted); font-weight: 500; }
+.statValue { font-size: 20px; font-weight: 700; margin-top: 4px; }

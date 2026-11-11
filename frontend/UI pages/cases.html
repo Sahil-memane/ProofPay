@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ProofPay — Recovery Cases</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0;font-family:Inter,system-ui,sans-serif;color:#172B4D;background:#F5F7FA;font-size:14px}
+*{box-sizing:border-box}
+a{color:#0070E0;text-decoration:none}a:hover{text-decoration:underline}
+.i{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.nv{display:flex;align-items:center;gap:12px;height:40px;padding:0 12px;border-radius:8px;color:#D6E2F5;font-size:14px}
+.nv:hover{background:#0A3F9E;text-decoration:none;color:#fff}
+.nv.on{background:#0070E0;color:#fff}
+.nv b{margin-left:auto;background:#F5A623;color:#172B4D;font-size:11px;font-weight:600;border-radius:10px;padding:1px 7px}
+.gl{font-size:11px;letter-spacing:.08em;color:#9DB6E0;padding:16px 12px 6px;font-weight:600}
+.card{background:#fff;border:1px solid #E5E9F0;border-radius:12px;padding:20px}
+.n{font-variant-numeric:tabular-nums}
+.btn{height:44px;padding:0 16px;border-radius:8px;border:1px solid #E5E9F0;background:#fff;color:#172B4D;font:600 14px Inter,sans-serif;cursor:pointer}
+.btn:hover{background:#F0F3F8}
+.btn.p{background:#0070E0;border-color:#0070E0;color:#fff}.btn.p:hover{background:#005fc0}
+.lb{font-size:12px;color:#64748B}
+.h2{font-size:20px;font-weight:600;margin:0;color:#003087}
+.ct{font-size:15px;font-weight:600;margin:0}
+.big{font-size:28px;font-weight:600;margin:4px 0}
+.up{font-size:12px;color:#1E7A4C;font-weight:500}
+.ico{width:36px;height:36px;border-radius:10px;background:#E6F0FC;color:#0070E0;display:flex;align-items:center;justify-content:center}
+.row{display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid #E5E9F0}
+.tab{height:32px;padding:0 12px;border-radius:8px;border:0;background:transparent;color:#64748B;font:500 13px Inter,sans-serif;cursor:pointer}
+.tab.on{background:#E6F0FC;color:#0070E0}
+.bd{font-size:12px;font-weight:600;border-radius:12px;padding:2px 10px;white-space:nowrap}
+.g{background:#E3F4EB;color:#1E7A4C}.a{background:#FEF1D9;color:#8A5A00}.r{background:#FBE5E6;color:#B42830}.b{background:#E6F0FC;color:#005BB5}
+.ib{width:44px;height:44px;border-radius:8px;border:0;background:transparent;color:#64748B;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.ib:hover{background:#F0F3F8}
+.grid{display:grid;gap:24px}
+@media (max-width:900px){.side{display:none!important}.srch{display:none!important}}
+.mono{font-family:'JetBrains Mono','SF Mono',Consolas,monospace;font-size:12px;color:#003087}.f{display:block;width:100%;height:44px;margin-top:4px;padding:0 12px;border:1px solid #E5E9F0;border-radius:8px;font:14px Inter,sans-serif;color:#172B4D;background:#fff}[hidden]{display:none!important}.btn:focus-visible,.f:focus-visible,.nv:focus-visible,a:focus-visible{outline:2px solid #0070E0;outline-offset:2px}
+.th{padding:10px 12px;font-size:12px;font-weight:600;color:#64748B}.td{padding:12px;border-top:1px solid #E5E9F0;font-size:14px}.fr:hover,.dl:hover{background:#F0F3F8!important}
+[hidden]{display:none!important}.tab:focus-visible,.ib:focus-visible{outline:2px solid #0070E0;outline-offset:2px}
+</style>
+</head>
+<body>
+<div style="display:flex;min-height:100vh">
+<aside class="side" style="width:250px;flex:none;background:#003087;color:#fff;display:flex;flex-direction:column;padding:16px 12px;position:sticky;top:0;height:100vh;overflow-y:auto">
+<div style="display:flex;align-items:center;gap:10px;padding:4px 12px 12px">
+<div style="width:32px;height:32px;border-radius:8px;background:#0070E0;display:flex;align-items:center;justify-content:center"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6zM9 12l2 2 4-4"></path></svg></div>
+<div style="font-size:18px;font-weight:600;flex:1">ProofPay</div>
+<button class="ib" aria-label="Collapse sidebar" style="color:#D6E2F5;width:32px;height:32px"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg></button>
+</div>
+<nav aria-label="Main">
+<div class="gl">OVERVIEW</div>
+<a class="nv" href="index.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3h7v9H3zM14 3h7v5h-7zM14 12h7v9h-7zM3 16h7v5H3z"></path></svg>Dashboard</a>
+<div class="gl">ESCROW MANAGEMENT</div>
+<a class="nv" href="projects.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6a2 2 0 0 1 2-2h4l2 3h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>Projects</a>
+<a class="nv" href="milestones.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V4M5 4h12l-2 4 2 4H5"></path></svg>Milestones</a>
+<a class="nv" href="submissions.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9zM9 14l2 2 4-4"></path></svg>Submissions &amp; Verification<b>5</b></a>
+<a class="nv" href="ledger.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2zM4 19a2 2 0 0 0 2 2h13"></path></svg>Escrow Ledger</a>
+<div class="gl">REVENUE RECOVERY</div>
+<a class="nv" href="recovery-overview.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8M15 7h6v6"></path></svg>Recovery Overview</a>
+<a class="nv on" href="cases.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8h18v12H3zM9 8V5h6v3"></path></svg>Recovery Cases<b>12</b></a>
+<a class="nv" href="invoices.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6"></path></svg>Invoices &amp; Subscriptions</a>
+<a class="nv" href="payment-attempts.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18v12H3zM3 10h18"></path></svg>Payment Attempts</a>
+<div class="gl">TRUST &amp; GOVERNANCE</div>
+<a class="nv" href="reconciliation.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h14l-3-3M20 16H6l3 3"></path></svg>Reconciliation<b>4</b></a>
+<a class="nv" href="disputes.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l10 18H2zM12 10v5M12 18h.01"></path></svg>Disputes<b>1</b></a>
+<a class="nv" href="mandate-guard.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"></path></svg>Mandate Guard</a>
+<a class="nv" href="reputation.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.8 5.8 6.2.9-4.5 4.4 1 6.2-5.5-3 -5.5 3 1-6.2L3 9.7l6.2-.9z"></path></svg>Reputation</a>
+<div class="gl">INTELLIGENCE</div>
+<a class="nv" href="agents.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8h14v10H5zM12 8V4M9 13h.01M15 13h.01"></path></svg>AI Agents</a>
+<a class="nv" href="analytics.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V10M12 21V4M19 21v-8"></path></svg>Analytics &amp; Reports</a>
+<a class="nv" href="audit.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"></path></svg>Audit Trail</a>
+<a class="nv" href="assistant.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"></path></svg>AI Assistant</a>
+<div class="gl">SYSTEM</div>
+<a class="nv" href="integrations.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3v5M15 3v5M6 8h12v4a6 6 0 0 1-12 0zM12 18v3"></path></svg>Integrations</a>
+<a class="nv" href="settings.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10M14 5v4M6 15v4"></path></svg>Settings</a>
+<a class="nv" href="help.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .8-1 1.7M12 17h.01"></path></svg>Help &amp; Support</a>
+</nav>
+<div style="margin-top:auto;padding-top:16px">
+<button style="display:flex;align-items:center;gap:12px;width:100%;height:56px;padding:0 12px;border-radius:8px;border:0;background:#0A3F9E;color:#fff;cursor:pointer;text-align:left;font-family:Inter,sans-serif">
+<span style="width:32px;height:32px;border-radius:16px;background:#009CDE;color:#001C64;font-weight:600;display:flex;align-items:center;justify-content:center">S</span>
+<span style="flex:1"><span style="display:block;font-size:13px;font-weight:600">Sahil</span><span style="display:block;font-size:12px;color:#C9D8F2">Workspace Owner</span></span>
+<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 15l6-6 6 6"></path></svg></button>
+</div>
+</aside>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column">
+<header style="height:68px;flex:none;background:#fff;border-bottom:1px solid #E5E9F0;display:flex;align-items:center;gap:16px;padding:0 32px;position:sticky;top:0;z-index:5">
+<div style="min-width:140px"><div class="lb">Revenue Recovery /</div><div style="font-weight:600;font-size:15px">Recovery Cases</div></div>
+<div class="srch" style="flex:1;max-width:480px;margin:0 auto;position:relative">
+<svg class="i" viewBox="0 0 24 24" aria-hidden="true" style="position:absolute;left:12px;top:13px;color:#64748B"><path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM21 21l-5-5"></path></svg>
+<label for="gs" style="position:absolute;left:-9999px">Global search</label>
+<input id="gs" placeholder="Search projects, invoices, cases, audit hashes (Ctrl+K)..." style="width:100%;height:44px;padding:0 12px 0 40px;border:1px solid #E5E9F0;border-radius:10px;background:#F0F3F8;font:14px Inter,sans-serif;color:#172B4D">
+</div>
+<span class="bd a" style="margin-left:auto">Sandbox</span>
+<span style="display:flex;align-items:center;gap:6px;font-size:13px;font-weight:500;white-space:nowrap"><span style="width:8px;height:8px;border-radius:4px;background:#2E9D65"></span>PayPal Connected</span>
+<button class="ib" aria-label="Notifications, 3 unread" style="position:relative"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 21h4"></path></svg><span style="position:absolute;top:10px;right:11px;width:8px;height:8px;border-radius:4px;background:#D9363E"></span></button>
+<button class="ib" aria-label="Help"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .8-1 1.7M12 17h.01"></path></svg></button>
+<button class="ib" aria-label="Account menu" style="width:36px;height:36px;border-radius:18px;background:#003087;color:#fff;font:600 14px Inter,sans-serif">S</button>
+</header>
+<main style="padding:32px;max-width:1280px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:24px">
+<div style="display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;justify-content:space-between">
+<div><h1 style="font-size:28px;font-weight:600;margin:0;color:#003087">Recovery Cases</h1><p style="margin:4px 0 0;color:#64748B">Every failed payment, its diagnosis, contact ladder stage, and next scheduled action.</p></div>
+<div style="display:flex;flex-wrap:wrap;gap:8px"><a class="btn" href="recovery-overview.html" style="display:inline-flex;align-items:center;color:#172B4D">Recovery Overview</a></div></div>
+
+<section class="card" style="padding:16px">
+<div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between">
+<div id="pills" role="group" aria-label="Filter by status" style="display:flex;flex-wrap:wrap;gap:4px"></div>
+<div style="position:relative;flex:1 1 280px;max-width:380px"><svg class="i" viewBox="0 0 24 24" aria-hidden="true" style="position:absolute;left:12px;top:13px;color:#64748B"><path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM21 21l-5-5"/></svg><label for="q" style="position:absolute;left:-9999px">Search cases</label><input id="q" placeholder="Name, email, invoice ID or diagnosis" style="width:100%;height:44px;padding:0 12px 0 40px;border:1px solid #E5E9F0;border-radius:10px;background:#F0F3F8;font:14px Inter,sans-serif;color:#172B4D"></div></div>
+<div style="overflow-x:auto;margin-top:12px">
+<table style="width:100%;border-collapse:collapse;min-width:1700px"><thead><tr style="text-align:left;background:#F0F3F8"><th class="th">Case ID</th><th class="th">Customer</th><th class="th">Invoice / Subscription</th><th class="th">Amount at risk</th><th class="th">Diagnosis</th><th class="th">Current stage</th><th class="th">Quiet hours</th><th class="th">Reconciliation</th><th class="th">Status</th><th class="th">Next action</th><th class="th">Actions</th></tr></thead><tbody id="tb"></tbody></table></div>
+<div class="lb" id="foot" style="padding:12px 4px 0"></div>
+</section>
+<div style="text-align:center;padding:8px 0 16px;color:#003087;font-weight:600">AI recommends. Policy decides. PayPal executes. Every action is auditable.<div class="lb" style="font-weight:400;margin-top:4px">ProofPay · Every Payment. Proven. Protected.</div></div>
+</main>
+
+<div id="bk" hidden style="position:fixed;inset:0;background:rgba(10,37,64,.4);z-index:20"></div>
+<aside id="dr" hidden role="dialog" aria-modal="true" aria-labelledby="dt" style="position:fixed;top:0;right:0;bottom:0;width:min(580px,100%);background:#fff;z-index:21;box-shadow:-8px 0 24px rgba(0,0,0,.15);display:flex;flex-direction:column">
+<div style="padding:20px 24px;border-bottom:1px solid #E5E9F0;display:flex;gap:12px;align-items:flex-start">
+<div style="flex:1;min-width:0"><div class="lb"><code class="mono" id="dId"></code></div><h2 class="h2" id="dt"></h2><div style="display:flex;gap:12px;align-items:center;margin-top:4px;flex-wrap:wrap"><span class="n" style="font-size:20px;font-weight:600" id="dAmt"></span><span class="lb">outstanding</span><span id="dSt"></span></div></div>
+<button class="ib" id="dx" aria-label="Close case details"><svg class="i" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+<div style="flex:1;overflow-y:auto;padding:20px 24px;display:grid;gap:16px;align-content:start">
+<div id="dPend"></div>
+<div class="card" style="padding:16px"><div class="ct">Diagnosis</div><div class="lb" style="margin:2px 0 6px"><code class="mono" id="dDx"></code></div><div id="dExp"></div></div>
+<div class="card" style="padding:16px"><div style="display:flex;justify-content:space-between;align-items:center"><div class="ct">Reconciliation check</div><span id="dRc"></span></div><div id="dRcT" style="margin-top:6px"></div></div>
+<div><h3 class="ct" style="margin-bottom:8px">Timeline</h3><ol id="tl" style="list-style:none;margin:0;padding:0"></ol></div>
+</div>
+<div style="padding:16px 24px;border-top:1px solid #E5E9F0;display:flex;flex-wrap:wrap;gap:8px" id="dAct"></div>
+</aside>
+<div id="toasts" aria-live="polite" style="position:fixed;top:80px;right:24px;z-index:30;display:grid;gap:8px"></div>
+
+</div>
+</div>
+<script>
+const $=s=>document.querySelector(s),fmt=n=>'$'+n.toLocaleString('en-US',{minimumFractionDigits:2})+' USD';
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function toast(t,k){const d=document.createElement('div');d.className='card';d.style.cssText='padding:12px 16px;border-left:4px solid '+(k==='w'?'#F5A623':k==='e'?'#D9363E':'#2E9D65')+';box-shadow:0 4px 12px rgba(0,0,0,.1);max-width:340px';d.textContent=t;$('#toasts').append(d);setTimeout(()=>d.remove(),4500)}
+const NOW='Day 2 14:30 UTC (simulated)';
+const R=(id,n,e,inv,a,dx,st,q,rc,s,m)=>({id:'REC-2026-00'+id,n,e,inv,a,dx,st,q,rc,s,m,ev:[],pend:null});
+let C=[R(42,'Sarah Johnson','sarah@example.com','INV-2026-1024',350,'EXPIRED_CARD',1,0,'MATCHED','ACTIVE',1110),
+R(41,'Michael Anderson','michael@example.com','INV-2026-1019',450,'INSUFFICIENT_FUNDS',0,0,'PAID_ELSEWHERE','HALTED',null),
+R(40,'Priya Nair','priya@example.com','SUB-8841',129,'BANK_AUTH_FAILED',1,1,'MATCHED','ACTIVE',null),
+R(39,'Tom Becker','tom@example.com','INV-2026-1011',890,'GATEWAY_ERROR',0,0,'MATCHED','PAID',null),
+R(38,'Lena Ortiz','lena@example.com','INV-2026-1008',275,'EXPIRED_CARD',2,0,'MATCHED','ACTIVE',390),
+R(37,'David Kim','david@example.com','SUB-7730',1200,'INSUFFICIENT_FUNDS',3,1,'UNMATCHED','ACTIVE',null),
+R(36,'Aisha Khan','aisha@example.com','INV-2026-0997',64,'EXPIRED_CARD',0,0,'MATCHED','PAID',null),
+R(35,'Omar Haddad','omar@example.com','INV-2026-0990',540,'BANK_AUTH_FAILED',3,0,'MATCHED','UNRECOVERED',null),
+R(34,'Grace Liu','grace@example.com','SUB-7702',220,'INSUFFICIENT_FUNDS',2,0,'MATCHED','ACTIVE',2640),
+R(33,'Carlos Mendes','carlos@example.com','INV-2026-0981',99,'EXPIRED_CARD',0,0,'MATCHED','PAID',null),
+R(32,'Nina Petrova','nina@example.com','INV-2026-0975',760,'GATEWAY_ERROR',1,0,'MATCHED','HALTED',null),
+R(31,'James O’Neil','james@example.com','INV-2026-0968',310,'EXPIRED_CARD',1,1,'UNMATCHED','ACTIVE',null)];
+const BASE={all:150,ACTIVE:38,PAID:101,HALTED:8,UNRECOVERED:3},init={};C.forEach(c=>init[c.s]=(init[c.s]||0)+1);
+const SB={ACTIVE:'g',PAID:'g',HALTED:'a',UNRECOVERED:'r'},RB={MATCHED:'b',UNMATCHED:'a',PAID_ELSEWHERE:'r'};
+const SN=['','Stage 1: Soft Update Link','Stage 2: Firm Warning','Stage 3: Executive Pause'],SC=['','b','a','r'];
+const CODE={EXPIRED_CARD:'INSTRUMENT_DECLINED',INSUFFICIENT_FUNDS:'INSUFFICIENT_FUNDS',BANK_AUTH_FAILED:'AUTHORIZATION_FAILED',GATEWAY_ERROR:'GATEWAY_TIMEOUT'};
+const EXP={EXPIRED_CARD:'Customer card expired on 10/26. Soft reminder dispatched with secure PayPal payment method update token.',INSUFFICIENT_FUNDS:'Bank declined for insufficient funds. A smart retry is scheduled after the customer’s typical payroll date.',BANK_AUTH_FAILED:'Bank requested strong customer authentication that was not completed. A 1-click PayPal biometric authorization link was sent.',GATEWAY_ERROR:'Transient gateway timeout, not a customer fault. Immediate retry with exponential backoff.'};
+const badge=(t,k)=>`<span class="bd ${k}">${t}</span>`;
+let filt='all',q='',cur=null,opener=null;
+function pills(){const n=k=>BASE[k]+(C.filter(c=>c.s===k).length-(init[k]||0));
+$('#pills').innerHTML=[['all','All Cases ('+BASE.all+')'],['ACTIVE','Active ('+n('ACTIVE')+')'],['PAID','Recovered ('+n('PAID')+')'],['HALTED','Halted ('+n('HALTED')+')'],['UNRECOVERED','Unrecovered ('+n('UNRECOVERED')+')']].map(([k,t])=>`<button class="tab${filt===k?' on':''}" data-f="${k}" aria-pressed="${filt===k}" style="height:36px">${t}</button>`).join('');
+document.querySelectorAll('[data-f]').forEach(b=>b.onclick=()=>{filt=b.dataset.f;render()})}
+function cd(c){if(c.s!=='ACTIVE')return '<span class="lb">—</span>';if(c.q)return '<span class="lb">Paused during quiet hours</span>';const m=c.m;return `<span class="n cdn" data-m="${m}">In ${Math.floor(m/60)}h ${m%60}m</span>`}
+function render(){pills();
+const rows=C.filter(c=>(filt==='all'||c.s===filt)&&(!q||[c.n,c.e,c.inv,c.dx,c.id].some(x=>x.toLowerCase().includes(q))));
+$('#tb').innerHTML=rows.length?rows.map(c=>`<tr><td class="td"><a href="#" class="mono op" data-id="${c.id}">${c.id}</a></td><td class="td"><b>${esc(c.n)}</b><div class="lb">${esc(c.e)}</div></td><td class="td"><code class="mono">${c.inv}</code></td><td class="td n">${fmt(c.a)}</td><td class="td"><code class="mono">${c.dx}</code></td><td class="td">${c.st&&c.s==='ACTIVE'?badge(SN[c.st],SC[c.st]):'<span class="lb">—</span>'}</td><td class="td">${c.s==='ACTIVE'?(c.q?badge('Quiet Hours (9pm-8am) - Paused','a'):badge('Active Hours - OK','g')):'<span class="lb">—</span>'}</td><td class="td">${badge(c.rc,RB[c.rc])}</td><td class="td">${badge(c.s,SB[c.s])}</td><td class="td">${cd(c)}</td><td class="td" style="white-space:nowrap"><button class="tab op" data-id="${c.id}" style="border:1px solid #E5E9F0;height:36px">View Timeline</button> <a class="tab" href="pay.html?case_id=${c.id}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;border:1px solid #E5E9F0;height:36px">Portal</a> ${c.s==='ACTIVE'?`<button class="tab hl" data-id="${c.id}" style="border:1px solid #E5E9F0;height:36px;color:#B42830">Halt</button>`:''}</td></tr>`).join(''):`<tr><td class="td" colspan="11" style="text-align:center;padding:40px;color:#64748B">No cases match your filters. <a href="#" id="clr">Clear filters</a></td></tr>`;
+$('#foot').textContent='Showing '+rows.length+' of '+BASE.all+' cases (sample page)';
+document.querySelectorAll('.op').forEach(e=>e.onclick=ev=>{ev.preventDefault();openD(e.dataset.id,e)});
+document.querySelectorAll('.hl').forEach(e=>e.onclick=()=>halt(C.find(c=>c.id===e.dataset.id)));
+const cl=$('#clr');if(cl)cl.onclick=ev=>{ev.preventDefault();filt='all';q='';$('#q').value='';render()}}
+setInterval(()=>document.querySelectorAll('.cdn').forEach(e=>{let m=+e.dataset.m;if(m>0){m--;e.dataset.m=m;e.textContent='In '+Math.floor(m/60)+'h '+m%60+'m'}}),60000);
+$('#q').oninput=e=>{q=e.target.value.trim().toLowerCase();render()};
+const hash=()=>'sha256:'+[...Array(4)].map(()=>Math.floor(Math.random()*65536).toString(16).padStart(4,'0')).join('').slice(0,6)+'…'+Math.floor(Math.random()*65536).toString(16).padStart(4,'0');
+function events(c){const e=[['Day 0 08:30 UTC','Payment failure received ('+CODE[c.dx]+').',1],['Day 0 08:31 UTC',c.rc==='PAID_ELSEWHERE'?'Reconciliation matched an offline wire. Case halted; outreach permanently blocked.':'Case created; reconciliation passed.',1]];
+if(c.rc!=='PAID_ELSEWHERE'){e.push(['Day 0 09:00 UTC','Stage 1 PayPal payment link generated and sent.',1]);
+if(c.s==='PAID')e.push(['Day 1 10:12 UTC','PayPal webhook captured payment. Case marked PAID.',1]);
+else if(c.s==='ACTIVE'||c.s==='UNRECOVERED'){if(c.st>=2)e.push(['Day 2 09:00 UTC','Stage 2 firm warning sent.',1]);if(c.st>=3)e.push(['Day 4 09:00 UTC','Stage 3 executive pause: account review flagged.',1]);
+if(c.s==='UNRECOVERED')e.push(['Day 7 09:00 UTC','Ladder exhausted without payment. Case marked UNRECOVERED.',1]);
+else if(c.st<3){e.push(['Day 2 09:00 UTC','(+48h ladder gap) Stage '+(c.st+1)+' reminder scheduled.',0]);e.push(['Day 2 21:00 UTC','Quiet hours active; outreach paused until 08:00 UTC next morning.',0])}}
+else e.push(['Day 3 10:00 UTC','Recovery halted by operator.',1])}
+return e.concat(c.ev)}
+function openD(id,op){const c=C.find(x=>x.id===id);cur=c;opener=op;
+$('#dId').textContent=c.id;$('#dt').textContent=c.n;$('#dAmt').textContent=fmt(c.a);$('#dSt').innerHTML=badge(c.s,SB[c.s]);
+$('#dDx').textContent=c.dx;$('#dExp').textContent=EXP[c.dx];
+$('#dRc').innerHTML=badge(c.rc,RB[c.rc]);$('#dRcT').textContent=c.rc==='PAID_ELSEWHERE'?'Verified against Bank CSV: offline payment of '+fmt(c.a)+' found. Outreach permanently halted.':c.rc==='UNMATCHED'?'No gateway or ERP match yet. Held for manual review before further contact.':'Verified against Bank CSV: No offline match found. Safe to contact.';
+$('#tl').innerHTML=events(c).map((v,i,a)=>`<li style="display:flex;gap:12px;padding-bottom:16px;position:relative"><span style="flex:none;width:12px;height:12px;border-radius:6px;margin-top:4px;${v[2]?'background:#0070E0':'border:2px solid #8A94A6;background:#fff'}"></span>${i<a.length-1?'<span style="position:absolute;left:5px;top:18px;bottom:0;width:2px;background:#E5E9F0"></span>':''}<div style="flex:1"><div class="lb n">${v[0]}${v[2]?'':' · scheduled'}</div><div>${esc(v[1])}</div>${v[3]?`<code class="mono">${v[3]}</code> <a href="audit.html">Audit</a>`:''}</div></li>`).join('');
+$('#dPend').innerHTML=c.pend?`<div class="card" style="padding:16px;background:#FEF1D9;border-color:#F5A623"><div class="ct">Pending human approval · ${c.pend}</div><div style="margin:4px 0 12px">Escalation is waiting for a decision. <a href="approvals.html">Approvals Queue →</a></div><div style="display:flex;gap:8px"><button class="btn p" id="ap" style="height:40px">Approve</button><button class="btn" id="dn" style="height:40px;color:#B42830">Deny</button></div></div>`:'';
+if(c.pend){$('#ap').onclick=()=>decide('APPROVE');$('#dn').onclick=()=>decide('DENY')}
+const A=c.s==='ACTIVE';$('#dAct').innerHTML=(A?`<a class="btn p" href="pay.html?case_id=${c.id}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center">Open Customer Pay Portal</a><button class="btn" id="aEs"${c.pend?' disabled':''}>Request Human Escalation</button><button class="btn" id="aPe">Mark Paid Elsewhere</button><button class="btn" id="aHl" style="color:#B42830">Halt Recovery</button>`:c.s==='PAID'?'<span class="lb">Case closed. No further actions.</span>':'<button class="btn p" id="aRo">Reopen Case</button>');
+const on=(i,f)=>{const b=$(i);if(b)b.onclick=f};on('#aEs',esc2);on('#aPe',paidEl);on('#aHl',()=>halt(c));on('#aRo',reopen);
+$('#bk').hidden=false;$('#dr').hidden=false;$('#dx').focus()}
+function closeD(){$('#bk').hidden=true;$('#dr').hidden=true;cur=null;if(opener)opener.focus()}
+$('#dx').onclick=closeD;$('#bk').onclick=closeD;document.addEventListener('keydown',e=>{if(e.key==='Escape'&&cur)closeD()});
+function log(c,t){c.ev.push([NOW,t,1,hash()])}
+function refresh(c){render();if(cur===c)openD(c.id,opener)}
+function halt(c){c.s='HALTED';log(c,'Recovery halted by operator.');toast('Recovery halted for '+c.id+'. Outreach stopped.','w');refresh(c)}
+function reopen(){const c=cur;c.s='ACTIVE';c.st=1;c.m=1440;log(c,'Case reopened. Restarting at Stage 1.');toast('POST /cases/'+c.id+'/reopen — case is active again.');refresh(c)}
+function paidEl(){const c=cur;c.rc='PAID_ELSEWHERE';c.s='HALTED';log(c,'Marked Paid Elsewhere. Outreach permanently halted.');toast('Marked Paid Elsewhere. Reminders permanently blocked.','w');refresh(c)}
+function esc2(){const c=cur;c.pend='APP-'+(106+C.filter(x=>x.pend).length);log(c,'Human escalation requested ('+c.pend+').');toast('Policy Alert: Escalation routed to Human Approvals Queue ('+c.pend+').','w');refresh(c)}
+function decide(d){const c=cur,p=c.pend;c.pend=null;log(c,p+' decided: '+d+'.');if(d==='DENY'){c.s='HALTED';}toast('POST /approvals/'+c.id+'/decide — '+d+'. Recorded in audit trail.',d==='DENY'?'w':undefined);refresh(c)}
+$('#tb').innerHTML='<tr><td class="td" colspan="11" style="text-align:center;padding:40px;color:#64748B">Loading cases…</td></tr>';setTimeout(render,350);pills();
+</script>
+</body>
+</html>

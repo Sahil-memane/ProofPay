@@ -1,0 +1,413 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ProofPay — Integrations</title>
+<script src="./vendor/react.js"></script>
+<script src="./vendor/react-dom.js"></script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0;font-family:Inter,system-ui,sans-serif;color:#172B4D;background:#F5F7FA;font-size:14px}
+*{box-sizing:border-box}
+a{color:#0070E0;text-decoration:none}a:hover{text-decoration:underline}
+.i{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.nv{display:flex;align-items:center;gap:12px;height:40px;padding:0 12px;border-radius:8px;color:#D6E2F5;font-size:14px}
+.nv:hover{background:#0A3F9E;text-decoration:none;color:#fff}
+.nv.on{background:#0070E0;color:#fff}
+.nv b{margin-left:auto;background:#F5A623;color:#172B4D;font-size:11px;font-weight:600;border-radius:10px;padding:1px 7px}
+.gl{font-size:11px;letter-spacing:.08em;color:#9DB6E0;padding:16px 12px 6px;font-weight:600}
+.card{background:#fff;border:1px solid #E5E9F0;border-radius:12px;padding:20px}
+.n{font-variant-numeric:tabular-nums}
+.btn{height:44px;padding:0 16px;border-radius:8px;border:1px solid #E5E9F0;background:#fff;color:#172B4D;font:600 14px Inter,sans-serif;cursor:pointer;white-space:nowrap}
+.btn:hover{background:#F0F3F8}
+.btn.p{background:#0070E0;border-color:#0070E0;color:#fff}.btn.p:hover{background:#005fc0}
+.btn.d{color:#B42830;border-color:#F1C4C7}.btn.d:hover{background:#FBE5E6}
+.btn.s{height:36px;padding:0 12px;font-size:13px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.lb{font-size:12px;color:#64748B}
+.h2{font-size:20px;font-weight:600;margin:0;color:#003087}
+.ct{font-size:15px;font-weight:600;margin:0}
+.tab{height:32px;padding:0 12px;border-radius:8px;border:0;background:transparent;color:#64748B;font:500 13px Inter,sans-serif;cursor:pointer}
+.tab:hover{background:#F0F3F8}.tab.on{background:#E6F0FC;color:#0070E0}
+.bd{font-size:12px;font-weight:600;border-radius:12px;padding:2px 10px;white-space:nowrap;display:inline-block}
+.g{background:#E3F4EB;color:#1E7A4C}.a{background:#FEF1D9;color:#8A5A00}.r{background:#FBE5E6;color:#B42830}.b{background:#E6F0FC;color:#005BB5}.z{background:#F0F3F8;color:#4A5568}
+.ib{width:44px;height:44px;border-radius:8px;border:0;background:transparent;color:#64748B;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.ib:hover{background:#F0F3F8}
+.mono{font-family:'JetBrains Mono','SF Mono',Consolas,monospace;font-size:12px;color:#003087}
+.th{padding:10px 12px;font-size:12px;font-weight:600;color:#64748B;text-align:left}
+.td{padding:12px;border-top:1px solid #E5E9F0;font-size:14px;vertical-align:middle}
+.tr:hover td{background:#F8FAFC}
+.rowb{cursor:pointer}
+.dot{width:8px;height:8px;border-radius:4px;display:inline-block;flex:none}
+.opt{display:block;width:100%;text-align:left;border:0;background:transparent;padding:10px 12px;border-radius:8px;font:500 14px Inter,sans-serif;color:#172B4D;cursor:pointer;min-height:44px}
+.opt:hover{background:#F0F3F8}.opt.on{background:#E6F0FC;color:#005BB5}
+.chip{font:500 12px 'JetBrains Mono',Consolas,monospace;color:#003087;background:#F0F3F8;border-radius:6px;padding:4px 8px}
+.btn:focus-visible,.tab:focus-visible,.opt:focus-visible,.ib:focus-visible,.nv:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #0070E0;outline-offset:2px}
+.sw{position:relative;width:44px;height:26px;border-radius:13px;border:0;cursor:pointer;flex:none;padding:0}
+.sw i{position:absolute;top:3px;width:20px;height:20px;border-radius:10px;background:#fff;transition:left .15s}
+</style>
+</helmet>
+
+<div style="display:flex;flex-wrap:wrap;min-height:100vh;align-items:stretch">
+
+<!-- SIDEBAR -->
+<aside style="flex:0 0 250px;width:250px;background:#003087;color:#fff;display:flex;flex-direction:column;padding:16px 12px">
+<div style="display:flex;align-items:center;gap:10px;padding:4px 12px 12px">
+<div style="width:32px;height:32px;border-radius:8px;background:#0070E0;display:flex;align-items:center;justify-content:center"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6zM9 12l2 2 4-4"></path></svg></div>
+<div style="font-size:18px;font-weight:600;flex:1">ProofPay</div>
+<button class="ib" aria-label="Collapse sidebar" style="color:#D6E2F5;width:32px;height:32px"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg></button>
+</div>
+<nav aria-label="Main">
+<sc-for list="{{groups}}" as="g" hint-placeholder-count="5">
+<div>
+<div class="gl">{{g.label}}</div>
+<sc-for list="{{g.items}}" as="n" hint-placeholder-count="4">
+<a class="{{n.cls}}" href="{{n.href}}"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="{{n.d}}"></path></svg>{{n.label}}<sc-if value="{{n.hasBadge}}" hint-placeholder-val="{{ false }}"><b>{{n.badge}}</b></sc-if></a>
+</sc-for>
+</div>
+</sc-for>
+</nav>
+<div style="margin-top:auto;padding-top:16px">
+<div style="display:flex;align-items:center;gap:12px;height:56px;padding:0 12px;border-radius:8px;background:#0A3F9E">
+<span style="width:32px;height:32px;border-radius:16px;background:#009CDE;color:#001C64;font-weight:600;display:flex;align-items:center;justify-content:center">S</span>
+<span style="flex:1"><span style="display:block;font-size:13px;font-weight:600">Sahil</span><span style="display:block;font-size:12px;color:#C9D8F2">Workspace Owner</span></span>
+</div>
+</div>
+</aside>
+
+<!-- CONTENT COLUMN -->
+<div style="flex:999 1 560px;min-width:0;display:flex;flex-direction:column">
+
+<header style="min-height:68px;background:#fff;border-bottom:1px solid #E5E9F0;display:flex;flex-wrap:wrap;align-items:center;gap:12px 16px;padding:8px 32px">
+<div style="min-width:150px"><div class="lb">System / Integrations</div><div style="font-weight:600;font-size:15px">Integrations &amp; PayPal Connect</div></div>
+<div style="flex:1 1 240px;max-width:460px;margin:0 auto;position:relative">
+<svg class="i" viewBox="0 0 24 24" aria-hidden="true" style="position:absolute;left:12px;top:13px;color:#64748B"><path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM21 21l-5-5"></path></svg>
+<label for="gs" style="position:absolute;left:-9999px">Global search</label>
+<input id="gs" placeholder="Search projects, invoices, cases, audit hashes (Ctrl+K)..." style="width:100%;height:44px;padding:0 12px 0 40px;border:1px solid #E5E9F0;border-radius:10px;background:#F0F3F8;font:14px Inter,sans-serif;color:#172B4D">
+</div>
+<!-- Role switcher -->
+<div style="position:relative">
+<button class="btn" onClick="{{toggleRole}}" aria-haspopup="listbox" style="display:flex;align-items:center;gap:8px;background:#E6F0FC;border-color:#BBD6F7;color:#003087"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21a8 8 0 0 1 16 0"></path></svg>Role: {{roleLabel}}<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+<sc-if value="{{roleOpen}}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;right:0;top:50px;width:290px;background:#fff;border:1px solid #E5E9F0;border-radius:12px;box-shadow:0 8px 24px rgba(10,37,64,.14);padding:8px;z-index:30">
+<sc-for list="{{roles}}" as="r" hint-placeholder-count="4">
+<button class="{{r.cls}}" onClick="{{r.pick}}"><span style="display:block">{{r.label}}</span><span class="lb" style="display:block;font-weight:400">{{r.sub}}</span></button>
+</sc-for>
+</div>
+</sc-if>
+</div>
+<span style="display:flex;align-items:center;gap:6px;font-size:13px;font-weight:500;white-space:nowrap"><span class="dot" style="background:#2E9D65"></span>PayPal Sandbox: Connected</span>
+<button class="ib" aria-label="Notifications, 3 unread" style="position:relative"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 21h4"></path></svg><span style="position:absolute;top:10px;right:11px;width:8px;height:8px;border-radius:4px;background:#D9363E"></span></button>
+<div style="display:flex;align-items:center;gap:8px"><span style="width:36px;height:36px;border-radius:18px;background:#003087;color:#fff;font-weight:600;display:flex;align-items:center;justify-content:center">S</span><span class="bd b">{{roleShort}}</span></div>
+</header>
+
+<main style="padding:32px;max-width:1280px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:24px;flex:1">
+
+<!-- Title -->
+<div style="display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;justify-content:space-between">
+<div style="max-width:640px"><h1 style="font-size:28px;font-weight:600;margin:0;color:#003087">Integrations &amp; PayPal Connect</h1><p style="margin:4px 0 0;color:#64748B">Connection health, API scopes, evidence connectors and the live webhook feed that drives escrow, payouts and recovery.</p></div>
+<div style="display:flex;flex-wrap:wrap;gap:8px">
+<button class="btn" onClick="{{runTest}}" disabled="{{noManage}}">{{testLabel}}</button>
+<button class="btn" onClick="{{toggleHooks}}" disabled="{{noManage}}">Manage Webhooks</button>
+<button class="btn d" onClick="{{openRotate}}" disabled="{{noManage}}">Rotate API Keys</button>
+</div>
+</div>
+
+<sc-if value="{{noManage}}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;gap:12px;align-items:center;padding:12px 16px;border-radius:8px;background:#FEF1D9;color:#5C3B00" role="status">
+<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l10 18H2zM12 10v5M12 18h.01"></path></svg>
+<span>Read-only for the {{roleLabel}} role. Switch to <b>Risk Officer / Admin</b> to test the connection, rotate keys or replay webhooks.</span></div>
+</sc-if>
+
+<!-- PayPal master card -->
+<section class="card" style="padding:0;overflow:hidden" aria-label="PayPal integration">
+<div style="background:#001C64;color:#fff;padding:24px 28px;display:flex;flex-wrap:wrap;gap:24px;align-items:center;justify-content:space-between">
+<div style="display:flex;gap:16px;align-items:center;flex:1 1 360px">
+<div style="width:56px;height:56px;border-radius:12px;background:#fff;color:#003087;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:24px;font-style:italic;letter-spacing:-1px">PP</div>
+<div>
+<div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center"><span style="font-size:20px;font-weight:600">PayPal Business</span><span class="bd g">{{connPill}}</span></div>
+<div style="color:#BFD3F2;font-size:13px;margin-top:4px">Sandbox environment · REST API · last health check {{lastChecked}}</div>
+</div></div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:20px;flex:1 1 380px">
+<div><div style="font-size:12px;color:#BFD3F2">Merchant ID</div><div class="mono n" style="color:#fff;font-size:14px;margin-top:2px">M-•••••1094</div></div>
+<div><div style="font-size:12px;color:#BFD3F2">Median latency</div><div class="n" style="font-size:20px;font-weight:600">{{latency}} ms</div></div>
+<div><div style="font-size:12px;color:#BFD3F2">API success · 24h</div><div class="n" style="font-size:20px;font-weight:600;color:#4CC38A">99.6%</div></div>
+</div>
+</div>
+<div style="padding:20px 28px;display:flex;flex-wrap:wrap;gap:24px;border-bottom:1px solid #E5E9F0">
+<div style="flex:1 1 280px"><div class="lb">Client ID</div><div class="mono" style="margin-top:4px">AaB4••••••••••••••••Xk9Q</div></div>
+<div style="flex:1 1 280px"><div class="lb">Client secret</div><div class="mono" style="margin-top:4px">•••••••••••••••• <span class="lb" style="font-family:Inter,sans-serif">stored server-side only, never sent to this browser</span></div></div>
+<div style="flex:1 1 200px"><div class="lb">Active key ID</div><div class="mono" style="margin-top:4px">{{keyId}}</div></div>
+</div>
+<div style="padding:20px 28px">
+<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px"><h2 class="h2">Active APIs</h2><span class="lb">4 of 4 enabled</span></div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-top:16px">
+<sc-for list="{{apis}}" as="a" hint-placeholder-count="4">
+<div style="border:1px solid #E5E9F0;border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span class="ct">{{a.name}}</span><span class="bd g">ENABLED</span></div>
+<div style="color:#64748B;font-size:13px;min-height:36px">{{a.use}}</div>
+<span class="chip" style="align-self:flex-start">{{a.ep}}</span>
+<div style="display:flex;gap:16px;border-top:1px solid #E5E9F0;padding-top:10px">
+<div><div class="lb">Calls 24h</div><b class="n">{{a.calls}}</b></div>
+<div><div class="lb">Success</div><b class="n">{{a.ok}}</b></div>
+<div><div class="lb">p95</div><b class="n">{{a.p95}}</b></div>
+</div>
+</div>
+</sc-for>
+</div>
+</div>
+</section>
+
+<!-- Webhook management -->
+<sc-if value="{{hooksOpen}}" hint-placeholder-val="{{ false }}">
+<section class="card" aria-label="Webhook endpoint">
+<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px"><h2 class="h2">Webhook Endpoint</h2><button class="btn s" onClick="{{toggleHooks}}">Close</button></div>
+<div style="display:flex;flex-wrap:wrap;gap:24px;margin-top:16px;align-items:flex-start">
+<div style="flex:1 1 360px"><div class="lb">Listener URL</div><div class="mono" style="margin-top:4px;padding:10px 12px;background:#F0F3F8;border-radius:8px;word-break:break-all">https://api.proofpay.example/webhooks/paypal</div>
+<div style="display:flex;align-items:center;gap:12px;margin-top:16px"><button class="sw" onClick="{{toggleSig}}" role="switch" aria-checked="{{sigOn}}" aria-label="Verify PayPal signature on every event" style="{{swStyle}}"><i style="{{knobStyle}}"></i></button><div><div style="font-weight:500">Verify webhook signature</div><div class="lb">Events failing verification are rejected and logged, never processed.</div></div></div></div>
+<div style="flex:1 1 360px"><div class="lb">Subscribed events</div>
+<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px"><sc-for list="{{subs}}" as="s" hint-placeholder-count="6"><span class="chip">{{s}}</span></sc-for></div></div>
+</div>
+</section>
+</sc-if>
+
+<!-- Additional integrations -->
+<section style="display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:24px;align-items:start">
+<div class="card" style="min-width:0">
+<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap"><div style="display:flex;gap:12px;align-items:center"><div class="i" style="width:40px;height:40px;border-radius:10px;background:#E6F0FC;color:#0070E0;display:flex;align-items:center;justify-content:center"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5L3 12l5 7M16 5l5 7-5 7M14 4l-4 16"></path></svg></div><div><div class="ct">GitHub Evidence Connector</div><div class="lb">OAuth · read-only PR and CI access</div></div></div><span class="bd g">CONNECTED</span></div>
+<p style="color:#64748B;margin:12px 0">The AI Verification Agent reads linked pull requests, diffs and CI results to score each milestone submission.</p>
+<div style="border:1px solid #E5E9F0;border-radius:8px">
+<sc-for list="{{repos}}" as="r" hint-placeholder-count="3">
+<div style="display:flex;gap:12px;align-items:center;padding:10px 12px;border-top:1px solid #E5E9F0"><span class="mono" style="flex:1">{{r.name}}</span><span class="lb">{{r.note}}</span><span class="bd {{r.tone}}">{{r.st}}</span></div>
+</sc-for></div>
+<div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap"><button class="btn s" onClick="{{linkRepo}}" disabled="{{noGithub}}">Link repository</button><button class="btn s" onClick="{{syncGh}}" disabled="{{noGithub}}">Sync now</button></div>
+</div>
+
+<div class="card" style="min-width:0">
+<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap"><div style="display:flex;gap:12px;align-items:center"><div class="i" style="width:40px;height:40px;border-radius:10px;background:#E6F0FC;color:#0070E0;display:flex;align-items:center;justify-content:center"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10l9-6 9 6M5 10v8M9.5 10v8M14.5 10v8M19 10v8M3 20h18"></path></svg></div><div><div class="ct">Bank Statement CSV Parser</div><div class="lb">Feeds 3-way reconciliation</div></div></div><span class="bd g">READY</span></div>
+<p style="color:#64748B;margin:12px 0">Offline wires and ACH credits are matched against failed gateway charges so customers who already paid are never chased.</p>
+<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px">
+<div style="background:#F0F3F8;border-radius:8px;padding:12px"><div class="lb">Last import</div><b>{{csvWhen}}</b></div>
+<div style="background:#F0F3F8;border-radius:8px;padding:12px"><div class="lb">Rows parsed</div><b class="n">{{csvRows}}</b></div>
+<div style="background:#F0F3F8;border-radius:8px;padding:12px"><div class="lb">Matched</div><b class="n">{{csvMatched}}</b></div>
+</div>
+<div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap"><button class="btn s p" onClick="{{uploadCsv}}" disabled="{{noCsv}}">{{csvBtn}}</button><a class="btn s" href="reconciliation.html" style="display:inline-flex;align-items:center;text-decoration:none">Open Reconciliation</a></div>
+</div>
+</section>
+
+<!-- Webhook event log -->
+<section class="card" aria-label="Webhook event log" style="padding:0;overflow:hidden">
+<div style="padding:20px;display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;align-items:center">
+<div><h2 class="h2">Webhook Event Log</h2><div class="lb" style="margin-top:2px">Select an event to inspect its payload. Replays are idempotent.</div></div>
+<div style="display:flex;flex-wrap:wrap;gap:4px"><sc-for list="{{filters}}" as="f" hint-placeholder-count="5"><button class="{{f.cls}}" onClick="{{f.pick}}">{{f.label}} · {{f.count}}</button></sc-for></div>
+</div>
+<div style="overflow-x:auto">
+<table style="width:100%;border-collapse:collapse;min-width:880px">
+<thead><tr style="background:#F0F3F8"><th class="th">Event</th><th class="th">Resource</th><th class="th">Status</th><th class="th">Received</th><th class="th">Audit hash</th><th class="th">Action</th></tr></thead>
+<tbody>
+<sc-for list="{{rows}}" as="e" hint-placeholder-count="6">
+<tr class="tr rowb" onClick="{{e.open}}">
+<td class="td"><div class="mono" style="color:#172B4D;font-weight:500">{{e.type}}</div><div class="lb">{{e.id}}</div></td>
+<td class="td" style="max-width:320px">{{e.res}}</td>
+<td class="td"><span class="bd {{e.tone}}">{{e.st}}</span></td>
+<td class="td n lb">{{e.time}}</td>
+<td class="td"><a class="mono" href="audit.html">{{e.hash}}</a></td>
+<td class="td"><button class="btn s" onClick="{{e.replay}}" disabled="{{noManage}}">Replay</button></td>
+</tr>
+</sc-for>
+</tbody></table>
+</div>
+<sc-if value="{{noRows}}" hint-placeholder-val="{{ false }}"><div style="padding:32px;text-align:center;color:#64748B">No events match this filter.</div></sc-if>
+</section>
+
+<div style="text-align:center;padding:8px 0 16px;color:#003087;font-weight:600">AI recommends. Policy decides. PayPal executes. Every action is auditable.<div class="lb" style="font-weight:400;margin-top:4px">ProofPay · Every Payment. Proven. Protected.</div></div>
+</main>
+
+<!-- Sticky demo bar + toasts -->
+<div style="position:sticky;bottom:16px;z-index:25;display:flex;flex-direction:column;align-items:center;gap:8px;padding:0 16px 0;pointer-events:none">
+<div style="display:flex;flex-direction:column;gap:8px;align-items:center" aria-live="polite">
+<sc-for list="{{toasts}}" as="t" hint-placeholder-count="0"><div class="card" style="padding:12px 16px;border-left:4px solid #2E9D65;box-shadow:0 4px 12px rgba(0,0,0,.12);max-width:420px;pointer-events:auto">{{t.text}}</div></sc-for>
+</div>
+<div style="pointer-events:auto;background:#001C64;color:#fff;border-radius:14px;padding:8px 12px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(0,28,100,.35);max-width:100%">
+<span style="font-weight:600;font-size:12px;letter-spacing:.08em;padding:0 8px;color:#9DD7F5">DEMO BAR</span>
+<button class="btn s" onClick="{{adv24}}" style="background:#0A3F9E;border-color:#2A4A9A;color:#fff">Advance +24h</button>
+<button class="btn s" onClick="{{adv48}}" style="background:#0A3F9E;border-color:#2A4A9A;color:#fff">Advance +48h</button>
+<div style="position:relative">
+<button class="btn s" onClick="{{toggleFail}}" style="background:#0A3F9E;border-color:#2A4A9A;color:#fff">Inject Failure ▾</button>
+<sc-if value="{{failOpen}}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;bottom:44px;left:0;width:230px;background:#fff;border:1px solid #E5E9F0;border-radius:12px;box-shadow:0 8px 24px rgba(10,37,64,.2);padding:8px">
+<sc-for list="{{failOpts}}" as="o" hint-placeholder-count="4"><button class="opt" onClick="{{o.pick}}"><span class="mono">{{o.label}}</span></button></sc-for>
+</div>
+</sc-if>
+</div>
+<button class="btn s" onClick="{{runBench}}" style="background:#0A3F9E;border-color:#2A4A9A;color:#fff">{{benchLabel}}</button>
+<button class="btn s" onClick="{{resetDemo}}" style="background:#0A3F9E;border-color:#2A4A9A;color:#fff">Reset Demo</button>
+<span class="n" style="font-size:12px;color:#D6E2F5;padding:0 8px;white-space:nowrap">Simulated Time: {{clock}} <span class="bd {{clockTone}}">{{clockLabel}}</span></span>
+</div>
+</div>
+
+</div>
+</div>
+
+<!-- Event drawer -->
+<sc-if value="{{hasSel}}" hint-placeholder-val="{{ false }}">
+<div style="position:fixed;inset:0;background:rgba(10,37,64,.4);z-index:40;display:flex;justify-content:flex-end" role="dialog" aria-modal="true" aria-label="Webhook event detail">
+<div style="width:100%;max-width:560px;height:100%;background:#fff;overflow:auto;padding:24px;display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px"><div><div class="lb">{{sel.id}}</div><h2 class="h2" style="font-size:18px;word-break:break-all">{{sel.type}}</h2></div><button class="ib" onClick="{{closeSel}}" aria-label="Close"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div>
+<div style="display:flex;gap:8px;flex-wrap:wrap"><span class="bd {{sel.tone}}">{{sel.st}}</span><span class="bd z">{{sel.time}}</span></div>
+<div style="background:#F0F3F8;border-radius:8px;padding:12px"><div class="lb">Resource</div><div style="margin-top:2px">{{sel.res}}</div></div>
+<div style="background:#F0F3F8;border-radius:8px;padding:12px"><div class="lb">SHA-256 audit link</div><a class="mono" href="audit.html">{{sel.hash}}</a></div>
+<div><div class="lb">Payload</div><pre class="mono" style="margin:4px 0 0;background:#001C64;color:#D6E2F5;border-radius:8px;padding:16px;overflow:auto;font-size:12px;line-height:1.6;white-space:pre-wrap">{{selJson}}</pre></div>
+<div style="display:flex;gap:8px;margin-top:auto"><button class="btn p" onClick="{{selReplay}}" disabled="{{noManage}}">Replay event</button><button class="btn" onClick="{{closeSel}}">Close</button></div>
+</div></div>
+</sc-if>
+
+<!-- Rotate keys modal -->
+<sc-if value="{{rotateOpen}}" hint-placeholder-val="{{ false }}">
+<div style="position:fixed;inset:0;background:rgba(10,37,64,.4);z-index:50;display:flex;align-items:center;justify-content:center;padding:16px" role="dialog" aria-modal="true" aria-labelledby="rk">
+<div class="card" style="width:100%;max-width:480px;display:grid;gap:12px">
+<h2 class="h2" id="rk">Rotate PayPal API keys?</h2>
+<p style="margin:0;color:#64748B">A new client secret is generated server-side. The current key stays valid for 15 minutes so in-flight captures and payouts finish. This action is written to the audit trail.</p>
+<div style="background:#FEF1D9;color:#5C3B00;border-radius:8px;padding:12px;font-size:13px">Secrets never appear in the browser. Only the new key ID is shown here.</div>
+<div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn" onClick="{{closeRotate}}">Cancel</button><button class="btn p" onClick="{{doRotate}}">Rotate keys</button></div>
+</div></div>
+</sc-if>
+
+</x-dc>
+
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2500}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = {
+      role: 'admin', roleOpen: false, testing: false, lastChecked: '4 min ago', latency: 182,
+      filter: 'all', selId: null, rotateOpen: false, keyId: 'K-2026-0917-f3a9', hooksOpen: false, sigOn: true,
+      toasts: [], offsetH: 0, failOpen: false, bench: 0, csvBusy: false, csvWhen: 'Nov 10, 18:40', csvRows: 214, csvMatched: 14,
+      events: this.freshEvents(), repoCount: 3
+    };
+    this.tid = 0;
+  }
+  freshEvents() {
+    return [
+      { id: 'WH-7A41', type: 'PAYMENT.CAPTURE.COMPLETED', cat: 'capture', res: 'Escrow funding · PRJ-2026-001 · $2,400.00 USD', st: 'PROCESSED', time: 'Nov 11, 09:12', hash: '9c1e4f…a47f' },
+      { id: 'WH-7A3E', type: 'PAYMENT.PAYOUTS-ITEM.SUCCEEDED', cat: 'payout', res: 'Milestone 1 payout · Rahul Sharma · $400.00 USD', st: 'PROCESSED', time: 'Nov 11, 08:47', hash: 'b27d10…3c9e' },
+      { id: 'WH-7A39', type: 'BILLING.SUBSCRIPTION.PAYMENT.FAILED', cat: 'recovery', res: 'REC-2026-0042 · Sarah Johnson · $350.00 USD · EXPIRED_CARD', st: 'PROCESSED', time: 'Nov 11, 07:55', hash: '41af88…d02b' },
+      { id: 'WH-7A33', type: 'CUSTOMER.DISPUTE.CREATED', cat: 'dispute', res: 'Dispute on subscription charge · circuit breaker armed, recovery halted', st: 'PROCESSED', time: 'Nov 10, 22:31', hash: 'e8c3a1…76b4' },
+      { id: 'WH-7A2F', type: 'PAYMENT.PAYOUTS-ITEM.FAILED', cat: 'payout', res: 'Milestone payout · recipient email unverified', st: 'FAILED', time: 'Nov 10, 16:04', hash: '05d9be…e1f0' },
+      { id: 'WH-7A28', type: 'INVOICING.INVOICE.PAID', cat: 'recovery', res: 'INV-2026-1019 · Priya Nair · $129.00 USD', st: 'PROCESSED', time: 'Nov 10, 11:20', hash: '7f60c2…98aa' }
+    ];
+  }
+  toast(text) {
+    const id = ++this.tid;
+    this.setState({ toasts: this.state.toasts.concat([{ id, text }]) });
+    setTimeout(() => this.setState({ toasts: this.state.toasts.filter(t => t.id !== id) }), 4200);
+  }
+  replay(id) {
+    if (this.state.role !== 'admin') return;
+    this.setState({ events: this.state.events.map(e => e.id === id ? Object.assign({}, e, { st: 'RETRYING' }) : e) });
+    setTimeout(() => {
+      this.setState({ events: this.state.events.map(e => e.id === id ? Object.assign({}, e, { st: 'PROCESSED', hash: 'c4' + e.hash.slice(2) }) : e) });
+      this.toast('Replayed ' + id + ': idempotent, no duplicate ledger entry. Audit chain extended.');
+    }, 900);
+  }
+  renderVals() {
+    const s = this.state, role = s.role;
+    const admin = role === 'admin';
+    const RL = { client: ['Client (Buyer)', 'Client'], freelancer: ['Freelancer (Contractor)', 'Freelancer'], merchant: ['Merchant (Billing Admin)', 'Merchant'], admin: ['Risk Officer / Admin', 'Admin'] };
+    const RS = { client: 'Funds escrow, reviews deliverables', freelancer: 'Submits work, receives payouts', merchant: 'Monitors failed charges, reconciles', admin: 'Operates Mandate Guard and audit chain' };
+    const nav = [
+      ['ESCROW PREVENT', [['Dashboard', 'index.html', 'M3 3h7v9H3zM14 3h7v5h-7zM14 12h7v9h-7zM3 16h7v5H3z'], ['Projects', 'projects.html', 'M3 6a2 2 0 0 1 2-2h4l2 3h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z'], ['Project Details & Funding', 'project-details.html', 'M12 3v18M16 7.5c0-1.4-1.8-2.5-4-2.5s-4 1.1-4 2.5S10 10 12 10.5s4 1.1 4 2.5-1.8 2.5-4 2.5-4-1.1-4-2.5'], ['Milestones', 'milestones.html', 'M5 21V4M5 4h12l-2 4 2 4H5'], ['Submissions & Verification', 'submissions.html', 'M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9zM9 14l2 2 4-4', '5'], ['Escrow Ledger', 'ledger.html', 'M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2zM4 19a2 2 0 0 0 2 2h13']]],
+      ['REVENUE RECOVER', [['Recovery Overview', 'recovery-overview.html', 'M3 17l6-6 4 4 8-8M15 7h6v6'], ['Recovery Cases', 'cases.html', 'M3 8h18v12H3zM9 8V5h6v3', '12'], ['Invoices & Subscriptions', 'invoices.html', 'M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6'], ['Payment Attempts & Logs', 'payment-attempts.html', 'M3 6h18v12H3zM3 10h18']]],
+      ['TRUST & GOVERNANCE', [['Reconciliation (3-Way)', 'reconciliation.html', 'M4 8h14l-3-3M20 16H6l3 3', '4'], ['Disputes & Escrow Freeze', 'disputes.html', 'M12 3l10 18H2zM12 10v5M12 18h.01', '1'], ['Mandate Guard', 'mandate-guard.html', 'M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z'], ['Reputation Ledger', 'reputation.html', 'M12 3l2.8 5.8 6.2.9-4.5 4.4 1 6.2-5.5-3-5.5 3 1-6.2L3 9.7l6.2-.9z'], ['Approvals Queue (HITL)', 'approvals.html', 'M5 12l4 4 10-10', '2']]],
+      ['INTELLIGENCE', [['AI Agent Control Center', 'agents.html', 'M5 8h14v10H5zM12 8V4M9 13h.01M15 13h.01'], ['Analytics & Reports', 'analytics.html', 'M5 21V10M12 21V4M19 21v-8'], ['Audit Trail (SHA-256)', 'audit.html', 'M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01'], ['AI Assistant (Read-Only)', 'assistant.html', 'M4 5h16v11H9l-5 4z']]],
+      ['SYSTEM & DEMO', [['Integrations', 'integrations.html', 'M9 3v5M15 3v5M6 8h12v4a6 6 0 0 1-12 0zM12 18v3', '', true], ['Settings', 'settings.html', 'M4 7h10M18 7h2M4 17h2M10 17h10M14 5v4M6 15v4'], ['Help & Support', 'help.html', 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .8-1 1.7M12 17h.01'], ['Demo & Simulation Lab', 'demo.html', 'M9 3h6M10 3v6l-5 9a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3l-5-9V3']]],
+      ['EXTERNAL CUSTOMER PORTAL', [['Customer Recovery Portal', 'pay.html', 'M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5']]]
+    ];
+    const groups = nav.map(g => ({ label: g[0], items: g[1].map(n => ({ label: n[0], href: n[1], d: n[2], badge: n[3] || '', hasBadge: !!n[3], cls: n[4] ? 'nv on' : 'nv' })) }));
+    const roles = Object.keys(RL).map(k => ({ label: RL[k][0], sub: RS[k], cls: k === role ? 'opt on' : 'opt', pick: () => this.setState({ role: k, roleOpen: false }) }));
+
+    const apis = [
+      { name: 'PayPal Orders v2', use: 'Escrow creation and capture when the client funds a project.', ep: 'POST /v2/checkout/orders', calls: '312', ok: '99.7%', p95: '240 ms' },
+      { name: 'PayPal Payouts API', use: 'Milestone disbursement to the freelancer after Mandate Guard allows it.', ep: 'POST /v1/payments/payouts', calls: '58', ok: '98.3%', p95: '410 ms' },
+      { name: 'PayPal Invoicing API', use: 'Billing and invoice recovery for overdue and failed charges.', ep: 'GET /v2/invoicing/invoices', calls: '1,204', ok: '99.9%', p95: '190 ms' },
+      { name: 'PayPal Webhooks API', use: 'Real-time capture, payout and dispute events.', ep: 'POST /webhooks/paypal', calls: '486', ok: '99.8%', p95: '95 ms' }
+    ];
+    const subs = ['PAYMENT.CAPTURE.COMPLETED', 'PAYMENT.CAPTURE.DENIED', 'PAYMENT.PAYOUTS-ITEM.SUCCEEDED', 'PAYMENT.PAYOUTS-ITEM.FAILED', 'BILLING.SUBSCRIPTION.PAYMENT.FAILED', 'INVOICING.INVOICE.PAID', 'CUSTOMER.DISPUTE.CREATED', 'CUSTOMER.DISPUTE.RESOLVED'];
+
+    const repos = [
+      { name: 'acme/storefront-web', note: 'PR #42 · CI passing', st: 'LINKED', tone: 'g' },
+      { name: 'acme/storefront-api', note: 'PR #17 · CI passing', st: 'LINKED', tone: 'g' }
+    ];
+    for (let i = 3; i <= s.repoCount; i++) repos.push({ name: 'acme/new-repo-' + (i - 2), note: 'Awaiting first PR', st: 'LINKED', tone: 'g' });
+
+    const ev = s.events;
+    const cnt = k => k === 'all' ? ev.length : k === 'failed' ? ev.filter(e => e.st === 'FAILED').length : ev.filter(e => e.cat === k).length;
+    const fl = [['all', 'All'], ['capture', 'Captures'], ['payout', 'Payouts'], ['dispute', 'Disputes'], ['recovery', 'Recovery'], ['failed', 'Failed']];
+    const filters = fl.map(f => ({ label: f[1], count: cnt(f[0]), cls: s.filter === f[0] ? 'tab on' : 'tab', pick: () => this.setState({ filter: f[0] }) }));
+    const TONE = { PROCESSED: 'g', FAILED: 'r', RETRYING: 'a' };
+    const shown = ev.filter(e => s.filter === 'all' ? true : s.filter === 'failed' ? e.st === 'FAILED' : e.cat === s.filter);
+    const rows = shown.map(e => Object.assign({}, e, { tone: TONE[e.st], open: () => this.setState({ selId: e.id }), replay: (evt) => { if (evt && evt.stopPropagation) evt.stopPropagation(); this.replay(e.id); } }));
+    const selE = ev.find(e => e.id === s.selId) || { id: '', type: '', res: '', st: '', time: '', hash: '' };
+    const sel = Object.assign({}, selE, { tone: TONE[selE.st] || 'z' });
+    const selJson = s.selId ? JSON.stringify({ id: selE.id, event_type: selE.type, summary: selE.res, resource_version: '2.0', create_time: selE.time, signature: s.sigOn ? 'VERIFIED' : 'SKIPPED', audit_hash: selE.hash }, null, 2) : '';
+
+    const base = Date.UTC(2026, 10, 12, 14, 30) + s.offsetH * 3600000;
+    const iso = new Date(base).toISOString();
+    const hr = new Date(base).getUTCHours();
+    const quiet = hr >= 21 || hr < 8;
+    const failOpts = ['INSUFFICIENT_FUNDS', 'EXPIRED_CARD', 'DISPUTE_FILED', 'PLAN_HASH_MISMATCH'].map(o => ({ label: o, pick: () => {
+      this.setState({ failOpen: false });
+      this.toast('Injected ' + o + (o === 'PLAN_HASH_MISMATCH' ? ': 409 Conflict, funding stays locked.' : o === 'DISPUTE_FILED' ? ': escrow frozen, recovery halted.' : ': recovery case opened and diagnosed.'));
+    } }));
+
+    return {
+      groups, roles, apis, subs, repos, filters, rows, sel, selJson, failOpts,
+      roleLabel: RL[role][0], roleShort: RL[role][1], roleOpen: s.roleOpen,
+      toggleRole: () => this.setState({ roleOpen: !s.roleOpen }),
+      noManage: !admin, noGithub: !(admin || role === 'freelancer'), noCsv: !(admin || role === 'merchant') || s.csvBusy,
+      testLabel: s.testing ? 'Testing…' : 'Test Connection',
+      connPill: s.testing ? 'Checking…' : 'Connected to PayPal Sandbox',
+      lastChecked: s.lastChecked, latency: s.latency, keyId: s.keyId,
+      runTest: () => {
+        if (s.testing) return;
+        this.setState({ testing: true });
+        setTimeout(() => { this.setState({ testing: false, lastChecked: 'just now', latency: 168 + Math.floor(Math.random() * 30) }); this.toast('Connection healthy: 4 of 4 PayPal APIs responded.'); }, 1400);
+      },
+      openRotate: () => this.setState({ rotateOpen: true }), closeRotate: () => this.setState({ rotateOpen: false }),
+      rotateOpen: s.rotateOpen,
+      doRotate: () => { this.setState({ rotateOpen: false, keyId: 'K-2026-1111-' + Math.random().toString(16).slice(2, 6) }); this.toast('API keys rotated. Previous key expires in 15 minutes. Audit event recorded.'); },
+      hooksOpen: s.hooksOpen, toggleHooks: () => this.setState({ hooksOpen: !s.hooksOpen }),
+      sigOn: s.sigOn, toggleSig: () => { this.setState({ sigOn: !s.sigOn }); this.toast(s.sigOn ? 'Signature verification disabled. Sandbox only, not recommended.' : 'Signature verification enabled.'); },
+      swStyle: 'background:' + (s.sigOn ? '#2E9D65' : '#8A94A6'), knobStyle: 'left:' + (s.sigOn ? '21px' : '3px'),
+      linkRepo: () => { this.setState({ repoCount: s.repoCount + 1 }); this.toast('Repository linked. PR evidence will sync on next submission.'); },
+      syncGh: () => this.toast('GitHub sync complete: 2 PRs, 5 CI runs refreshed.'),
+      csvWhen: s.csvWhen, csvRows: s.csvRows, csvMatched: s.csvMatched, csvBtn: s.csvBusy ? 'Parsing…' : 'Upload statement CSV',
+      uploadCsv: () => {
+        this.setState({ csvBusy: true });
+        setTimeout(() => { this.setState({ csvBusy: false, csvWhen: 'just now', csvRows: s.csvRows + 38, csvMatched: s.csvMatched + 3 }); this.toast('Reconciliation: 3-way matching completed: 8 cases marked Paid Elsewhere.'); }, 1200);
+      },
+      noRows: shown.length === 0, hasSel: !!s.selId, closeSel: () => this.setState({ selId: null }),
+      selReplay: () => this.replay(s.selId),
+      toasts: s.toasts,
+      adv24: () => { this.setState({ offsetH: s.offsetH + 24 }); this.toast('Clock advanced +24h. Contact ladder progressed, quiet hours observed.'); },
+      adv48: () => { this.setState({ offsetH: s.offsetH + 48 }); this.toast('Clock advanced +48h. Scheduled retries executed.'); },
+      toggleFail: () => this.setState({ failOpen: !s.failOpen }), failOpen: s.failOpen,
+      benchLabel: s.bench ? 'Running… ' + s.bench + '/150' : 'Run 150 Benchmark',
+      runBench: () => {
+        if (s.bench) return;
+        let n = 0; const t = setInterval(() => { n += 30; this.setState({ bench: n >= 150 ? 0 : n }); if (n >= 150) { clearInterval(t); this.toast('Benchmark complete: 67% agent recovery vs. 22% baseline.'); } }, 220);
+      },
+      resetDemo: () => { this.setState({ offsetH: 0, events: this.freshEvents(), filter: 'all', repoCount: 3, csvRows: 214, csvMatched: 14, csvWhen: 'Nov 10, 18:40', keyId: 'K-2026-0917-f3a9' }); this.toast('Demo reset to pristine state.'); },
+      clock: iso.slice(0, 10) + ' ' + iso.slice(11, 16) + ' UTC',
+      clockLabel: quiet ? 'Quiet Hours' : 'Active Business Hours', clockTone: quiet ? 'a' : 'g'
+    };
+  }
+}
+</script>
+</body>
+</html>

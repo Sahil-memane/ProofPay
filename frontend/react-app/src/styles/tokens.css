@@ -1,0 +1,38 @@
+/* ProofPay Design Tokens */
+:root {
+  --navy:   #003087;
+  --navy-dark: #001f5c;
+  --navy-mid: #0A3F9E;
+  --blue:   #0070E0;
+  --blue-dark: #005fc0;
+  --green:  #2E9D65;
+  --green-bg: #E8F5E9;
+  --amber:  #F5A623;
+  --amber-bg: #FFF8E1;
+  --red:    #D9363E;
+  --red-bg: #FFEBEE;
+  --info:   #005BB5;
+  --info-bg:#E3F2FD;
+  --text:   #172B4D;
+  --muted:  #64748B;
+  --bg:     #F5F7FA;
+  --bg-hover:#F0F3F8;
+  --border: #E5E9F0;
+  --white:  #ffffff;
+  --sidebar-nav-text: #D6E2F5;
+
+  --font-ui: Inter, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
+
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+  --radius-pill: 9999px;
+
+  --shadow-card: 0 1px 3px rgba(0,0,0,.08);
+  --shadow-demo: 0 4px 16px rgba(0,28,100,.3);
+
+  --sidebar-w: 260px;
+  --header-h: 64px;
+}
+

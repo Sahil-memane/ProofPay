@@ -1,0 +1,24 @@
+.page { display: flex; flex-direction: column; gap: 20px; }
+.breadcrumb { font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+.breadcrumb a { color: var(--blue); }
+.pageHeader { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start; justify-content: space-between; }
+.h1 { font-size: 26px; font-weight: 600; margin: 0; }
+.sub { margin: 4px 0 0; color: var(--muted); }
+
+.metaGrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+@media (max-width: 1000px) { .metaGrid { grid-template-columns: repeat(2, 1fr); } }
+.metaLabel { font-size: 12px; font-weight: 500; color: var(--muted); }
+.metaValue { font-size: 20px; font-weight: 600; margin-top: 4px; font-variant-numeric: tabular-nums; }
+
+.sectionTitle { font-size: 14px; font-weight: 600; padding-bottom: 12px; display: block; }
+.hashRow { display: flex; gap: 24px; flex-wrap: wrap; align-items: flex-start; }
+.approvalBadges { display: flex; flex-direction: column; gap: 8px; }
+.approvalItem { font-size: 13px; }
+
+.tableHeader { padding: 14px 20px; border-bottom: 1px solid var(--border); }
+.table { width: 100%; border-collapse: collapse; min-width: 600px; }
+.table th { background: var(--bg); color: var(--muted); font-size: 12px; font-weight: 500; text-align: left; padding: 10px 12px; }
+.table td { padding: 12px; border-top: 1px solid var(--border); font-size: 13px; }
+.link { color: var(--blue); font-size: 13px; }
+.link:hover { text-decoration: underline; }
+

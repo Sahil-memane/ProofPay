@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pay Invoice · ProofPay</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#172B4D;background:#F5F7FA;font-size:14px}
+*{box-sizing:border-box}
+a{color:#0070E0;text-decoration:none}a:hover{text-decoration:underline}
+.i{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.card{background:#fff;border:1px solid #E5E9F0;border-radius:12px;padding:24px}
+.n{font-variant-numeric:tabular-nums}
+.btn{height:44px;padding:0 16px;border-radius:8px;border:1px solid #E5E9F0;background:#fff;color:#172B4D;font:600 14px Inter,sans-serif;cursor:pointer}
+.btn:hover{background:#F0F3F8}
+.btn.p{background:#0070E0;border-color:#0070E0;color:#fff;width:100%}.btn.p:hover{background:#005fc0}
+.btn:disabled{opacity:.6;cursor:not-allowed}
+.lb{font-size:12px;color:#64748B}
+.bd{font-size:12px;font-weight:600;border-radius:12px;padding:2px 10px;white-space:nowrap}
+.g{background:#E3F4EB;color:#1E7A4C}.a{background:#FEF1D9;color:#8A5A00}.r{background:#FBE5E6;color:#B42830}.b{background:#E6F0FC;color:#005BB5}
+.mono{font-family:'JetBrains Mono','SF Mono',Consolas,monospace;font-size:12px;color:#003087}
+.f{display:block;width:100%;height:44px;margin-top:4px;padding:0 12px;border:1px solid #E5E9F0;border-radius:8px;font:14px Inter,sans-serif;color:#172B4D;background:#fff}
+.f.err{border-color:#D9363E}
+.em{color:#B42830;font-size:12px;margin-top:4px;min-height:16px}
+[hidden]{display:none!important}
+.btn:focus-visible,.f:focus-visible,a:focus-visible,.opt:focus-visible{outline:2px solid #0070E0;outline-offset:2px}
+.opt{display:flex;align-items:center;gap:12px;width:100%;padding:14px 16px;border:1px solid #E5E9F0;border-radius:10px;background:#fff;font:500 14px Inter,sans-serif;color:#172B4D;cursor:pointer;text-align:left}
+.opt[aria-expanded=true]{border-color:#0070E0;background:#F4F9FF}
+.ppb{width:100%;height:48px;border:0;border-radius:24px;background:#FFC439;color:#003087;font:italic 700 18px Inter,sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
+.ppb:hover{background:#f2ba36}.ppb:disabled{opacity:.6;cursor:not-allowed}
+.ppb b{color:#003087}.ppb em{color:#009CDE;font-style:italic}
+.mo{position:fixed;inset:0;background:rgba(10,37,64,.4);display:flex;align-items:center;justify-content:center;padding:16px;z-index:30}
+.md{background:#fff;border-radius:12px;width:100%;max-width:400px;padding:28px;text-align:center}
+.sp{width:28px;height:28px;border:3px solid #E5E9F0;border-top-color:#0070E0;border-radius:50%;animation:s .8s linear infinite;margin:0 auto}
+@keyframes s{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.sp{animation:none}}
+.kv{display:flex;justify-content:space-between;gap:16px;padding:10px 0;border-top:1px solid #E5E9F0}
+.dbar{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:20;background:#001C64;color:#fff;border-radius:28px;padding:8px 8px 8px 16px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:center;max-width:calc(100% - 24px);box-shadow:0 4px 16px rgba(0,28,100,.3)}
+.dbar button{height:32px;padding:0 12px;border-radius:16px;border:1px solid #2A4A9A;background:transparent;color:#fff;font:500 12px Inter,sans-serif;cursor:pointer}
+.dbar button:hover{background:#0A3F9E}
+#toast{position:fixed;top:16px;right:16px;z-index:40;display:flex;flex-direction:column;gap:8px;max-width:calc(100% - 32px)}
+.t{background:#fff;border:1px solid #E5E9F0;border-left:4px solid #2E9D65;border-radius:8px;padding:12px 16px;box-shadow:0 4px 16px rgba(23,43,77,.12);font-size:13px}
+.t.e{border-left-color:#D9363E}
+</style>
+</head>
+<body>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<header style="background:#fff;border-bottom:1px solid #E5E9F0">
+<div style="max-width:560px;margin:0 auto;padding:16px;display:flex;align-items:center;gap:12px">
+<div style="width:36px;height:36px;border-radius:8px;background:#003087;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600">A</div>
+<div style="flex:1"><div style="font-weight:600;font-size:16px;color:#003087" id="merch">Acme Cloud Services</div><div class="lb">Powered by ProofPay &amp; PayPal</div></div>
+<span class="bd g" style="display:flex;align-items:center;gap:4px"><svg class="i" viewBox="0 0 24 24" aria-hidden="true" style="width:14px;height:14px"><path d="M6 11V8a6 6 0 0 1 12 0v3M5 11h14v10H5z"></path></svg>Secure</span>
+</div>
+</header>
+
+<main style="max-width:560px;margin:0 auto;padding:24px 16px 120px;display:flex;flex-direction:column;gap:16px">
+
+<section id="vLoad" class="card" style="text-align:center;padding:48px 24px" aria-live="polite"><div class="sp"></div><p class="lb" style="margin-top:12px">Loading your invoice…</p></section>
+
+<section id="vErr" class="card" hidden style="text-align:center;padding:40px 24px">
+<h1 style="font-size:20px;margin:0;color:#003087">We couldn’t find this payment link</h1>
+<p style="color:#64748B">The link may be incorrect or expired. Please use the link from your most recent email or SMS, or contact the merchant.</p>
+<button class="btn" id="bRetry">Try again</button>
+</section>
+
+<section id="vInv" hidden class="card">
+<div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span class="lb">Outstanding balance</span><span class="bd r" id="stBd">Overdue</span></div>
+<h1 class="n" style="font-size:36px;font-weight:600;margin:4px 0 0;color:#003087" id="amt">$350.00 <span style="font-size:16px;font-weight:500;color:#64748B">USD</span></h1>
+<p style="margin:8px 0 16px;color:#172B4D" id="desc">Pro Cloud Subscription — Monthly Renewal (Failed Card Charge)</p>
+<div class="kv"><span class="lb">Invoice reference</span><span class="mono" id="inv">INV-2026-1024</span></div>
+<div class="kv"><span class="lb">Due date</span><span id="due" style="color:#B42830;font-weight:500">November 10, 2026 (Overdue)</span></div>
+<div class="kv"><span class="lb">Billed to</span><span id="cust">Sarah Johnson</span></div>
+</section>
+
+<section id="vPay" hidden class="card" style="display:flex;flex-direction:column;gap:12px">
+<h2 style="font-size:18px;font-weight:600;margin:0;color:#003087">Choose how to pay</h2>
+<button class="ppb" id="bPP" aria-label="Pay with PayPal"><b>Pay</b><em>Pal</em></button>
+<div class="lb" style="text-align:center">Settles instantly. No card entry needed.</div>
+<div style="display:flex;align-items:center;gap:12px;color:#8A94A6;font-size:12px"><span style="flex:1;height:1px;background:#E5E9F0"></span>or<span style="flex:1;height:1px;background:#E5E9F0"></span></div>
+<button class="opt" id="bCardT" aria-expanded="false" aria-controls="cardF"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18v12H3zM3 10h18"></path></svg><span style="flex:1">Update credit / debit card</span><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+<div id="cardF" hidden>
+<label class="lb" for="cn">Card number</label><input class="f mono" id="cn" inputmode="numeric" autocomplete="cc-number" placeholder="4242 4242 4242 4242" maxlength="23"><div class="em" id="cnE"></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+<div><label class="lb" for="ce">Expiry (MM/YY)</label><input class="f mono" id="ce" inputmode="numeric" autocomplete="cc-exp" placeholder="08/29" maxlength="5"><div class="em" id="ceE"></div></div>
+<div><label class="lb" for="cv">CVC</label><input class="f mono" id="cv" inputmode="numeric" autocomplete="cc-csc" placeholder="123" maxlength="4"><div class="em" id="cvE"></div></div></div>
+<label class="lb" for="cm" style="display:block">Name on card</label><input class="f" id="cm" autocomplete="cc-name" placeholder="Sarah Johnson"><div class="em" id="cmE"></div>
+<button class="btn p" id="bCard" style="margin-top:4px">Update card &amp; pay <span class="n" id="amt2">$350.00</span></button>
+<p class="lb" style="margin:8px 0 0">Your new card will be used for future renewals. Demo only: no real card data is stored or sent.</p>
+</div>
+<div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;padding-top:8px" class="lb"><span>🔒 256-Bit SSL Encrypted</span><span>✔ Verified by PayPal</span></div>
+</section>
+
+<section id="vOk" hidden class="card" style="text-align:center;border-color:#2E9D65" role="alert">
+<div style="width:56px;height:56px;border-radius:28px;background:#E3F4EB;color:#1E7A4C;margin:0 auto 12px;display:flex;align-items:center;justify-content:center"><svg class="i" viewBox="0 0 24 24" aria-hidden="true" style="width:30px;height:30px"><path d="M5 12l5 5 9-10"></path></svg></div>
+<h1 style="font-size:22px;margin:0;color:#1E7A4C">✅ Payment Successful! Thank You.</h1>
+<p class="n" style="margin:8px 0 16px;color:#64748B"><span id="okAmt">$350.00 USD</span> paid for <span class="mono" id="okInv">INV-2026-1024</span></p>
+<div class="kv" style="text-align:left"><span class="lb">PayPal Transaction ID</span><span class="mono" id="txn">PP-TXN-994102</span></div>
+<div class="kv" style="text-align:left"><span class="lb">Case status</span><span class="bd g">PAID</span></div>
+<p style="margin:16px 0 0;color:#172B4D">Your invoice has been marked PAID and your service remains uninterrupted.</p>
+<p class="lb" id="whNote" style="margin:8px 0 0"></p>
+</section>
+</main>
+
+<div class="dbar" role="toolbar" aria-label="Evaluator demo bar">
+<span style="font-size:12px;font-weight:600;letter-spacing:.06em">⚡ DEMO BAR</span>
+<span class="mono" style="color:#BFD3F2" id="clk"></span>
+<button id="dReset">🔄 Reset Demo</button>
+<button id="dFail">⚠️ Inject Failure</button>
+</div>
+
+<div class="mo" id="ppM" hidden role="dialog" aria-modal="true" aria-labelledby="ppT">
+<div class="md"><div style="font:italic 700 24px Inter,sans-serif;color:#003087;margin-bottom:8px">Pay<span style="color:#009CDE">Pal</span></div>
+<h2 id="ppT" style="font-size:16px;margin:0 0 4px">Pay Acme Cloud Services</h2>
+<div class="n" style="font-size:28px;font-weight:600;margin-bottom:4px" id="ppA">$350.00</div><div class="lb" style="margin-bottom:16px">Sandbox buyer: sarah@example.com</div>
+<div id="ppBody"><button class="btn p" id="ppOk">Log in &amp; Pay Now</button><button class="btn" id="ppX" style="width:100%;margin-top:8px">Cancel and return to merchant</button></div>
+<div id="ppWait" hidden><div class="sp"></div><p class="lb" style="margin-top:12px">Authorizing &amp; capturing payment…</p></div></div></div>
+
+<script>
+(function(){
+var API='http://localhost:8000',$=function(i){return document.getElementById(i)};
+var cid=new URLSearchParams(location.search).get('case_id')||'REC-2026-0042';
+var FIX={'REC-2026-0042':{case_id:'REC-2026-0042',merchant:'Acme Cloud Services',customer:'Sarah Johnson',invoice_id:'INV-2026-1024',amount:350,currency:'USD',due:'November 10, 2026',description:'Pro Cloud Subscription — Monthly Renewal (Failed Card Charge)',status:'ACTIVE'}};
+var key='proofpay_case_'+cid,cs=null,busy=false;
+function money(n){return '$'+Number(n).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}
+function toast(m,e){var d=document.createElement('div');d.className='t'+(e?' e':'');d.textContent=m;$('toast').appendChild(d);setTimeout(function(){d.remove()},4500)}
+function show(id){['vLoad','vErr','vInv','vPay','vOk'].forEach(function(v){$(v).hidden=true});[].concat(id).forEach(function(v){$(v).hidden=false})}
+function store(g,v){try{if(v===undefined)return localStorage.getItem(g);if(v===null)localStorage.removeItem(g);else localStorage.setItem(g,v)}catch(e){return null}}
+function fetchJ(p,o){var c=new AbortController(),t=setTimeout(function(){c.abort()},2500);o=o||{};o.signal=c.signal;return fetch(API+p,o).then(function(r){clearTimeout(t);if(!r.ok)throw new Error(r.status);return r.json()})}
+function load(){show('vLoad');
+fetchJ('/cases/'+encodeURIComponent(cid)).catch(function(){return FIX[cid]||null}).then(function(c){
+if(!c){show('vErr');return}
+cs=c;$('merch').textContent=c.merchant;$('amt').innerHTML=money(c.amount)+' <span style="font-size:16px;font-weight:500;color:#64748B">'+c.currency+'</span>';$('amt2').textContent=money(c.amount);$('ppA').textContent=money(c.amount);
+$('desc').textContent=c.description;$('inv').textContent=c.invoice_id;$('cust').textContent=c.customer;$('due').textContent=c.due+' (Overdue)';
+var done=c.status==='PAID'||store(key)==='PAID';
+if(done)success(store(key+'_txn')||'PP-TXN-994102',true);else show(['vInv','vPay'])})}
+function success(txn,quiet){$('txn').textContent=txn;$('okAmt').textContent=money(cs.amount)+' '+cs.currency;$('okInv').textContent=cs.invoice_id;show('vOk');if(!quiet)toast('Payment received. Case '+cid+' marked PAID.')}
+function pay(method){if(busy)return;busy=true;
+var txn='PP-TXN-994102';
+fetchJ('/cases/'+encodeURIComponent(cid)+'/pay',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({method:method})})
+.then(function(r){return r.transaction_id||txn},function(){$('whNote').textContent='Demo mode: backend unreachable, webhook simulated locally.';return txn})
+.then(function(t){store(key,'PAID');store(key+'_txn',t);busy=false;$('ppM').hidden=true;success(t)})}
+$('bPP').onclick=function(){$('ppM').hidden=false;$('ppBody').hidden=false;$('ppWait').hidden=true;$('ppOk').focus()};
+$('ppX').onclick=function(){$('ppM').hidden=true;toast('Payment cancelled. You have not been charged.',true)};
+$('ppOk').onclick=function(){$('ppBody').hidden=true;$('ppWait').hidden=false;setTimeout(function(){pay('PAYPAL')},1200)};
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!$('ppM').hidden&&!busy)$('ppX').click()});
+$('bCardT').onclick=function(){var o=$('cardF').hidden;$('cardF').hidden=!o;this.setAttribute('aria-expanded',o);if(o)$('cn').focus()};
+$('cn').oninput=function(){this.value=this.value.replace(/\D/g,'').slice(0,19).replace(/(.{4})/g,'$1 ').trim()};
+$('ce').oninput=function(){var v=this.value.replace(/\D/g,'').slice(0,4);this.value=v.length>2?v.slice(0,2)+'/'+v.slice(2):v};
+function luhn(s){var t=0,d=false;for(var i=s.length-1;i>=0;i--){var n=+s[i];if(d){n*=2;if(n>9)n-=9}t+=n;d=!d}return t%10===0}
+function bad(id,msg){$(id).classList.add('err');$(id+'E').textContent=msg;return 1}
+$('bCard').onclick=function(){
+['cn','ce','cv','cm'].forEach(function(i){$(i).classList.remove('err');$(i+'E').textContent=''});
+var n=$('cn').value.replace(/\s/g,''),e=$('ce').value,er=0,m=/^(\d\d)\/(\d\d)$/.exec(e),now=new Date();
+if(n.length<13||!luhn(n))er+=bad('cn','Enter a valid card number.');
+if(!m||+m[1]<1||+m[1]>12||(2000+ +m[2])*12+ +m[1]<now.getFullYear()*12+now.getMonth()+1)er+=bad('ce','Enter a valid, unexpired date.');
+if(!/^\d{3,4}$/.test($('cv').value))er+=bad('cv','Enter 3–4 digits.');
+if(!$('cm').value.trim())er+=bad('cm','Enter the name on your card.');
+if(er)return;var b=this;b.disabled=true;b.textContent='Processing…';setTimeout(function(){b.disabled=false;b.textContent='Update card & pay';pay('CARD')},1000)};
+$('bRetry').onclick=load;
+$('dReset').onclick=function(){store(key,null);store(key+'_txn',null);toast('Demo reset. Case '+cid+' restored to ACTIVE.');load()};
+$('dFail').onclick=function(){toast('Injected EXPIRED_CARD failure for '+cid+'.',true)};
+function tick(){var d=new Date(),p=function(n){return String(n).padStart(2,'0')};$('clk').textContent=d.getUTCFullYear()+'-'+p(d.getUTCMonth()+1)+'-'+p(d.getUTCDate())+' '+p(d.getUTCHours())+':'+p(d.getUTCMinutes())+' UTC'}
+tick();setInterval(tick,30000);load();
+})();
+</script>
+</body>
+</html>

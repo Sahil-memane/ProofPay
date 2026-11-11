@@ -1,0 +1,31 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap');
+@import './tokens.css';
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body, #root {
+  margin: 0; padding: 0;
+  height: 100%;
+  font-family: var(--font-ui);
+  font-size: 14px;
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: var(--blue); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+button { font-family: var(--font-ui); cursor: pointer; }
+
+/* Utility classes (mirrors existing HTML design language) */
+.mono { font-family: var(--font-mono); font-size: 12px; color: var(--navy); }
+.muted { color: var(--muted); }
+.tabular { font-variant-numeric: tabular-nums; }
+.sr-only { position:absolute; left:-9999px; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+

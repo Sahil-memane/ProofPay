@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ProofPay — AI Assistant</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0;font-family:Inter,system-ui,sans-serif;color:#172B4D;background:#F5F7FA;font-size:14px}
+*{box-sizing:border-box}
+a{color:#0070E0;text-decoration:none}a:hover{text-decoration:underline}
+.i{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.nv{display:flex;align-items:center;gap:12px;height:40px;padding:0 12px;border-radius:8px;color:#D6E2F5;font-size:14px}
+.nv:hover{background:#0A3F9E;text-decoration:none;color:#fff}
+.nv.on{background:#0070E0;color:#fff}
+.nv b{margin-left:auto;background:#F5A623;color:#172B4D;font-size:11px;font-weight:600;border-radius:10px;padding:1px 7px}
+.gl{font-size:11px;letter-spacing:.08em;color:#9DB6E0;padding:16px 12px 6px;font-weight:600}
+.card{background:#fff;border:1px solid #E5E9F0;border-radius:12px;padding:20px}
+.n{font-variant-numeric:tabular-nums}
+.btn{height:44px;padding:0 16px;border-radius:8px;border:1px solid #E5E9F0;background:#fff;color:#172B4D;font:600 14px Inter,sans-serif;cursor:pointer}
+.btn:hover{background:#F0F3F8}
+.btn.p{background:#0070E0;border-color:#0070E0;color:#fff}.btn.p:hover{background:#005fc0}
+.lb{font-size:12px;color:#64748B}
+.h2{font-size:20px;font-weight:600;margin:0;color:#003087}
+.ct{font-size:15px;font-weight:600;margin:0}
+.big{font-size:28px;font-weight:600;margin:4px 0}
+.up{font-size:12px;color:#1E7A4C;font-weight:500}
+.ico{width:36px;height:36px;border-radius:10px;background:#E6F0FC;color:#0070E0;display:flex;align-items:center;justify-content:center}
+.row{display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid #E5E9F0}
+.tab{height:32px;padding:0 12px;border-radius:8px;border:0;background:transparent;color:#64748B;font:500 13px Inter,sans-serif;cursor:pointer}
+.tab.on{background:#E6F0FC;color:#0070E0}
+.bd{font-size:12px;font-weight:600;border-radius:12px;padding:2px 10px;white-space:nowrap}
+.g{background:#E3F4EB;color:#1E7A4C}.a{background:#FEF1D9;color:#8A5A00}.r{background:#FBE5E6;color:#B42830}.b{background:#E6F0FC;color:#005BB5}
+.ib{width:44px;height:44px;border-radius:8px;border:0;background:transparent;color:#64748B;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.ib:hover{background:#F0F3F8}
+.grid{display:grid;gap:24px}
+@media (max-width:900px){.side{display:none!important}.srch{display:none!important}}
+.mono{font-family:'JetBrains Mono','SF Mono',Consolas,monospace;font-size:12px;color:#003087}.f{display:block;width:100%;height:44px;margin-top:4px;padding:0 12px;border:1px solid #E5E9F0;border-radius:8px;font:14px Inter,sans-serif;color:#172B4D;background:#fff}[hidden]{display:none!important}.btn:focus-visible,.f:focus-visible,.nv:focus-visible,a:focus-visible{outline:2px solid #0070E0;outline-offset:2px}
+.th{padding:10px 12px;font-size:12px;font-weight:600;color:#64748B}.td{padding:12px;border-top:1px solid #E5E9F0;font-size:14px}.fr:hover,.dl:hover{background:#F0F3F8!important}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+</style>
+</head>
+<body>
+<div style="display:flex;min-height:100vh">
+<aside class="side" style="width:250px;flex:none;background:#003087;color:#fff;display:flex;flex-direction:column;padding:16px 12px;position:sticky;top:0;height:100vh;overflow-y:auto">
+<div style="display:flex;align-items:center;gap:10px;padding:4px 12px 12px">
+<div style="width:32px;height:32px;border-radius:8px;background:#0070E0;display:flex;align-items:center;justify-content:center"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6zM9 12l2 2 4-4"></path></svg></div>
+<div style="font-size:18px;font-weight:600;flex:1">ProofPay</div>
+<button class="ib" aria-label="Collapse sidebar" style="color:#D6E2F5;width:32px;height:32px"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg></button>
+</div>
+<nav aria-label="Main">
+<div class="gl">OVERVIEW</div>
+<a class="nv" href="index.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3h7v9H3zM14 3h7v5h-7zM14 12h7v9h-7zM3 16h7v5H3z"></path></svg>Dashboard</a>
+<div class="gl">ESCROW MANAGEMENT</div>
+<a class="nv" href="projects.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6a2 2 0 0 1 2-2h4l2 3h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>Projects</a>
+<a class="nv" href="milestones.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V4M5 4h12l-2 4 2 4H5"></path></svg>Milestones</a>
+<a class="nv" href="submissions.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9zM9 14l2 2 4-4"></path></svg>Submissions &amp; Verification<b>5</b></a>
+<a class="nv" href="ledger.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2zM4 19a2 2 0 0 0 2 2h13"></path></svg>Escrow Ledger</a>
+<div class="gl">REVENUE RECOVERY</div>
+<a class="nv" href="recovery-overview.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8M15 7h6v6"></path></svg>Recovery Overview</a>
+<a class="nv" href="cases.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8h18v12H3zM9 8V5h6v3"></path></svg>Recovery Cases<b>12</b></a>
+<a class="nv" href="invoices.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6"></path></svg>Invoices &amp; Subscriptions</a>
+<a class="nv" href="payment-attempts.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18v12H3zM3 10h18"></path></svg>Payment Attempts</a>
+<div class="gl">TRUST &amp; GOVERNANCE</div>
+<a class="nv" href="reconciliation.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h14l-3-3M20 16H6l3 3"></path></svg>Reconciliation<b>4</b></a>
+<a class="nv" href="disputes.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l10 18H2zM12 10v5M12 18h.01"></path></svg>Disputes<b>1</b></a>
+<a class="nv" href="mandate-guard.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"></path></svg>Mandate Guard</a>
+<a class="nv" href="reputation.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.8 5.8 6.2.9-4.5 4.4 1 6.2-5.5-3 -5.5 3 1-6.2L3 9.7l6.2-.9z"></path></svg>Reputation</a>
+<div class="gl">INTELLIGENCE</div>
+<a class="nv" href="agents.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8h14v10H5zM12 8V4M9 13h.01M15 13h.01"></path></svg>AI Agents</a>
+<a class="nv" href="analytics.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V10M12 21V4M19 21v-8"></path></svg>Analytics &amp; Reports</a>
+<a class="nv" href="audit.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"></path></svg>Audit Trail</a>
+<a class="nv on" href="assistant.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"></path></svg>AI Assistant</a>
+<div class="gl">SYSTEM</div>
+<a class="nv" href="integrations.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3v5M15 3v5M6 8h12v4a6 6 0 0 1-12 0zM12 18v3"></path></svg>Integrations</a>
+<a class="nv" href="settings.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10M14 5v4M6 15v4"></path></svg>Settings</a>
+<a class="nv" href="help.html"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .8-1 1.7M12 17h.01"></path></svg>Help &amp; Support</a>
+</nav>
+<div style="margin-top:auto;padding-top:16px">
+<button style="display:flex;align-items:center;gap:12px;width:100%;height:56px;padding:0 12px;border-radius:8px;border:0;background:#0A3F9E;color:#fff;cursor:pointer;text-align:left;font-family:Inter,sans-serif">
+<span style="width:32px;height:32px;border-radius:16px;background:#009CDE;color:#001C64;font-weight:600;display:flex;align-items:center;justify-content:center">S</span>
+<span style="flex:1"><span style="display:block;font-size:13px;font-weight:600">Sahil</span><span style="display:block;font-size:12px;color:#C9D8F2">Workspace Owner</span></span>
+<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 15l6-6 6 6"></path></svg></button>
+</div>
+</aside>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column">
+<header style="height:68px;flex:none;background:#fff;border-bottom:1px solid #E5E9F0;display:flex;align-items:center;gap:16px;padding:0 32px;position:sticky;top:0;z-index:5">
+<div style="min-width:140px"><div class="lb">Intelligence /</div><div style="font-weight:600;font-size:15px">AI Assistant</div></div>
+<div class="srch" style="flex:1;max-width:480px;margin:0 auto;position:relative">
+<svg class="i" viewBox="0 0 24 24" aria-hidden="true" style="position:absolute;left:12px;top:13px;color:#64748B"><path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM21 21l-5-5"></path></svg>
+<label for="gs" style="position:absolute;left:-9999px">Global search</label>
+<input id="gs" placeholder="Search projects, invoices, cases, audit hashes (Ctrl+K)..." style="width:100%;height:44px;padding:0 12px 0 40px;border:1px solid #E5E9F0;border-radius:10px;background:#F0F3F8;font:14px Inter,sans-serif;color:#172B4D">
+</div>
+<span class="bd a" style="margin-left:auto">Sandbox</span>
+<span style="display:flex;align-items:center;gap:6px;font-size:13px;font-weight:500;white-space:nowrap"><span style="width:8px;height:8px;border-radius:4px;background:#2E9D65"></span>PayPal Connected</span>
+<button class="ib" aria-label="Notifications, 3 unread" style="position:relative"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 21h4"></path></svg><span style="position:absolute;top:10px;right:11px;width:8px;height:8px;border-radius:4px;background:#D9363E"></span></button>
+<button class="ib" aria-label="Help"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .8-1 1.7M12 17h.01"></path></svg></button>
+<button class="ib" aria-label="Account menu" style="width:36px;height:36px;border-radius:18px;background:#003087;color:#fff;font:600 14px Inter,sans-serif">S</button>
+</header>
+<main style="padding:32px;max-width:1280px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:24px">
+<div style="display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;justify-content:space-between">
+<div style="max-width:640px"><h1 style="font-size:28px;font-weight:600;margin:0;color:#003087">AI Assistant</h1><p style="margin:4px 0 0;color:#64748B">Ask about escrow, recovery, reconciliation, and policy decisions. Every answer links to its audit evidence.</p></div>
+<span class="bd b" style="display:inline-flex;gap:8px;align-items:center;font-size:13px;padding:8px 14px"><svg class="i" viewBox="0 0 24 24" aria-hidden="true" style="width:16px;height:16px"><path d="M6 11h12v9H6zM8 11V8a4 4 0 0 1 8 0v3"></path></svg>READ-ONLY MODE: Cannot execute financial disbursements or mutate policies.</span></div>
+
+<div style="display:flex;flex-wrap:wrap;gap:24px;align-items:stretch">
+<aside class="card" style="flex:1 1 260px;max-width:340px;display:flex;flex-direction:column;gap:16px;min-width:0">
+<button class="btn p" id="nw" style="width:100%">+ New conversation</button>
+<div><h2 class="ct" style="margin-bottom:8px">Suggested questions</h2><div id="sg" style="display:grid;gap:6px"></div></div>
+<div><h2 class="ct" style="margin-bottom:8px">Recent conversations</h2><div id="rc" style="display:grid;gap:4px"></div></div>
+</aside>
+<section class="card" style="flex:3 1 480px;min-width:0;padding:0;display:flex;flex-direction:column;height:calc(100vh - 230px);min-height:520px" aria-label="Chat">
+<div id="ms" style="flex:1;overflow:auto;padding:24px;display:flex;flex-direction:column;gap:20px" aria-live="polite"></div>
+<form id="fm" style="display:flex;gap:8px;padding:16px;border-top:1px solid #E5E9F0"><label for="qi" style="position:absolute;left:-9999px">Ask a question</label><input id="qi" class="f" style="margin:0;flex:1" placeholder="Ask about a milestone, case, hash, or policy…" autocomplete="off"><button class="btn p" id="sb">Send</button></form>
+</section></div>
+<div style="text-align:center;padding:8px 0 16px;color:#003087;font-weight:600">AI recommends. Policy decides. PayPal executes. Every action is auditable.<div class="lb" style="font-weight:400;margin-top:4px">ProofPay · Every Payment. Proven. Protected.</div></div>
+</main>
+<div id="toasts" aria-live="polite" style="position:fixed;top:80px;right:24px;z-index:30;display:grid;gap:8px"></div>
+</div>
+</div>
+<script>
+const $=s=>document.querySelector(s);
+const H=async s=>[...new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s)))].map(x=>x.toString(16).padStart(2,'0')).join('');
+const GREET='Hello! I am your ProofPay Assistant. Ask me anything about milestone escrow, payment recovery, reconciliation, or policy decisions.';
+const P=['Why was milestone #2 payout held by Mandate Guard?','Show me all recovery cases halted due to offline bank payments.','What is our current recovery success rate for expired cards?','Verify the plan hash for Project PRJ-2026-001.'];
+const MS=[['UI Design & Figma Tokens',40000],['Frontend Integration & API Client',70000],['Backend & PayPal Checkout',80000],['QA, Testing & Deployment',50000]];
+const c=(l,h)=>({l,h});
+async function answer(q){const t=q.toLowerCase();
+if(/plan hash|verify the plan/.test(t)){const plan=JSON.stringify({project_id:'PRJ-2026-001',milestones:MS.map((m,i)=>({amount_cents:m[1],criteria:'acceptance-criteria-v1',index:i+1,title:m[0]}))}),h=await H(plan);
+return{a:`I recomputed the plan hash for PRJ-2026-001 from its 4 milestones totaling $2,400.00. Client and Freelancer signatures both match it, so funding is unlocked and any out-of-band change would return 409 Conflict.<div class="mono" style="word-break:break-all;margin-top:8px;padding:10px 12px;background:#F0F3F8;border-radius:8px">${h}</div><span class="bd g" style="display:inline-block;margin-top:8px">Both approvals match</span>`,c:[c('Project PRJ-2026-001','project-details.html'),c('Plan approval events','audit.html')],r:['PRJ-2026-001','sha256:'+h.slice(0,16)+'…']}}
+if(/(milestone|payout).*(held|block|mandate)|mandate guard|held/.test(t))return{a:'The verifier scored Milestone 2 at <b>0.94</b> (AUTO_APPROVE), but Mandate Guard blocked the release because <b>$700.00 exceeds the $200.00 per-transaction autonomous limit</b>. It was routed to the Human Approvals Queue as <b>APP-104</b>. A Risk Officer then approved it and the PayPal Payout was dispatched. The LLM only proposed the release; deterministic policy made the call.',c:[c('AUD-00241 Submission verified','audit.html#AUD-00241'),c('AUD-00242 Policy blocked','audit.html#AUD-00242'),c('AUD-00243 Approval granted','audit.html#AUD-00243'),c('AUD-00244 Payout dispatched','audit.html#AUD-00244')],r:['MS-2026-001-02','APP-104','$700.00 USD']};
+if(/halt|offline|bank|elsewhere|wire/.test(t))return{a:'Reconciliation has detected <b>14 cases paid elsewhere</b>. The most recent is <b>REC-2026-0041</b> (Michael Anderson): the PayPal charge failed, but a matching <b>$450.00</b> offline wire was found. The case is marked PAID_ELSEWHERE and outreach is permanently halted to prevent wrongful dunning.',c:[c('Case REC-2026-0041','cases.html#REC-2026-0041'),c('Reconciliation match event','audit.html'),c('Recovery overview','recovery-overview.html')],r:['REC-2026-0041','INV on file: $450.00 wire','PAID_ELSEWHERE']};
+if(/expired|success rate|recovery rate/.test(t))return{a:'Expired cards are the largest failure cause: <b>60 of 142 diagnosed cases (42%)</b>. Their main fix, the PayPal 1-click update link, converts at <b>74%</b>. Overall recovery is <b>67%</b> vs. 22% for manual dunning. The data does not break out a recovery rate for expired cards alone, so 74% is the closest measure.',c:[c('Root-cause diagnosis','recovery-overview.html'),c('Benchmark report','analytics.html')],r:['150 cases','$12,450.00 recovered of $18,600.00']};
+if(/\b(release|disburse|pay out|refund|approve|change|raise|lower|disable|freeze|pause|delete|edit)\b/.test(t))return{a:'I am in <b>read-only mode</b>, so I cannot release funds, change limits, or alter any record. A Risk Officer can do this from the Approvals Queue or Mandate Guard, and every action is recorded in the audit trail. I can explain the current state or the policy rules involved.',c:[c('Approvals Queue','approvals.html'),c('Mandate Guard','mandate-guard.html')],r:[]};
+return{a:'I can only answer from ProofPay data and I found nothing for that. Try asking about a milestone payout, a recovery case, reconciliation results, or a plan hash.',c:[],r:[],chips:1}}
+let V=[],cur=-1;
+const mk=(role,x)=>({role,...x});
+function bubble(m){if(m.role==='u')return`<div style="align-self:flex-end;max-width:80%;background:#0070E0;color:#fff;padding:10px 14px;border-radius:12px 12px 2px 12px">${esc(m.t)}</div>`;
+const ci=(m.c||[]).map(x=>`<a href="${x.h}" class="bd b" style="text-decoration:none">${x.l}</a>`).join(' '),rf=(m.r||[]).map(x=>`<span class="mono" style="background:#F0F3F8;padding:2px 8px;border-radius:6px">${esc(x)}</span>`).join(' ');
+return`<div style="align-self:flex-start;max-width:88%;display:grid;gap:10px"><div style="padding:14px 16px;border:1px solid #E5E9F0;border-radius:2px 12px 12px 12px;background:#fff;line-height:1.5">${m.a||esc(m.t)}</div>${ci?`<div><div class="lb" style="margin-bottom:4px">Audit citations</div><div style="display:flex;flex-wrap:wrap;gap:6px">${ci}</div></div>`:''}${rf?`<div><div class="lb" style="margin-bottom:4px">Transaction references</div><div style="display:flex;flex-wrap:wrap;gap:6px">${rf}</div></div>`:''}${m.chips?`<div style="display:flex;flex-wrap:wrap;gap:6px">${P.map((p,i)=>`<button class="tab on" data-p="${i}">${p}</button>`).join('')}</div>`:''}</div>`}
+const esc=s=>String(s).replace(/[&<>]/g,x=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[x]));
+function draw(extra){const m=cur<0?[]:V[cur].m;$('#ms').innerHTML=`<div style="align-self:flex-start;max-width:88%;padding:14px 16px;border:1px solid #E5E9F0;border-radius:2px 12px 12px 12px;background:#F5F7FA">${GREET}</div>`+m.map(bubble).join('')+(extra||'');$('#ms').scrollTop=1e9;document.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>ask(P[+b.dataset.p]));
+$('#rc').innerHTML=V.length?V.map((v,i)=>`<button class="fr" data-v="${i}" style="text-align:left;height:36px;padding:0 10px;border:0;border-radius:8px;background:${i===cur?'#E6F0FC':'transparent'};font:13px Inter,sans-serif;color:#172B4D;cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(v.title)}</button>`).join(''):'<div class="lb">No conversations yet. Ask a question to start one.</div>';document.querySelectorAll('[data-v]').forEach(b=>b.onclick=()=>{cur=+b.dataset.v;draw()})}
+$('#sg').innerHTML=P.map((p,i)=>`<button class="fr" data-s="${i}" style="text-align:left;padding:8px 10px;border:1px solid #E5E9F0;border-radius:8px;background:#fff;font:13px Inter,sans-serif;color:#172B4D;cursor:pointer;line-height:1.4">${p}</button>`).join('');
+document.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>ask(P[+b.dataset.s]));
+async function ask(q){q=q.trim();if(!q)return;if(cur<0||V[cur].m.length>=40){V.unshift({title:q.slice(0,42),m:[]});cur=0}
+V[cur].m.push(mk('u',{t:q}));$('#qi').value='';$('#sb').disabled=true;draw('<div class="lb" style="align-self:flex-start">Searching the audit trail…</div>');
+await new Promise(r=>setTimeout(r,700));let r;try{r=await answer(q)}catch(e){r={a:'I could not complete that lookup. SHA-256 verification needs https or localhost. Try again from a secure page.',c:[],r:[]}}
+V[cur].m.push(mk('a',{a:r.a,c:r.c,r:r.r,chips:r.chips}));$('#sb').disabled=false;draw();$('#qi').focus()}
+$('#fm').onsubmit=e=>{e.preventDefault();ask($('#qi').value)};
+$('#nw').onclick=()=>{cur=-1;draw();$('#qi').focus()};
+V=[{title:'Why was milestone #2 held?',m:[]},{title:'Paid-elsewhere cases',m:[]}];
+(async()=>{const q=[P[0],P[1]];for(let i=0;i<2;i++){V[i].m=[mk('u',{t:q[i]})];const r=await answer(q[i]);V[i].m.push(mk('a',{a:r.a,c:r.c,r:r.r}))}cur=-1;draw()})();
+</script>
+</body>
+</html>
