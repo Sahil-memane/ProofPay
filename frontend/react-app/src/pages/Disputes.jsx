@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { toast } from '../components/ui/Toast';
 import { useApi } from '../api/useApi';
 import { endpoints } from '../api/endpoints';
+import { generateEvidencePackPdf } from '../utils/evidencePdf';
 import styles from './Disputes.module.css';
 
 const INITIAL_DISPUTES = [
@@ -107,10 +108,17 @@ export default function Disputes() {
     if (!activeDrawer) return;
     setIsCompiling(true);
     setTimeout(() => {
-      setIsCompiling(false);
-      setEvidencePacks(prev => ({ ...prev, [activeDrawer.id]: true }));
-      toast.success(`Evidence pack for ${activeDrawer.id} compiled.`);
-    }, 1000);
+      try {
+        generateEvidencePackPdf(activeDrawer);
+        setIsCompiling(false);
+        setEvidencePacks(prev => ({ ...prev, [activeDrawer.id]: true }));
+        toast.success(`Evidence pack for ${activeDrawer.id} generated & downloaded (PDF).`);
+      } catch (err) {
+        setIsCompiling(false);
+        console.error('Evidence pack generation failed:', err);
+        toast.error('Failed to generate PDF evidence pack.');
+      }
+    }, 600);
   };
 
   const handleSubmitDefense = (id, pp) => {
@@ -197,7 +205,7 @@ export default function Disputes() {
                 <th className={styles.th}>Escrow Status</th>
                 <th className={styles.th}>Recovery Status</th>
                 <th className={styles.th}>Evidence Deadline</th>
-                <th className={styles.th}>Actions</th>
+                <th className={`${styles.th} ${styles.actionsTh}`}>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -240,27 +248,29 @@ export default function Disputes() {
                         </b>
                       )}
                     </td>
-                    <td className={styles.td}>
-                      <div style={{ display: 'flex', gap: 6, flexWrap: 'nowrap' }}>
+                    <td className={`${styles.td} ${styles.actionsTd}`}>
+                      <div className={styles.actionCell}>
                         <button
-                          className={`${styles.btn} ${styles.btnSm}`}
+                          className={`${styles.btn} ${styles.btnSm} ${styles.btnOutline}`}
                           onClick={() => handleOpenPack(d)}
                           disabled={isRefunded}
+                          title="Generate & download official 5-point evidence dossier"
                         >
-                          Generate Evidence Pack
+                          {hasPack ? 'Evidence Pack (PDF)' : 'Evidence Pack'}
                         </button>
                         <button
                           className={`${styles.btn} ${styles.btnSm} ${styles.btnDanger}`}
                           onClick={() => setRefundTarget(d)}
                           disabled={isRefunded || isDefended}
+                          title="Accept dispute and refund buyer"
                         >
-                          Accept / Refund
+                          Accept &amp; Refund
                         </button>
                         <button
                           className={`${styles.btn} ${styles.btnSm} ${styles.btnPrimary}`}
                           onClick={() => handleSubmitDefense(d.id, d.pp)}
                           disabled={isRefunded || isDefended || !hasPack}
-                          title={hasPack ? '' : 'Generate the evidence pack first'}
+                          title={hasPack ? 'Submit compiled defense package to PayPal' : 'Generate evidence pack first'}
                         >
                           Submit Defense
                         </button>
