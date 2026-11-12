@@ -52,13 +52,22 @@ class Settings(BaseSettings):
     @classmethod
     def coerce_sync_url(cls, v: str) -> str:
         """
-        Alembic / sync engine needs plain postgresql:// (psycopg2).
-        Strip +asyncpg if someone passes the async URL as DATABASE_URL_SYNC.
+        Alembic / sync engine must use psycopg2 explicitly.
+        SQLAlchemy >= 2.0 with plain postgresql:// tries psycopg (v3) first,
+        which is not installed — force postgresql+psycopg2:// always.
         """
-        if v and v.startswith("postgresql+asyncpg://"):
-            return v.replace("postgresql+asyncpg://", "postgresql://", 1)
-        if v and v.startswith("postgres://"):
-            return v.replace("postgres://", "postgresql://", 1)
+        if not v:
+            return v
+        # Strip any existing driver prefix to get a bare host/path
+        for prefix in (
+            "postgresql+asyncpg://",
+            "postgresql+psycopg2://",
+            "postgresql://",
+            "postgres://",
+        ):
+            if v.startswith(prefix):
+                v = "postgresql+psycopg2://" + v[len(prefix):]
+                break
         return v
 
     # ── PayPal ────────────────────────────────────────────────────────────────

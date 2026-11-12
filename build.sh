@@ -20,13 +20,21 @@ npm --prefix frontend/react-app run build
 echo "Frontend built to frontend/react-app/dist/"
 
 echo "=== [3/3] Running Alembic database migrations ==="
-# DATABASE_URL_SYNC must be set in Render env vars
-# derive sync URL from DATABASE_URL if DATABASE_URL_SYNC is not set explicitly
+# Alembic uses psycopg2 (sync). Coerce DATABASE_URL_SYNC to postgresql+psycopg2://
+# so SQLAlchemy does not try to import psycopg (v3) which is not installed.
 if [ -z "$DATABASE_URL_SYNC" ]; then
-  # Render provides postgresql:// URL — asyncpg needs postgresql+asyncpg://
-  # For alembic (sync), strip "+asyncpg" if present and ensure it's plain postgresql://
-  export DATABASE_URL_SYNC="${DATABASE_URL/+asyncpg/}"
+  # Start from raw DATABASE_URL (postgresql:// or postgresql+asyncpg://)
+  _raw="${DATABASE_URL}"
+else
+  _raw="${DATABASE_URL_SYNC}"
 fi
+# Strip any driver suffix, then prepend +psycopg2
+_bare="${_raw#postgresql+asyncpg://}"
+_bare="${_bare#postgresql+psycopg2://}"
+_bare="${_bare#postgresql://}"
+_bare="${_bare#postgres://}"
+export DATABASE_URL_SYNC="postgresql+psycopg2://${_bare}"
+echo "Using DATABASE_URL_SYNC driver: postgresql+psycopg2"
 alembic upgrade head
 
 echo "=== Build complete ==="
