@@ -1,6 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from '../components/ui/Toast';
+import { useApi } from '../api/useApi';
+import { endpoints } from '../api/endpoints';
+import { useAuth } from '../hooks/useAuth';
 import styles from './Settings.module.css';
 
 const INITIAL_MEMBERS = [
@@ -45,12 +48,13 @@ const INITIAL_SESSIONS = [
 ];
 
 export default function Settings() {
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState('profile');
   const [isDirty, setIsDirty] = useState(false);
 
-  // Profile Form
-  const [profileName, setProfileName] = useState('Sahil');
-  const [profileEmail, setProfileEmail] = useState('sahil@acmeglobal.example');
+  // Profile Form — pre-populated from auth session
+  const [profileName, setProfileName] = useState(() => user?.name || 'Sahil');
+  const [profileEmail, setProfileEmail] = useState(() => user?.email || 'sahil@acmeglobal.example');
   const [paypalEmail, setPaypalEmail] = useState('payouts@acmeglobal.example');
   const [timezone, setTimezone] = useState('Asia/Kolkata (UTC+05:30)');
 
@@ -73,6 +77,29 @@ export default function Settings() {
   const [twoFactorOn, setTwoFactorOn] = useState(true);
   const [sessionTimeout, setSessionTimeout] = useState('30 minutes');
   const [sessions, setSessions] = useState(INITIAL_SESSIONS);
+
+  // Fetch workspace users from DB
+  const { data: apiUsers } = useApi(() => endpoints.settings.users());
+  useEffect(() => {
+    if (!apiUsers || !Array.isArray(apiUsers) || apiUsers.length === 0) return;
+    const roleLabel = { client: 'Client', freelancer: 'Freelancer', merchant: 'Merchant', admin: 'Risk Officer' };
+    const dbMembers = apiUsers.map(u => [
+      u.name,
+      u.email,
+      roleLabel[u.role] || u.role,
+      u.is_active ? 'ACTIVE' : 'INACTIVE',
+      'Recently',
+    ]);
+    setMembers(dbMembers);
+    // Sync profile from logged-in user record
+    if (user?.email) {
+      const me = apiUsers.find(u => u.email === user.email);
+      if (me) {
+        setProfileName(me.name);
+        setProfileEmail(me.email);
+      }
+    }
+  }, [apiUsers, user]);
 
   const handleSaveProfile = (e) => {
     e.preventDefault();

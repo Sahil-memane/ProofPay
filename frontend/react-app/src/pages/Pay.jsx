@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { toast } from '../components/ui/Toast';
+import { useApi } from '../api/useApi';
+import { endpoints } from '../api/endpoints';
 import styles from './Pay.module.css';
 
 const DEFAULT_CASE = {
@@ -26,6 +28,52 @@ export default function Pay() {
   const [isAuthorizing, setIsAuthorizing] = useState(false);
   const [isCardAccordionOpen, setIsCardAccordionOpen] = useState(false);
   const [isProcessingCard, setIsProcessingCard] = useState(false);
+
+  // Fetch real invoice data from DB
+  const { data: apiInvoices } = useApi(() => endpoints.invoices.list({ limit: 50 }));
+  const { data: apiCases } = useApi(() => endpoints.cases.list());
+
+  useEffect(() => {
+    // Try to match a real invoice or case from DB
+    if (apiCases && Array.isArray(apiCases) && apiCases.length > 0) {
+      const matchedCase = apiCases.find(c =>
+        c.id === caseId || `REC-${(c.id || '').slice(0, 8).toUpperCase()}` === caseId
+      ) || apiCases[0];
+      if (matchedCase) {
+        const payload = matchedCase.payload || {};
+        setInvoice({
+          case_id: `REC-${matchedCase.id.slice(0, 8).toUpperCase()}`,
+          merchant: 'ProofPay Merchant',
+          customer: matchedCase.customer_id || 'Customer',
+          invoice_id: payload.invoice_id || `INV-${matchedCase.id.slice(0, 6).toUpperCase()}`,
+          amount: matchedCase.amount_usd || DEFAULT_CASE.amount,
+          currency: matchedCase.currency || 'USD',
+          due: matchedCase.last_contact_at
+            ? new Date(matchedCase.last_contact_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+            : DEFAULT_CASE.due,
+          description: payload.failure_code
+            ? `Failed ${payload.failure_code.replace(/_/g, ' ')} — Recovery Invoice`
+            : DEFAULT_CASE.description,
+          status: matchedCase.state || 'ACTIVE',
+        });
+      }
+    }
+    if (apiInvoices && Array.isArray(apiInvoices) && apiInvoices.length > 0) {
+      const matchedInv = apiInvoices.find(inv => inv.invoice_id === caseId);
+      if (matchedInv) {
+        setInvoice(prev => ({
+          ...prev,
+          invoice_id: matchedInv.invoice_id,
+          amount: matchedInv.amount_usd,
+          customer: matchedInv.customer_id,
+          due: matchedInv.due_at
+            ? new Date(matchedInv.due_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+            : prev.due,
+          status: matchedInv.status?.toUpperCase() || 'ACTIVE',
+        }));
+      }
+    }
+  }, [apiCases, apiInvoices, caseId]);
 
   // Card Form State
   const [cardNumber, setCardNumber] = useState('');

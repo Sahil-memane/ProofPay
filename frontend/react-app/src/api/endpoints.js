@@ -95,6 +95,10 @@ export const endpoints = {
   merchantSales: {
     list: (params) => api.get('/merchant-sales', params),
   },
+  settings: {
+    policy:  () => api.get('/settings/policy'),
+    users:   () => api.get('/settings/users'),
+  },
   sim: {
     events: (body) => api.post('/sim/events', body),
   },

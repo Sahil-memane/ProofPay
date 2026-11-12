@@ -45,6 +45,7 @@ export default defineConfig({
       '/recovery':             apiProxy,
       '/merchant-sales':       apiProxy,
       '/webhook-events':       apiProxy,
+      '/settings':             apiProxy,
     },
   },
   build: {

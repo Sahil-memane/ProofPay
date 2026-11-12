@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import styles from './Login.module.css';
 
@@ -16,8 +16,12 @@ export default function Login() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Mode: sign in or register (derived from hash or state)
-  const [isRegister, setIsRegister] = useState(() => location.hash === '#register');
+  // Mode: sign in or register (derived from hash, pathname, or state)
+  const [isRegister, setIsRegister] = useState(() => location.hash === '#register' || location.pathname === '/register');
+
+  useEffect(() => {
+    document.title = isRegister ? 'Create Account | ProofPay' : 'Sign In | ProofPay';
+  }, [isRegister]);
 
   // Sign In fields
   const [signInEmail, setSignInEmail] = useState('');

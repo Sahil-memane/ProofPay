@@ -96,7 +96,7 @@ from backend.app.api.dashboard import router as dashboard_router  # noqa: E402
 from backend.app.api.fixtures import router as fixtures_router  # noqa: E402
 from backend.app.api.auth import router as auth_router  # noqa: E402
 from backend.app.api.data_views import router as data_views_router  # noqa: E402
-from backend.app.api.data_views_ext import router as data_views_ext_router  # noqa: E402
+from backend.app.api.settings_api import router as settings_api_router  # noqa: E402
 
 app.include_router(cases.router)
 app.include_router(sim.router)
@@ -108,7 +108,7 @@ app.include_router(dashboard_router)
 app.include_router(fixtures_router)
 app.include_router(auth_router)
 app.include_router(data_views_router)
-app.include_router(data_views_ext_router)
+app.include_router(settings_api_router)
 
 
 # ── Health check ──────────────────────────────────────────────────────────────

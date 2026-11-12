@@ -84,13 +84,13 @@ export default function Landing() {
                 >
                   Sign In
                 </Link>
-                <Link
-                  to="/login"
+                <button
+                  type="button"
                   className={styles.btnOpenDashboard}
-                  style={{ textDecoration: 'none' }}
+                  onClick={() => handleAuthNavigation('/dashboard')}
                 >
                   Open Dashboard →
-                </Link>
+                </button>
               </div>
             )}
           </nav>

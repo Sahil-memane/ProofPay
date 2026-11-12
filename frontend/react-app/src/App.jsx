@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AppShell } from './components/layout/AppShell';
 import { ToastContainer } from './components/ui/Toast';
 import { PageLoader } from './components/ui/Spinner';
+import { ErrorBoundary } from './components/ui/ErrorBoundary';
 
 // ── Lazy-loaded pages (code splitting → small initial bundle) ─────────────
 const Landing             = lazy(() => import('./pages/Landing'));
@@ -38,8 +39,9 @@ function Loading() { return <PageLoader />; }
 export default function App() {
   return (
     <BrowserRouter>
-      <ToastContainer />
-      <Routes>
+      <ErrorBoundary>
+        <ToastContainer />
+        <Routes>
         {/* Public pages — no shell */}
         <Route path="/" element={
           <Suspense fallback={<Loading />}><Landing /></Suspense>
@@ -82,6 +84,7 @@ export default function App() {
         {/* Catch-all → dashboard */}
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
+      </ErrorBoundary>
     </BrowserRouter>
   );
 }

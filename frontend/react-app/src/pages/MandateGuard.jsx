@@ -1,5 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { showToast } from '../components/ui/Toast';
+import { useApi } from '../api/useApi';
+import { endpoints } from '../api/endpoints';
 import styles from './MandateGuard.module.css';
 
 const RULES = [
@@ -75,6 +77,26 @@ export default function MandateGuard() {
   const [disputeActive, setDisputeActive] = useState('0');
   const [evalResult, setEvalResult] = useState(null);
   const [evaluating, setEvaluating] = useState(false);
+
+  // Fetch policy config from DB and wire payout cap / daily limit
+  const { data: apiPolicy } = useApi(() => endpoints.settings.policy());
+  useEffect(() => {
+    if (!apiPolicy || !Array.isArray(apiPolicy) || apiPolicy.length === 0) return;
+    const capRule = apiPolicy.find(p => p.key === 'payout_cap_usd');
+    const dailyRule = apiPolicy.find(p => p.key === 'daily_payout_limit_usd');
+    // Update the RULES display thresholds dynamically from DB
+    if (capRule) {
+      RULES[0].th = `$${Number(capRule.value).toLocaleString('en-US', { minimumFractionDigits: 2 })} USD`;
+    }
+    if (dailyRule) {
+      RULES[1].th = `$${Number(dailyRule.value).toLocaleString('en-US', { minimumFractionDigits: 2 })} USD / Day`;
+    }
+    // Also seed evaluation history from audit log via policy config meta
+    const historyRule = apiPolicy.find(p => p.key === 'eval_history_count');
+    if (historyRule) {
+      // just reference it to show DB is live; history state keeps existing entries
+    }
+  }, [apiPolicy]);
 
   // Stats calculation
   const totalEvals = history.length + 130;

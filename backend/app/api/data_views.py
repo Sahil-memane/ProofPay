@@ -513,41 +513,46 @@ def list_audit_log(
     actor: Optional[str] = None,
     search: Optional[str] = None,
 ) -> dict[str, Any]:
-    """Paginated audit log from approval_tasks table (AuditLog not in schema; uses ApprovalTask as proxy)."""
-    from backend.app.db.models.support import ApprovalTask
+    """Paginated audit log from audit_log table with tamper-evident chain."""
+    from backend.app.db.models.audit_log import AuditLog
     try:
+        page_val = page if isinstance(page, int) else 0
+        limit_val = limit if isinstance(limit, int) else 50
         with get_sync_session() as session:
-            stmt = select(ApprovalTask).order_by(ApprovalTask.created_at.desc())
+            stmt = select(AuditLog).order_by(AuditLog.created_at.desc())
             if actor:
-                stmt = stmt.where(ApprovalTask.actor == actor)
+                stmt = stmt.where(AuditLog.actor == actor)
             if search:
                 stmt = stmt.where(
-                    ApprovalTask.subject.ilike(f"%{search}%") |
-                    ApprovalTask.actor.ilike(f"%{search}%")
+                    AuditLog.event_type.ilike(f"%{search}%") |
+                    AuditLog.subject.ilike(f"%{search}%") |
+                    AuditLog.actor.ilike(f"%{search}%")
                 )
             total = session.execute(select(func.count()).select_from(stmt.subquery())).scalar() or 0
-            stmt = stmt.offset(page * limit).limit(limit)
+            stmt = stmt.offset(page_val * limit_val).limit(limit_val)
             results = session.execute(stmt).scalars().all()
             return {
                 "total": total,
-                "page": page,
-                "limit": limit,
+                "page": page_val,
+                "limit": limit_val,
                 "events": [
                     {
                         "id": str(r.id),
                         "actor": r.actor or "system",
-                        "action": r.status,
-                        "entity_type": "approval_task",
+                        "action": r.event_type,
+                        "entity_type": (r.payload or {}).get("entity_type", "audit_record") if isinstance(r.payload, dict) else "audit_record",
                         "entity_id": r.subject,
-                        "decision": r.decision,
+                        "decision": (r.payload or {}).get("decision", r.event_type) if isinstance(r.payload, dict) else r.event_type,
                         "created_at": r.created_at.isoformat() if r.created_at else None,
-                        "meta": r.proposal or {},
+                        "prev_hash": r.prev_hash,
+                        "row_hash": r.row_hash,
+                        "meta": r.payload or {},
                     }
                     for r in results
                 ],
             }
     except Exception:
-        return {"total": 0, "page": page, "limit": limit, "events": []}
+        return {"total": 0, "page": 0, "limit": 50, "events": []}
 
 
 # ── Webhook Events (from PayPal transactions as event feed) ───────────────────
