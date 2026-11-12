@@ -74,9 +74,22 @@ app = FastAPI(
 )
 
 # ── CORS ──────────────────────────────────────────────────────────────────────
+# In production (Render), the React SPA is served by this same origin,
+# so CORS is only needed for external callers. Keep open for hackathon demo.
+_CORS_ORIGINS = [
+    "http://localhost:5173",
+    "http://localhost:8000",
+    "http://127.0.0.1:5173",
+    "http://127.0.0.1:8000",
+]
+# If APP_BASE_URL is set (Render deploy), add it to allowed origins
+if settings.app_base_url and settings.app_base_url not in _CORS_ORIGINS:
+    _CORS_ORIGINS.append(settings.app_base_url)
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Open for hackathon demo
+    allow_origins=_CORS_ORIGINS,
+    allow_origin_regex=r"https://.*\.onrender\.com",  # all render subdomains
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

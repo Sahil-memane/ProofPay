@@ -3,8 +3,12 @@
  * Thin fetch wrapper around FastAPI backend.
  * Sends Authorization: Bearer mock-token-{email} on every request so the
  * backend can apply per-user data scoping.
+ *
+ * Production (Render): React SPA is served by the same FastAPI origin,
+ * so BASE is '' (relative). Vite dev server proxy handles local dev.
+ * Override with VITE_API_BASE env var if you need to point at a separate backend.
  */
-const BASE = import.meta.env.VITE_API_BASE ?? 'http://localhost:8000';
+const BASE = import.meta.env.VITE_API_BASE ?? '';
 
 function qs(params) {
   if (!params) return '';

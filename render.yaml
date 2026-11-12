@@ -1,16 +1,26 @@
 services:
   - type: web
-    name: proofpay-api
+    name: proofpay-ai
     runtime: python
-    buildCommand: pip install -e ".[dev]"
-    startCommand: uvicorn backend.app.main:app --host 0.0.0.0 --port $PORT
+    region: oregon
+    plan: free
+    buildCommand: bash build.sh
+    startCommand: uvicorn backend.app.main:app --host 0.0.0.0 --port $PORT --workers 1
     healthCheckPath: /healthz
-    preDeployCommand: alembic upgrade head
     envVars:
+      # ── Database (injected from Render PostgreSQL) ──────────────────────────
       - key: DATABASE_URL
         fromDatabase:
           name: proofpay-db
           property: connectionString
+      # Alembic uses sync psycopg2 driver; derive from DATABASE_URL in build.sh
+      # but also expose explicitly for runtime use
+      - key: DATABASE_URL_SYNC
+        fromDatabase:
+          name: proofpay-db
+          property: connectionString
+
+      # ── App ─────────────────────────────────────────────────────────────────
       - key: DEMO_MODE
         value: "true"
       - key: SIMULATOR_ENABLED
@@ -19,26 +29,45 @@ services:
         generateValue: true
       - key: POLICY_SIGNING_KEY
         generateValue: true
+      - key: APP_BASE_URL
+        value: https://proofpay-ai.onrender.com   # update after first deploy
+
+      # ── PayPal (set manually in Render dashboard) ────────────────────────────
       - key: PAYPAL_MODE
         value: sandbox
       - key: PAYPAL_BASE_URL
         value: https://api-m.sandbox.paypal.com
+      - key: PAYPAL_EXEC_MODE
+        value: fake                     # change to "rest" with real credentials
       - key: PAYPAL_CLIENT_ID
         sync: false
       - key: PAYPAL_CLIENT_SECRET
         sync: false
       - key: PAYPAL_WEBHOOK_ID
         sync: false
-      - key: PAYPAL_EXEC_MODE
-        value: rest
+
+      # ── LLM (optional — set manually) ───────────────────────────────────────
       - key: LLM_PROVIDER
         value: openai
       - key: LLM_API_KEY
         sync: false
+      - key: LLM_MODEL_CHEAP
+        value: gpt-4o-mini
+      - key: LLM_MODEL_QA
+        value: gpt-4o
+      - key: LLM_DAILY_CAP
+        value: "100"
+
+      # ── Email ────────────────────────────────────────────────────────────────
       - key: EMAIL_MODE
         value: outbox
+
+      # ── GitHub (optional — for AI verifier collector) ────────────────────────
+      - key: GITHUB_TOKEN
+        sync: false
 
 databases:
   - name: proofpay-db
     plan: free
     postgresMajorVersion: 16
+    region: oregon

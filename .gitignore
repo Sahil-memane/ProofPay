@@ -1,4 +1,8 @@
 .env
+.env.local
+frontend/react-app/.env.local
+frontend/react-app/dist/
+frontend/react-app/node_modules/
 __pycache__/
 *.py[cod]
 *$py.class

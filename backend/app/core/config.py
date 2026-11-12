@@ -34,6 +34,33 @@ class Settings(BaseSettings):
         default="postgresql://proofpay:proofpay@localhost:5432/proofpay"
     )
 
+    @field_validator("database_url", mode="before")
+    @classmethod
+    def coerce_async_url(cls, v: str) -> str:
+        """
+        Render injects a plain postgresql:// connection string.
+        SQLAlchemy asyncpg driver requires postgresql+asyncpg://.
+        """
+        if v and v.startswith("postgresql://"):
+            return v.replace("postgresql://", "postgresql+asyncpg://", 1)
+        if v and v.startswith("postgres://"):
+            # Some older Render/Heroku format
+            return v.replace("postgres://", "postgresql+asyncpg://", 1)
+        return v
+
+    @field_validator("database_url_sync", mode="before")
+    @classmethod
+    def coerce_sync_url(cls, v: str) -> str:
+        """
+        Alembic / sync engine needs plain postgresql:// (psycopg2).
+        Strip +asyncpg if someone passes the async URL as DATABASE_URL_SYNC.
+        """
+        if v and v.startswith("postgresql+asyncpg://"):
+            return v.replace("postgresql+asyncpg://", "postgresql://", 1)
+        if v and v.startswith("postgres://"):
+            return v.replace("postgres://", "postgresql://", 1)
+        return v
+
     # ── PayPal ────────────────────────────────────────────────────────────────
     paypal_mode: str = Field(default="sandbox")
     paypal_base_url: str = Field(default="https://api-m.sandbox.paypal.com")
