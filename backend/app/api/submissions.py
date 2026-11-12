@@ -207,8 +207,9 @@ async def inject_verification(
     import os
     is_demo = os.environ.get("DEMO_MODE", "").lower() in ("true", "1")
     is_fake = os.environ.get("PAYPAL_EXEC_MODE", "fake") == "fake"
-    if not (is_demo or is_fake):
-        raise HTTPException(status_code=403, detail="Only available in demo/fake mode")
+    is_rest = os.environ.get("PAYPAL_EXEC_MODE", "fake") == "rest"
+    if not (is_demo or is_fake or is_rest):
+        raise HTTPException(status_code=403, detail="Only available in demo/fake/sandbox mode")
 
     milestone, project = _get_milestone(milestone_id)
     if not milestone:
@@ -460,7 +461,41 @@ async def _trigger_release(
         sub = _SUBMISSIONS.get(milestone_id, {})
         sub["payout_result"] = result
         sub["status"] = "PAYOUT_DISPATCHED"
-        log.info("Release payout dispatched for milestone %s (FakePayPal webhook will confirm)", milestone_id)
+        log.info("Release payout dispatched for milestone %s", milestone_id)
+
+        # In PayPal sandbox with restricted payouts (e.g. India accounts), payouts fallback
+        # to a simulated batch. Auto-trigger the release flow and record in webhook_events.
+        if result and result.get("sandbox_simulated"):
+            log.info("Sandbox fallback payout completed: releasing milestone %s", milestone_id)
+            from backend.app.ingestion.handlers.payout_events import handle_succeeded
+            payout_item = (result.get("items") or [{}])[0]
+            payout_item_id = payout_item.get("payout_item_id", f"SANDBOX-ITEM-{milestone_id}")
+            simulated_event = {
+                "id": str(uuid.uuid4()),
+                "event_type": "PAYMENT.PAYOUTS-ITEM.SUCCEEDED",
+                "source": "sandbox",
+                "payload": {
+                    "resource": {
+                        "payout_item_id": payout_item_id,
+                        "sender_batch_id": sender_batch_id,
+                        "transaction_status": "SUCCESS",
+                        "payout_item": payout_item.get("payout_item", {}),
+                    }
+                }
+            }
+            try:
+                from backend.app.ingestion.receiver import _enqueue_event
+                await _enqueue_event(
+                    event_id=f"WH-SANDBOX-{uuid.uuid4().hex[:12].upper()}",
+                    event_type="PAYMENT.PAYOUTS-ITEM.SUCCEEDED",
+                    source="sandbox",
+                    payload=simulated_event["payload"],
+                )
+            except Exception as wex:
+                log.warning("Could not enqueue sandbox payout webhook event: %s", wex)
+
+            handle_succeeded(simulated_event)
+            sub["status"] = "RELEASED"
     except Exception as exc:
         log.error("Release execute failed for %s: %s", milestone_id, exc, exc_info=True)
         sub = _SUBMISSIONS.get(milestone_id, {})

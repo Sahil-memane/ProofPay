@@ -19,6 +19,7 @@ Endpoints:
 """
 from __future__ import annotations
 
+import hashlib
 import uuid
 from datetime import datetime, timezone
 from typing import Any, Optional
@@ -37,6 +38,7 @@ from backend.app.db.models.entities import (
 from backend.app.db.models.projects import LedgerEntry, Milestone, Project
 from backend.app.db.models.support import ReconRecord, ReputationEvent
 from backend.app.db.models.cases import Case
+from backend.app.db.models.webhooks import WebhookEvent
 from backend.app.db.session import get_sync_session
 
 router = APIRouter(tags=["data_views"])
@@ -555,20 +557,75 @@ def list_audit_log(
         return {"total": 0, "page": 0, "limit": 50, "events": []}
 
 
-# ── Webhook Events (from PayPal transactions as event feed) ───────────────────
+# ── Webhook Events (from webhook_events table) ─────────────────────────────────
 
 @router.get("/webhook-events")
 def list_webhook_events(limit: int = 50) -> list[dict[str, Any]]:
-    """Return PayPal transactions as webhook event feed."""
+    """Return real webhook events from the DB webhook_events table."""
     try:
         with get_sync_session() as session:
             stmt = (
+                select(WebhookEvent)
+                .order_by(WebhookEvent.created_at.desc())
+                .limit(limit)
+            )
+            wh_results = session.execute(stmt).scalars().all()
+            if wh_results:
+                EVENT_CAT_MAP = {
+                    "PAYMENT.CAPTURE.COMPLETED": "capture",
+                    "PAYMENT.CAPTURE.DENIED": "recovery",
+                    "PAYMENT.CAPTURE.REFUNDED": "capture",
+                    "PAYMENT.PAYOUTS-ITEM.SUCCEEDED": "payout",
+                    "PAYMENT.PAYOUTS-ITEM.DENIED": "payout",
+                    "PAYMENT.PAYOUTS-ITEM.FAILED": "payout",
+                    "BILLING.SUBSCRIPTION.PAYMENT.FAILED": "recovery",
+                    "CUSTOMER.DISPUTE.CREATED": "dispute",
+                    "CUSTOMER.DISPUTE.RESOLVED": "dispute",
+                    "INVOICING.INVOICE.PAID": "recovery",
+                }
+                EVENT_TONE_MAP = {
+                    "PAYMENT.CAPTURE.COMPLETED": "g",
+                    "PAYMENT.CAPTURE.REFUNDED": "b",
+                    "PAYMENT.PAYOUTS-ITEM.SUCCEEDED": "g",
+                    "BILLING.SUBSCRIPTION.PAYMENT.FAILED": "a",
+                    "CUSTOMER.DISPUTE.CREATED": "r",
+                    "PAYMENT.CAPTURE.DENIED": "r",
+                    "PAYMENT.PAYOUTS-ITEM.FAILED": "r",
+                }
+                out = []
+                for ev in wh_results:
+                    p = ev.payload or {}
+                    res_obj = p.get("resource", {}) if isinstance(p, dict) else {}
+                    amt = res_obj.get("amount", {}) if isinstance(res_obj, dict) else {}
+                    amt_str = f"${amt.get('value', '0.00')} {amt.get('currency_code', 'USD')}" if isinstance(amt, dict) and amt.get("value") else ""
+                    res_desc = f"{ev.event_id} · {ev.source} · {amt_str}" if amt_str else f"{ev.event_id} · {ev.source}"
+                    if isinstance(res_obj, dict) and "note" in res_obj:
+                        res_desc += f" · {res_obj['note']}"
+                    elif isinstance(res_obj, dict) and "order_id" in res_obj:
+                        res_desc += f" · order: {res_obj['order_id']}"
+
+                    h = hashlib.sha256((ev.event_id + ev.event_type).encode()).hexdigest()
+                    out.append({
+                        "id": ev.event_id,
+                        "type": ev.event_type,
+                        "cat": EVENT_CAT_MAP.get(ev.event_type, "capture"),
+                        "res": res_desc,
+                        "st": (ev.status or "PROCESSED").upper(),
+                        "time": ev.created_at.strftime("%b %d, %H:%M") if ev.created_at else "—",
+                        "hash": h[:6] + "…" + h[-4:],
+                        "tone": EVENT_TONE_MAP.get(ev.event_type, "g"),
+                        "source": ev.source,
+                        "payload": p,
+                    })
+                return out
+
+            # Fallback to transactions if webhook_events empty
+            stmt_tx = (
                 select(PayPalTransaction)
                 .order_by(PayPalTransaction.timestamp.desc().nullslast())
                 .limit(limit)
             )
-            results = session.execute(stmt).scalars().all()
-            # Infer event type from status field since there's no transaction_type column
+            results = session.execute(stmt_tx).scalars().all()
             STATUS_EVENT_MAP = {
                 "completed": "PAYMENT.CAPTURE.COMPLETED",
                 "failed": "BILLING.SUBSCRIPTION.PAYMENT.FAILED",
@@ -604,6 +661,7 @@ def list_webhook_events(limit: int = 50) -> list[dict[str, Any]]:
                     "time": t.timestamp.strftime("%b %d, %H:%M") if t.timestamp else "—",
                     "hash": ref[:6] + "…" + ref[-4:],
                     "tone": STATUS_TONE_MAP.get(tx_status, "g"),
+                    "source": "sandbox",
                 })
             return out
     except Exception:

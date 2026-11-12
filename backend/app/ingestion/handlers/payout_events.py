@@ -100,6 +100,34 @@ def handle_succeeded(event: dict[str, Any]) -> None:
 
         log.info("payout_item_succeeded: milestone %s -> RELEASED", milestone_id)
 
+        # Update DB milestone and append ledger entry if DB is available
+        try:
+            from backend.app.db.session import get_sync_session
+            from backend.app.db.models.projects import Milestone as DBMilestone, LedgerEntry
+            from sqlalchemy import select
+            import uuid as _uuid
+
+            with get_sync_session() as session:
+                db_m = session.execute(
+                    select(DBMilestone).where(DBMilestone.id == milestone_id)
+                ).scalar_one_or_none()
+                if db_m:
+                    db_m.state = "RELEASED"
+                    entry = LedgerEntry(
+                        id=str(_uuid.uuid4()),
+                        type="RELEASE",
+                        subject_id=milestone_id,
+                        amount=float(milestone_found.get("amount", db_m.amount or 0.0)),
+                        currency=milestone_found.get("currency", db_m.currency or "USD"),
+                        paypal_id=payout_item_id,
+                        note=f"Funds released via payout {payout_item_id}",
+                    )
+                    session.add(entry)
+                    session.commit()
+                    log.info("DB milestone %s synced to RELEASED with ledger entry", milestone_id)
+        except Exception as db_exc:
+            log.warning("payout_item_succeeded DB update skipped: %s", db_exc)
+
     except Exception as exc:
         log.error("payout_item_succeeded handler error: %s", exc, exc_info=True)
         raise

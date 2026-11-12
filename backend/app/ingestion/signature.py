@@ -31,9 +31,8 @@ async def verify_paypal_signature(
     In fake/dev mode (PAYPAL_EXEC_MODE=fake or PAYPAL_WEBHOOK_ID unset),
     signature verification is skipped to support local integration gates.
     """
-    import os
-    if os.environ.get("PAYPAL_EXEC_MODE", "fake") == "fake":
-        log.debug("PAYPAL_EXEC_MODE=fake — skipping signature verification")
+    if settings.is_fake_paypal:
+        log.debug("is_fake_paypal — skipping signature verification")
         return True
 
     if not settings.paypal_webhook_id:
@@ -42,6 +41,12 @@ async def verify_paypal_signature(
 
     token = await auth.get_token()
     url = f"{settings.paypal_base_url}/v1/notifications/verify-webhook-signature"
+    import json as _json
+    try:
+        parsed_event = _json.loads(raw_body)
+    except Exception:
+        parsed_event = raw_body.decode("utf-8", errors="replace")
+
     payload = {
         "auth_algo": auth_algo,
         "cert_url": cert_url,
@@ -49,7 +54,7 @@ async def verify_paypal_signature(
         "transmission_sig": transmission_sig,
         "transmission_time": transmission_time,
         "webhook_id": settings.paypal_webhook_id,
-        "webhook_event": raw_body.decode("utf-8", errors="replace"),
+        "webhook_event": parsed_event,
     }
     headers = {
         "Authorization": f"Bearer {token}",

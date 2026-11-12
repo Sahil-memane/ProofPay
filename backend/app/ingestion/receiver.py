@@ -55,8 +55,9 @@ async def receive_webhook(request: Request) -> Response:
 
     event_id = body.get("id") or str(uuid.uuid4())
     event_type = body.get("event_type", "unknown")
+    source = "fake" if settings.is_fake_paypal else "sandbox"
 
-    await _enqueue_event(event_id=event_id, event_type=event_type, source="paypal", payload=body)
+    await _enqueue_event(event_id=event_id, event_type=event_type, source=source, payload=body)
 
     log.info("Webhook received and queued: %s %s", event_type, event_id)
     return Response(status_code=200)
