@@ -3,6 +3,7 @@ import { useSearchParams, Link } from 'react-router-dom';
 import { useApi } from '../api/useApi';
 import { endpoints } from '../api/endpoints';
 import { showToast } from '../components/ui/Toast';
+import { useAuth } from '../hooks/useAuth';
 import styles from './ProjectDetails.module.css';
 
 const fmt = (n, cur = 'USD') =>
@@ -11,6 +12,10 @@ const fmt = (n, cur = 'USD') =>
 export default function ProjectDetails() {
   const [params] = useSearchParams();
   const id = params.get('id') || 'ESCROW-000';
+  const { user, role } = useAuth();
+  const isAdmin = role === 'admin';
+  const isClientRole = role === 'client' || isAdmin;
+  const isFreelancerRole = role === 'freelancer' || isAdmin;
   const [approving, setApproving] = useState(false);
   const [funding, setFunding] = useState(false);
 
@@ -267,7 +272,7 @@ export default function ProjectDetails() {
                   : `Awaiting signature from ${p.clientName}`}
               </div>
             </div>
-            {!p.clientApproved && p.status === 'DRAFT' && (
+            {!p.clientApproved && p.status === 'DRAFT' && isClientRole && (
               <button
                 className={`${styles.btn} ${styles.btnP}`}
                 onClick={() => handleApprove('client')}
@@ -300,7 +305,7 @@ export default function ProjectDetails() {
                   : `Awaiting signature from ${p.freelancerName}`}
               </div>
             </div>
-            {!p.freelancerApproved && p.status === 'DRAFT' && (
+            {!p.freelancerApproved && p.status === 'DRAFT' && isFreelancerRole && (
               <button
                 className={`${styles.btn} ${styles.btnP}`}
                 onClick={() => handleApprove('freelancer')}
@@ -332,7 +337,7 @@ export default function ProjectDetails() {
             <div className={`${styles.num}`} style={{ fontSize: 18, fontWeight: 700, color: '#003087' }}>
               {fmt(p.totalAmount, p.currency)}
             </div>
-            {p.status === 'PLAN_APPROVED' && (
+            {p.status === 'PLAN_APPROVED' && isClientRole && (
               <button
                 className={`${styles.btn} ${styles.btnP}`}
                 onClick={handleFund}

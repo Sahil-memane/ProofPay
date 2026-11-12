@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useApi } from '../api/useApi';
 import { endpoints } from '../api/endpoints';
 import { showToast } from '../components/ui/Toast';
+import { useAuth } from '../hooks/useAuth';
 import styles from './Milestones.module.css';
 
 const DEMO_MILESTONES = [
@@ -169,6 +170,10 @@ const fmt = n => '$' + Number(n).toLocaleString('en-US', { minimumFractionDigits
 
 export default function Milestones() {
   const navigate = useNavigate();
+  const { role } = useAuth();
+  const isFreelancer = role === 'freelancer';
+  const isClient = role === 'client' || role === 'admin';
+
   const { data: apiMilestones, loading: msLoading } = useApi(() => endpoints.milestonesList.list());
   const { data: apiProjects } = useApi(() => endpoints.projects.list());
   const [milestones, setMilestones] = useState([]);
@@ -208,8 +213,9 @@ export default function Milestones() {
         scoreCls,
         actions: [
           { label: 'View Project', href: `/project-details?id=${m.project_id}` },
-          ...(state === 'FUNDED' ? [{ label: 'Submit Work', href: '/submissions' }] : []),
-          ...(state === 'IN_REVIEW' ? [{ label: 'Review Submission', href: '/submissions' }] : []),
+          ...(state === 'FUNDED' && isFreelancer ? [{ label: 'Submit Work', href: '/submissions' }] : []),
+          ...(state === 'IN_REVIEW' && isClient ? [{ label: 'Review Submission', href: '/submissions' }] : []),
+          ...(state === 'IN_REVIEW' && isFreelancer ? [{ label: 'View Submission', href: '/submissions' }] : []),
           ...(state === 'DISPUTED' ? [{ label: 'View Dispute', href: '/disputes' }] : []),
         ],
       };
@@ -242,9 +248,16 @@ export default function Milestones() {
         </div>
         <div className={styles.headerActions}>
           <button className={styles.btn} onClick={handleExportCsv}>Export CSV</button>
-          <button className={`${styles.btn} ${styles.btnP}`} onClick={() => navigate('/submissions')}>
-            Submit Work
-          </button>
+          {isFreelancer && (
+            <button className={`${styles.btn} ${styles.btnP}`} onClick={() => navigate('/submissions')}>
+              Submit Work
+            </button>
+          )}
+          {isClient && (
+            <button className={`${styles.btn} ${styles.btnP}`} onClick={() => navigate('/submissions')}>
+              Review Submissions
+            </button>
+          )}
         </div>
       </div>
 
@@ -299,7 +312,15 @@ export default function Milestones() {
               </tr>
             </thead>
             <tbody>
-              {milestones.map(m => (
+              {msLoading ? (
+                <tr><td colSpan={8} style={{ padding: '48px 24px', textAlign: 'center', color: '#64748B' }}>Loading milestones…</td></tr>
+              ) : milestones.length === 0 ? (
+                <tr><td colSpan={8} style={{ padding: '48px 24px', textAlign: 'center', color: '#64748B' }}>
+                  {isFreelancer
+                    ? 'No milestones assigned to you yet.'
+                    : 'No milestones found for your projects.'}
+                </td></tr>
+              ) : milestones.map(m => (
                 <tr key={m.id}>
                   <td className={styles.td}>
                     <a className={styles.monoLink} href={`/submissions?milestone_id=${m.id}`}>
@@ -343,8 +364,7 @@ export default function Milestones() {
                   </td>
                 </tr>
               ))}
-            </tbody>
-          </table>
+            </tbody>          </table>
         </div>
 
         <div className={styles.tableFoot}>

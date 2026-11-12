@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useApi } from '../api/useApi';
 import { endpoints } from '../api/endpoints';
 import { showToast } from '../components/ui/Toast';
+import { useAuth } from '../hooks/useAuth';
 import styles from './Projects.module.css';
 
 const DEFAULT_PROJECTS = [
@@ -135,9 +136,13 @@ const fmt = n => '$' + Number(n).toLocaleString('en-US', { minimumFractionDigits
 
 export default function Projects() {
   const navigate = useNavigate();
+  const { user, role } = useAuth();
+  const isClient = role === 'client' || role === 'admin';
+  const isFreelancer = role === 'freelancer';
+
   const { data: apiProjects, refetch } = useApi(() => endpoints.projects.list());
 
-  const [projects, setProjects] = useState(DEFAULT_PROJECTS);
+  const [projects, setProjects] = useState([]);
   const [filter, setFilter] = useState('All');
   const [search, setSearch] = useState('');
   const [showCreate, setShowCreate] = useState(false);
@@ -150,9 +155,10 @@ export default function Projects() {
     total_amount_usd: ''
   });
 
-  // Populate from PostgreSQL API
+  // Populate from PostgreSQL API — only use API data, never static fallback
   useEffect(() => {
-    if (apiProjects && Array.isArray(apiProjects) && apiProjects.length > 0) {
+    if (!apiProjects) return;
+    if (Array.isArray(apiProjects) && apiProjects.length > 0) {
       const mappedList = apiProjects.map(ap => ({
         id: ap.id,
         title: ap.title || ap.job_description?.split(':')[1]?.trim() || ap.job_description || `Project ${ap.id}`,
@@ -168,6 +174,9 @@ export default function Projects() {
         stateVariant: ap.state === 'FUNDED' || ap.state === 'COMPLETED' ? 'g' : ap.state === 'DISPUTED' ? 'r' : 'a'
       }));
       setProjects(mappedList);
+    } else {
+      // API returned empty array — user has no projects
+      setProjects([]);
     }
   }, [apiProjects]);
 
@@ -255,9 +264,11 @@ export default function Projects() {
         </div>
         <div className={styles.headerActions}>
           <button className={styles.btn} onClick={handleExportCsv}>Export CSV</button>
-          <button className={`${styles.btn} ${styles.btnP}`} onClick={() => setShowCreate(true)}>
-            + Create Project
-          </button>
+          {isClient && (
+            <button className={`${styles.btn} ${styles.btnP}`} onClick={() => setShowCreate(true)}>
+              + Create Project
+            </button>
+          )}
         </div>
       </div>
 
@@ -383,7 +394,17 @@ export default function Projects() {
               </tr>
             </thead>
             <tbody>
-              {filteredProjects.map(p => (
+              {filteredProjects.length === 0 ? (
+                <tr>
+                  <td colSpan={10} style={{ padding: '48px 24px', textAlign: 'center', color: '#64748B' }}>
+                    {apiProjects === null
+                      ? 'Loading projects…'
+                      : isFreelancer
+                      ? 'No projects assigned to you yet. A client will add you when creating a project.'
+                      : 'No projects found. Create your first project to get started.'}
+                  </td>
+                </tr>
+              ) : filteredProjects.map(p => (
                 <tr key={p.id}>
                   <td className={styles.td}>
                     <a className={styles.monoLink} href={`/project-details?id=${p.id}`}>
@@ -428,8 +449,7 @@ export default function Projects() {
                   </td>
                 </tr>
               ))}
-            </tbody>
-          </table>
+            </tbody>          </table>
         </div>
 
         <div className={styles.tableFoot}>

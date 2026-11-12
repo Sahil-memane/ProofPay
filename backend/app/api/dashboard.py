@@ -97,7 +97,7 @@ def get_dashboard_headline(
             recovery_rate = (
                 round((recovered_amount / at_risk_amount * 100), 1)
                 if at_risk_amount > 0
-                else 68.2
+                else 0.0
             )
             remaining_at_risk = max(0.0, at_risk_amount - recovered_amount)
 

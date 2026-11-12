@@ -44,7 +44,12 @@ const fmt = (n) =>
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, role } = useAuth();
+  const isFreelancer = role === 'freelancer';
+  const isMerchant = role === 'merchant';
+  const isClient = role === 'client';
+  const isAdmin = role === 'admin';
+
   const [dateRange, setDateRange] = useState('30');
   const { data: headline } = useApi(() => endpoints.dashboard.headline());
   const { data: audit } = useApi(() => endpoints.audit.list({ limit: 6 }));
@@ -74,7 +79,111 @@ export default function Dashboard() {
 
   const hour = new Date().getHours();
   const greeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
-  const displayName = user?.name || user?.email?.split('@')[0] || 'Sahil';
+  const displayName = user?.name || user?.email?.split('@')[0] || 'User';
+
+  // Role-specific Hero Config
+  let heroConfig = {};
+  if (isFreelancer) {
+    const compRate = totalEscrowed > 0 ? Math.round((releasedAmount / totalEscrowed) * 100) : 100;
+    heroConfig = {
+      label: 'Freelance Escrow Earnings',
+      amount: fmt(releasedAmount),
+      sub: `Secured across active contracts: ${fmt(pendingEscrow)} · Total project volume: ${fmt(totalEscrowed)}`,
+      progress: compRate,
+      link: '/milestones',
+      linkText: 'View Assigned Milestones →',
+      stats: [
+        { label: 'Released to You', val: fmt(releasedAmount) },
+        { label: 'Secured in Escrow', val: fmt(pendingEscrow) },
+        { label: 'Total Value', val: fmt(totalEscrowed) },
+        { label: 'Active Projects', val: String(activeProjects) },
+        { label: 'Fulfillment Rate', val: `${compRate}%` },
+      ],
+    };
+  } else if (isClient) {
+    const relRate = totalEscrowed > 0 ? Math.round((releasedAmount / totalEscrowed) * 100) : 0;
+    heroConfig = {
+      label: 'Protected Escrow Vault',
+      amount: fmt(totalEscrowed),
+      sub: `Released to freelancers: ${fmt(releasedAmount)} · Secured in PayPal vault: ${fmt(pendingEscrow)}`,
+      progress: relRate,
+      link: '/projects',
+      linkText: 'Manage Escrow Projects →',
+      stats: [
+        { label: 'Total Escrowed', val: fmt(totalEscrowed) },
+        { label: 'Released Payouts', val: fmt(releasedAmount) },
+        { label: 'Secured in Vault', val: fmt(pendingEscrow) },
+        { label: 'Active Projects', val: String(activeProjects) },
+        { label: 'Disputes Status', val: disputesCount > 0 ? `${disputesCount} Disputed` : 'All Clear' },
+      ],
+    };
+  } else {
+    // Merchant & Admin
+    heroConfig = {
+      label: 'Revenue Recovered',
+      amount: `$${recoveredAmt.toLocaleString()}`,
+      sub: `Recovered $${recoveredAmt.toLocaleString()} of $${atRisk.toLocaleString()} at risk`,
+      progress: recoveryRate,
+      link: '/recovery-overview',
+      linkText: 'View Recovery Details →',
+      stats: [
+        { label: 'Total at risk', val: `$${atRisk.toLocaleString()}` },
+        { label: 'Recovered', val: `$${recoveredAmt.toLocaleString()}` },
+        { label: 'Remaining at risk', val: `$${remaining.toLocaleString()}` },
+        { label: 'Recovery rate', val: `${recoveryRate}%` },
+        { label: 'Recovery cases', val: String(caseCt) },
+      ],
+    };
+  }
+
+  // Role-specific KPI Cards
+  const kpiCards = isFreelancer
+    ? [
+        { label: 'Released Earnings', val: fmt(releasedAmount), sub: 'Received via PayPal Payouts', link: '/ledger', linkTxt: 'Escrow Ledger →', ico: 'check' },
+        { label: 'Pending in Escrow', val: fmt(pendingEscrow), sub: 'Secured in PayPal vault', link: '/milestones', linkTxt: 'Milestones →', ico: 'clock' },
+        { label: 'Active Contracts', val: String(activeProjects), sub: `${activeProjects} projects active`, link: '/projects', linkTxt: 'Projects →', ico: 'shield' },
+        { label: 'Disputes Status', val: String(disputesCount), sub: disputesCount > 0 ? `${disputesCount} under review` : 'All clear', link: '/disputes', linkTxt: 'Disputes →', ico: 'shieldCheck', amber: disputesCount > 0 },
+      ]
+    : isClient
+    ? [
+        { label: 'Total Escrowed', val: fmt(totalEscrowed), sub: `${activeProjects} projects funded`, link: '/ledger', linkTxt: 'Escrow Ledger →', ico: 'shield' },
+        { label: 'Released to Freelancers', val: fmt(releasedAmount), sub: 'Released via PayPal Payouts', link: '/milestones', linkTxt: 'Milestones →', ico: 'check' },
+        { label: 'Secured in Vault', val: fmt(pendingEscrow), sub: 'Protected in PayPal vault', link: '/projects', linkTxt: 'Projects →', ico: 'clock' },
+        { label: 'Disputes Status', val: String(disputesCount), sub: disputesCount > 0 ? `${disputesCount} under review` : 'All clear', link: '/disputes', linkTxt: 'Disputes →', ico: 'shieldCheck', amber: disputesCount > 0 },
+      ]
+    : isMerchant
+    ? [
+        { label: 'Revenue Recovered', val: fmt(recoveredAmt), sub: `${recoveryRate}% recovery rate`, link: '/recovery-overview', linkTxt: 'Recovery Overview →', ico: 'recovery' },
+        { label: 'Outstanding Payments', val: fmt(remaining), sub: `${openCt} active cases`, link: '/cases', linkTxt: 'Recovery Cases →', ico: 'invoice', amber: remaining > 0 },
+        { label: 'Total at Risk', val: fmt(atRisk), sub: `${caseCt} failure events`, link: '/cases', linkTxt: 'All Cases →', ico: 'clock' },
+        { label: 'Disputes Status', val: String(disputesCount), sub: disputesCount > 0 ? `${disputesCount} active disputes` : 'All clear', link: '/disputes', linkTxt: 'Disputes →', ico: 'shieldCheck', amber: disputesCount > 0 },
+      ]
+    : [
+        // Admin sees all 6
+        { label: 'Total Escrowed', val: fmt(totalEscrowed), sub: `${activeProjects} projects active`, link: '/ledger', linkTxt: 'Escrow Ledger →', ico: 'shield' },
+        { label: 'Released to Freelancers', val: fmt(releasedAmount), sub: 'Released via PayPal Payouts', link: '/milestones', linkTxt: 'Milestones →', ico: 'check' },
+        { label: 'Pending Escrow', val: fmt(pendingEscrow), sub: 'Secured in PayPal vault', link: '/projects', linkTxt: 'Projects →', ico: 'clock' },
+        { label: 'Revenue Recovered', val: fmt(recoveredAmt), sub: `${recoveryRate}% recovery rate`, link: '/recovery-overview', linkTxt: 'Recovery Overview →', ico: 'recovery' },
+        { label: 'Outstanding Payments', val: fmt(remaining), sub: `${Math.max(0, caseCt - recoveredCt)} active cases`, link: '/cases', linkTxt: 'Recovery Cases →', ico: 'invoice', amber: remaining > 0 },
+        { label: 'Disputes Status', val: String(disputesCount), sub: disputesCount > 0 ? `${disputesCount} under arbitration` : 'All clear', link: '/disputes', linkTxt: 'Disputes →', ico: 'shieldCheck', amber: disputesCount > 0 },
+      ];
+
+  // Role-specific Attention Items
+  const attentionItems = isFreelancer
+    ? [
+        { count: Array.isArray(approvals) ? approvals.length : 0, cls: 'a', text: 'Submissions awaiting human sign-off', href: '/approvals' },
+        { count: disputesCount, cls: 'r', text: 'Active disputes', href: '/disputes' },
+      ].filter(i => i.count > 0)
+    : isClient
+    ? [
+        { count: Array.isArray(approvals) ? approvals.length : 0, cls: 'a', text: 'Submissions awaiting approval', href: '/submissions' },
+        { count: disputesCount, cls: 'r', text: 'Active disputes', href: '/disputes' },
+      ].filter(i => i.count > 0)
+    : [
+        { count: Math.max(0, caseCt - recoveredCt - paidElsewhereCt), cls: 'a', text: 'Open recovery cases', href: '/cases' },
+        { count: disputesCount, cls: 'r', text: 'Active disputes', href: '/disputes' },
+        { count: Array.isArray(approvals) ? approvals.length : 0, cls: 'a', text: 'Pending approvals in queue', href: '/approvals' },
+      ].filter(i => i.count > 0);
 
   const defaultActivity = [
     { icon: 'shield', text: 'Project', bold: '#PRJ-102', suffix: ' funded', badge: 'g', label: 'Funded', time: '2 min ago' },
@@ -111,9 +220,31 @@ export default function Dashboard() {
             <option value="7">Last 7 days</option>
             <option value="90">Last 90 days</option>
           </select>
-          <button className={styles.btn} onClick={() => navigate('/analytics')}>View Reports</button>
-          <button className={styles.btn} onClick={() => navigate('/invoices')}>Create Invoice</button>
-          <button className={`${styles.btn} ${styles.btnP}`} onClick={() => navigate('/projects/new')}>Create Project</button>
+          {isFreelancer && (
+            <>
+              <button className={styles.btn} onClick={() => navigate('/milestones')}>View Milestones</button>
+              <button className={`${styles.btn} ${styles.btnP}`} onClick={() => navigate('/submissions')}>Submit Work</button>
+            </>
+          )}
+          {isClient && (
+            <>
+              <button className={styles.btn} onClick={() => navigate('/milestones')}>View Milestones</button>
+              <button className={`${styles.btn} ${styles.btnP}`} onClick={() => navigate('/projects/new')}>Create Project</button>
+            </>
+          )}
+          {isMerchant && (
+            <>
+              <button className={styles.btn} onClick={() => navigate('/analytics')}>View Reports</button>
+              <button className={`${styles.btn} ${styles.btnP}`} onClick={() => navigate('/invoices')}>Create Invoice</button>
+            </>
+          )}
+          {isAdmin && (
+            <>
+              <button className={styles.btn} onClick={() => navigate('/analytics')}>View Reports</button>
+              <button className={styles.btn} onClick={() => navigate('/invoices')}>Create Invoice</button>
+              <button className={`${styles.btn} ${styles.btnP}`} onClick={() => navigate('/projects/new')}>Create Project</button>
+            </>
+          )}
         </div>
       </div>
 
@@ -128,33 +259,27 @@ export default function Dashboard() {
       {/* Dark hero banner */}
       <section className={styles.hero}>
         <div className={styles.heroLeft}>
-          <div className={styles.heroLabel}>Revenue Recovered</div>
-          <div className={styles.heroAmount}>${recoveredAmt.toLocaleString()}</div>
-          <div className={styles.heroSub}>Recovered ${recoveredAmt.toLocaleString()} of ${atRisk.toLocaleString()} at risk</div>
+          <div className={styles.heroLabel}>{heroConfig.label}</div>
+          <div className={styles.heroAmount}>{heroConfig.amount}</div>
+          <div className={styles.heroSub}>{heroConfig.sub}</div>
           <div className={styles.progressBar}>
-            <div className={styles.progressFill} style={{ width: `${recoveryRate}%` }} />
+            <div className={styles.progressFill} style={{ width: `${Math.min(100, Math.max(0, heroConfig.progress))}%` }} />
           </div>
-          <a href="/recovery-overview" className={styles.heroLink}>View Recovery Details →</a>
+          <a href={heroConfig.link} className={styles.heroLink}>{heroConfig.linkText}</a>
         </div>
         <div className={styles.heroStats}>
-          <div><div className={styles.heroStatLabel}>Total at risk</div><div className={styles.heroStatVal}>${atRisk.toLocaleString()}</div></div>
-          <div><div className={styles.heroStatLabel}>Recovered</div><div className={styles.heroStatVal}>${recoveredAmt.toLocaleString()}</div></div>
-          <div><div className={styles.heroStatLabel}>Remaining at risk</div><div className={styles.heroStatVal}>${remaining.toLocaleString()}</div></div>
-          <div><div className={styles.heroStatLabel}>Recovery rate</div><div className={styles.heroStatVal}>{recoveryRate}%</div></div>
-          <div><div className={styles.heroStatLabel}>Recovery cases</div><div className={styles.heroStatVal}>{caseCt}</div></div>
+          {heroConfig.stats.map(s => (
+            <div key={s.label}>
+              <div className={styles.heroStatLabel}>{s.label}</div>
+              <div className={styles.heroStatVal}>{s.val}</div>
+            </div>
+          ))}
         </div>
       </section>
 
       {/* KPI cards */}
       <section className={styles.kpiGrid} aria-label="Key metrics">
-        {[
-          { label: 'Total Escrowed', val: fmt(totalEscrowed), sub: `${activeProjects} projects active`, link: '/ledger', linkTxt: 'Escrow Ledger →', ico: 'shield' },
-          { label: 'Released to Freelancers', val: fmt(releasedAmount), sub: 'Released via PayPal Payouts', link: '/milestones', linkTxt: 'Milestones →', ico: 'check' },
-          { label: 'Pending Escrow', val: fmt(pendingEscrow), sub: 'Secured in PayPal vault', link: '/projects', linkTxt: 'Projects →', ico: 'clock' },
-          { label: 'Revenue Recovered', val: fmt(recoveredAmt), sub: `${recoveryRate}% recovery rate`, link: '/recovery-overview', linkTxt: 'Recovery Overview →', ico: 'recovery' },
-          { label: 'Outstanding Payments', val: fmt(remaining), sub: `${Math.max(0, caseCt - recoveredCt)} active cases`, link: '/cases', linkTxt: 'Recovery Cases →', ico: 'invoice', amber: remaining > 0 },
-          { label: 'Disputes Status', val: String(disputesCount), sub: disputesCount > 0 ? `${disputesCount} under arbitration` : 'All clear', link: '/disputes', linkTxt: 'Disputes →', ico: 'shieldCheck', amber: disputesCount > 0 },
-        ].map(c => (
+        {kpiCards.map(c => (
           <div key={c.label} className={styles.kpiCard}>
             <div className={styles.kpiTop}>
               <span className={styles.kpiLabel}>{c.label}</span>
@@ -219,102 +344,142 @@ export default function Dashboard() {
           <div className={styles.sectionHead}>
             <h2 className={styles.h2}>Attention Required</h2>
             {(() => {
-              const pendingApprovals = Array.isArray(approvals) ? approvals.length : 0;
-              const openCases = Math.max(0, caseCt - recoveredCt - paidElsewhereCt);
-              const total = pendingApprovals + disputesCount + openCases;
+              const total = attentionItems.reduce((acc, cur) => acc + cur.count, 0);
               return <Badge cls={total > 0 ? 'r' : 'g'}>{total} open</Badge>;
             })()}
           </div>
           <div>
-            {(() => {
-              const pendingApprovals = Array.isArray(approvals) ? approvals.length : 0;
-              const openCases = Math.max(0, caseCt - recoveredCt - paidElsewhereCt);
-              return [
-                { count: pendingApprovals, cls: 'a', text: 'Pending human approvals', href: '/approvals' },
-                { count: disputesCount, cls: 'r', text: 'Active disputes', href: '/disputes' },
-                { count: openCases, cls: 'a', text: 'Open recovery cases', href: '/cases' },
-              ]
-                .filter(item => item.count > 0)
-                .map(item => (
-                  <div key={item.text} className={styles.row}>
-                    <Badge cls={item.cls}>{item.count}</Badge>
-                    <span style={{ flex: 1 }}>{item.text}</span>
-                    <a href={item.href} className={styles.link}>View Details</a>
-                  </div>
-                ));
-            })()}
+            {attentionItems.length === 0 ? (
+              <div style={{ padding: '24px 0', textAlign: 'center', color: '#64748B', fontSize: 14 }}>
+                All clear — no pending actions requiring your attention.
+              </div>
+            ) : (
+              attentionItems.map(item => (
+                <div key={item.text} className={styles.row}>
+                  <Badge cls={item.cls}>{item.count}</Badge>
+                  <span style={{ flex: 1 }}>{item.text}</span>
+                  <a href={item.href} className={styles.link}>View Details</a>
+                </div>
+              ))
+            )}
           </div>
         </div>
       </section>
 
-      {/* Escrow Overview */}
-      <section>
-        <h2 className={styles.h2} style={{ marginBottom: 12 }}>Escrow Overview</h2>
-        <div className={styles.escrowGrid}>
-          {[
-            { label: 'Active Projects', val: String(activeProjects) },
-            { label: 'Pending Escrow', val: `$${Number(pendingEscrow || 0).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`, badge: pendingEscrow > 0 ? 'a' : 'g', badgeTxt: pendingEscrow > 0 ? 'Pending' : 'Funded' },
-            { label: 'Under Dispute / Review', val: String(disputesCount), badge: disputesCount > 0 ? 'r' : 'g', badgeTxt: disputesCount > 0 ? 'Disputed' : 'Good' },
-            { label: 'Recovered Cases', val: String(recoveredCt), badge: 'g', badgeTxt: 'Resolved' },
-            { label: 'Released to Freelancers', val: `$${Number(releasedAmount || 0).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`, badge: 'g', badgeTxt: 'Released' },
-          ].map(e => (
-            <div key={e.label} className={`${styles.card} ${styles.escrowCard}`}>
-              <div className={styles.kpiLabel}>{e.label}</div>
-              <div className={styles.bigNum}>{e.val}</div>
-              {e.badge && <Badge cls={e.badge}>{e.badgeTxt}</Badge>}
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Recovery Performance + Recent Activity */}
-      <section className={styles.twoCol}>
-        {/* Recovery donut */}
-        <div className={styles.card} style={{ minWidth: 0 }}>
-          <h2 className={styles.h2}>Recovery Performance</h2>
-          <div className={styles.donutRow}>
-            <svg viewBox="0 0 100 100" width="150" height="150" role="img" aria-label="Donut chart of recovery cases" style={{ flex: 'none' }}>
-              <g fill="none" strokeWidth="14" transform="rotate(-90 50 50)">
-                {caseCt > 0 ? (
-                  <>
-                    <circle cx="50" cy="50" r="40" stroke="#2E9D65" strokeDasharray={`${(paidCt / caseCt) * 251.3} 251.3`} />
-                    <circle cx="50" cy="50" r="40" stroke="#009CDE" strokeDasharray={`${(paidElsewhereCt / caseCt) * 251.3} 251.3`} strokeDashoffset={`${-(paidCt / caseCt) * 251.3}`} />
-                    <circle cx="50" cy="50" r="40" stroke="#0070E0" strokeDasharray={`${(openCt / caseCt) * 251.3} 251.3`} strokeDashoffset={`${-((paidCt + paidElsewhereCt) / caseCt) * 251.3}`} />
-                    <circle cx="50" cy="50" r="40" stroke="#D9363E" strokeDasharray={`${(haltedCt / caseCt) * 251.3} 251.3`} strokeDashoffset={`${-((paidCt + paidElsewhereCt + openCt) / caseCt) * 251.3}`} />
-                  </>
-                ) : (
-                  <circle cx="50" cy="50" r="40" stroke="#E5E9F0" strokeDasharray="251.3 0" />
-                )}
-              </g>
-              <text x="50" y="48" textAnchor="middle" fontSize="16" fontWeight="600" fill="#172B4D" fontFamily="Inter,sans-serif">{caseCt}</text>
-              <text x="50" y="60" textAnchor="middle" fontSize="7" fill="#64748B" fontFamily="Inter,sans-serif">cases</text>
-            </svg>
-            <div className={styles.donutLegend}>
-              {[
-                ['#2E9D65', `Recovered · ${paidCt}`],
-                ['#0070E0', `Active · ${openCt}`],
-                ['#009CDE', `Paid elsewhere · ${paidElsewhereCt}`],
-                ['#D9363E', `Halted · ${haltedCt}`],
-              ].map(([col, lbl]) => (
-                <div key={lbl}><span className={styles.dot} style={{ background: col }} />{lbl}</div>
-              ))}
-            </div>
-          </div>
-          <div className={styles.recoveryStats}>
+      {/* Escrow Overview - for Escrow roles (Client, Freelancer, Admin) */}
+      {(isClient || isFreelancer || isAdmin) && (
+        <section>
+          <h2 className={styles.h2} style={{ marginBottom: 12 }}>Escrow Overview</h2>
+          <div className={styles.escrowGrid}>
             {[
-              ['Recovery success rate', `${realRecoveryRate}%`],
-              ['Recovered cases', String(paidCt)],
-              ['Active cases', String(openCt)],
-              ['Paid elsewhere', `${paidElsewhereCt} cases`],
-              ['Halted by policy', `${haltedCt} cases`],
-            ].map(([lbl, val]) => (
-              <div key={lbl}>
-                <div className={styles.kpiLabel}>{lbl}</div>
-                <div className={styles.statVal}>{val}</div>
+              { label: 'Active Projects', val: String(activeProjects) },
+              { label: 'Pending in Escrow', val: fmt(pendingEscrow), badge: pendingEscrow > 0 ? 'a' : 'g', badgeTxt: pendingEscrow > 0 ? 'In Vault' : 'Funded' },
+              { label: 'Under Dispute / Review', val: String(disputesCount), badge: disputesCount > 0 ? 'r' : 'g', badgeTxt: disputesCount > 0 ? 'Disputed' : 'Good' },
+              { label: 'Total Volume', val: fmt(totalEscrowed), badge: 'b', badgeTxt: 'Escrow' },
+              { label: isFreelancer ? 'Your Released Earnings' : 'Released to Freelancers', val: fmt(releasedAmount), badge: 'g', badgeTxt: 'Released' },
+            ].map(e => (
+              <div key={e.label} className={`${styles.card} ${styles.escrowCard}`}>
+                <div className={styles.kpiLabel}>{e.label}</div>
+                <div className={styles.bigNum}>{e.val}</div>
+                {e.badge && <Badge cls={e.badge}>{e.badgeTxt}</Badge>}
               </div>
             ))}
           </div>
-        </div>
+        </section>
+      )}
+
+      {/* Role-tailored Performance + Recent Activity */}
+      <section className={styles.twoCol}>
+        {(isMerchant || isAdmin) ? (
+          /* Recovery Performance donut for Merchants / Admins */
+          <div className={styles.card} style={{ minWidth: 0 }}>
+            <h2 className={styles.h2}>Recovery Performance</h2>
+            <div className={styles.donutRow}>
+              <svg viewBox="0 0 100 100" width="150" height="150" role="img" aria-label="Donut chart of recovery cases" style={{ flex: 'none' }}>
+                <g fill="none" strokeWidth="14" transform="rotate(-90 50 50)">
+                  {caseCt > 0 ? (
+                    <>
+                      <circle cx="50" cy="50" r="40" stroke="#2E9D65" strokeDasharray={`${(paidCt / caseCt) * 251.3} 251.3`} />
+                      <circle cx="50" cy="50" r="40" stroke="#009CDE" strokeDasharray={`${(paidElsewhereCt / caseCt) * 251.3} 251.3`} strokeDashoffset={`${-(paidCt / caseCt) * 251.3}`} />
+                      <circle cx="50" cy="50" r="40" stroke="#0070E0" strokeDasharray={`${(openCt / caseCt) * 251.3} 251.3`} strokeDashoffset={`${-((paidCt + paidElsewhereCt) / caseCt) * 251.3}`} />
+                      <circle cx="50" cy="50" r="40" stroke="#D9363E" strokeDasharray={`${(haltedCt / caseCt) * 251.3} 251.3`} strokeDashoffset={`${-((paidCt + paidElsewhereCt + openCt) / caseCt) * 251.3}`} />
+                    </>
+                  ) : (
+                    <circle cx="50" cy="50" r="40" stroke="#E5E9F0" strokeDasharray="251.3 0" />
+                  )}
+                </g>
+                <text x="50" y="48" textAnchor="middle" fontSize="16" fontWeight="600" fill="#172B4D" fontFamily="Inter,sans-serif">{caseCt}</text>
+                <text x="50" y="60" textAnchor="middle" fontSize="7" fill="#64748B" fontFamily="Inter,sans-serif">cases</text>
+              </svg>
+              <div className={styles.donutLegend}>
+                {[
+                  ['#2E9D65', `Recovered · ${paidCt}`],
+                  ['#0070E0', `Active · ${openCt}`],
+                  ['#009CDE', `Paid elsewhere · ${paidElsewhereCt}`],
+                  ['#D9363E', `Halted · ${haltedCt}`],
+                ].map(([col, lbl]) => (
+                  <div key={lbl}><span className={styles.dot} style={{ background: col }} />{lbl}</div>
+                ))}
+              </div>
+            </div>
+            <div className={styles.recoveryStats}>
+              {[
+                ['Recovery success rate', `${realRecoveryRate}%`],
+                ['Recovered cases', String(paidCt)],
+                ['Active cases', String(openCt)],
+                ['Paid elsewhere', `${paidElsewhereCt} cases`],
+                ['Halted by policy', `${haltedCt} cases`],
+              ].map(([lbl, val]) => (
+                <div key={lbl}>
+                  <div className={styles.kpiLabel}>{lbl}</div>
+                  <div className={styles.statVal}>{val}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : (
+          /* Escrow Fulfillment donut for Freelancers / Clients */
+          <div className={styles.card} style={{ minWidth: 0 }}>
+            <h2 className={styles.h2}>Escrow Fulfillment & Protection</h2>
+            <div className={styles.donutRow}>
+              <svg viewBox="0 0 100 100" width="150" height="150" role="img" aria-label="Donut chart of escrow fulfillment" style={{ flex: 'none' }}>
+                <g fill="none" strokeWidth="14" transform="rotate(-90 50 50)">
+                  {totalEscrowed > 0 ? (
+                    <>
+                      <circle cx="50" cy="50" r="40" stroke="#2E9D65" strokeDasharray={`${(releasedAmount / totalEscrowed) * 251.3} 251.3`} />
+                      <circle cx="50" cy="50" r="40" stroke="#009CDE" strokeDasharray={`${(pendingEscrow / totalEscrowed) * 251.3} 251.3`} strokeDashoffset={`${-(releasedAmount / totalEscrowed) * 251.3}`} />
+                    </>
+                  ) : (
+                    <circle cx="50" cy="50" r="40" stroke="#E5E9F0" strokeDasharray="251.3 0" />
+                  )}
+                </g>
+                <text x="50" y="48" textAnchor="middle" fontSize="16" fontWeight="600" fill="#172B4D" fontFamily="Inter,sans-serif">{activeProjects}</text>
+                <text x="50" y="60" textAnchor="middle" fontSize="7" fill="#64748B" fontFamily="Inter,sans-serif">contracts</text>
+              </svg>
+              <div className={styles.donutLegend}>
+                {[
+                  ['#2E9D65', `Released · ${fmt(releasedAmount)}`],
+                  ['#009CDE', `In Vault · ${fmt(pendingEscrow)}`],
+                ].map(([col, lbl]) => (
+                  <div key={lbl}><span className={styles.dot} style={{ background: col }} />{lbl}</div>
+                ))}
+              </div>
+            </div>
+            <div className={styles.recoveryStats}>
+              {[
+                ['Fulfillment rate', `${totalEscrowed > 0 ? Math.round((releasedAmount / totalEscrowed) * 100) : 100}%`],
+                ['Active projects', String(activeProjects)],
+                ['Released via PayPal', fmt(releasedAmount)],
+                ['Secured in vault', fmt(pendingEscrow)],
+              ].map(([lbl, val]) => (
+                <div key={lbl}>
+                  <div className={styles.kpiLabel}>{lbl}</div>
+                  <div className={styles.statVal}>{val}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Recent Activity */}
         <div className={styles.card} style={{ minWidth: 0 }}>
