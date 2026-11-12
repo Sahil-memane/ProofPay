@@ -33,6 +33,10 @@ services:
         value: https://proofpay-ai.onrender.com   # update after first deploy
 
       # ── PayPal (set manually in Render dashboard) ────────────────────────────
+      - key: APP_BASE_URL
+        value: https://proofpay-api.onrender.com   # update after first deploy
+
+      # ── PayPal (set manually in Render dashboard) ────────────────────────────
       - key: PAYPAL_MODE
         value: sandbox
       - key: PAYPAL_BASE_URL

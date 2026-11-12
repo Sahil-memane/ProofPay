@@ -30,3 +30,4 @@ fi
 alembic upgrade head
 
 echo "=== Build complete ==="
+
