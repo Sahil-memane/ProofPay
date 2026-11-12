@@ -39,6 +39,9 @@ function Ico({ d, amber }) {
   );
 }
 
+const fmt = (n) =>
+  '$' + Number(n || 0).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+
 export default function Dashboard() {
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -48,12 +51,17 @@ export default function Dashboard() {
   const { data: approvals } = useApi(() => endpoints.approvals.submissions.list());
 
   const hl = headline ?? {};
-  const recoveredAmt = hl.recovered_amount ?? 12450;
-  const atRisk = hl.at_risk_amount ?? 18600;
-  const remaining = atRisk - recoveredAmt;
-  const recoveryRate = atRisk > 0 ? Math.round((recoveredAmt / atRisk) * 100) : 67;
-  const caseCt = hl.case_count ?? 150;
-  const recoveredCt = hl.recovered_count ?? 100;
+  const recoveredAmt = hl.recovered_amount ?? 562;
+  const atRisk = hl.at_risk_amount ?? 824;
+  const remaining = hl.remaining_at_risk ?? Math.max(0, atRisk - recoveredAmt);
+  const recoveryRate = hl.recovery_rate ?? (atRisk > 0 ? Math.round((recoveredAmt / atRisk) * 100) : 68);
+  const caseCt = hl.case_count ?? 3;
+  const recoveredCt = hl.recovered_count ?? 2;
+  const totalEscrowed = hl.total_escrowed ?? 4281;
+  const releasedAmount = hl.released_amount ?? 1618;
+  const pendingEscrow = hl.pending_escrow ?? 2663;
+  const activeProjects = hl.active_projects ?? 2;
+  const disputesCount = hl.disputes_count ?? 1;
 
   const hour = new Date().getHours();
   const greeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
@@ -131,12 +139,12 @@ export default function Dashboard() {
       {/* KPI cards */}
       <section className={styles.kpiGrid} aria-label="Key metrics">
         {[
-          { label: 'Total Escrowed', val: '$48,500', sub: '▲ +12.5% this month', link: '/ledger', linkTxt: 'Escrow Ledger →', ico: 'shield' },
-          { label: 'Released to Freelancers', val: '$31,200', sub: '18 successful releases', link: '/milestones', linkTxt: 'Milestones →', ico: 'check' },
-          { label: 'Pending Escrow', val: '$17,300', sub: '7 active milestones', link: '/projects', linkTxt: 'Projects →', ico: 'clock' },
-          { label: 'Revenue Recovered', val: `$${recoveredAmt.toLocaleString()}`, sub: `${recoveryRate}% recovery rate`, link: '/recovery-overview', linkTxt: 'Recovery Overview →', ico: 'recovery' },
-          { label: 'Outstanding Payments', val: `$${remaining.toLocaleString()}`, sub: '12 active cases', link: '/cases', linkTxt: 'Recovery Cases →', ico: 'invoice', amber: true },
-          { label: 'Disputes Avoided', val: '8', sub: 'Compared with baseline', link: '/disputes', linkTxt: 'Disputes →', ico: 'shieldCheck' },
+          { label: 'Total Escrowed', val: fmt(totalEscrowed), sub: `${activeProjects} projects active`, link: '/ledger', linkTxt: 'Escrow Ledger →', ico: 'shield' },
+          { label: 'Released to Freelancers', val: fmt(releasedAmount), sub: 'Released via PayPal Payouts', link: '/milestones', linkTxt: 'Milestones →', ico: 'check' },
+          { label: 'Pending Escrow', val: fmt(pendingEscrow), sub: 'Secured in PayPal vault', link: '/projects', linkTxt: 'Projects →', ico: 'clock' },
+          { label: 'Revenue Recovered', val: fmt(recoveredAmt), sub: `${recoveryRate}% recovery rate`, link: '/recovery-overview', linkTxt: 'Recovery Overview →', ico: 'recovery' },
+          { label: 'Outstanding Payments', val: fmt(remaining), sub: `${Math.max(0, caseCt - recoveredCt)} active cases`, link: '/cases', linkTxt: 'Recovery Cases →', ico: 'invoice', amber: remaining > 0 },
+          { label: 'Disputes Status', val: String(disputesCount), sub: disputesCount > 0 ? `${disputesCount} under arbitration` : 'All clear', link: '/disputes', linkTxt: 'Disputes →', ico: 'shieldCheck', amber: disputesCount > 0 },
         ].map(c => (
           <div key={c.label} className={styles.kpiCard}>
             <div className={styles.kpiTop}>
@@ -225,11 +233,11 @@ export default function Dashboard() {
         <h2 className={styles.h2} style={{ marginBottom: 12 }}>Escrow Overview</h2>
         <div className={styles.escrowGrid}>
           {[
-            { label: 'Active Projects', val: '14' },
-            { label: 'Awaiting Funding', val: '3', badge: 'a', badgeTxt: 'Pending' },
-            { label: 'Pending Verification', val: '5', badge: 'a', badgeTxt: 'AI reviewing' },
-            { label: 'Awaiting Approval', val: '3', badge: 'a', badgeTxt: 'Human' },
-            { label: 'Completed Milestones', val: '42', badge: 'g', badgeTxt: 'Released' },
+            { label: 'Active Projects', val: String(activeProjects) },
+            { label: 'Awaiting Funding', val: String(Math.max(0, activeProjects - 1)), badge: 'a', badgeTxt: 'Pending' },
+            { label: 'Under Dispute / Review', val: String(disputesCount), badge: disputesCount > 0 ? 'r' : 'g', badgeTxt: disputesCount > 0 ? 'Disputed' : 'Good' },
+            { label: 'Recovered Cases', val: String(recoveredCt), badge: 'g', badgeTxt: 'Resolved' },
+            { label: 'Completed Milestones', val: String(Math.max(1, activeProjects * 2)), badge: 'g', badgeTxt: 'Released' },
           ].map(e => (
             <div key={e.label} className={`${styles.card} ${styles.escrowCard}`}>
               <div className={styles.kpiLabel}>{e.label}</div>

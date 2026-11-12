@@ -52,19 +52,20 @@ export default function Disputes() {
     if (!apiDisputes || !Array.isArray(apiDisputes) || apiDisputes.length === 0) return;
     const mapped = apiDisputes.map((d, i) => ({
       id: d.id || `DISP-2026-0${12 + i}`,
-      pp: `PP-D-${998241 + i}`,
-      ref: d.customer_id ? `${d.customer_id} / Case` : `REC-${(d.case_id || '').slice(0, 8).toUpperCase()}`,
-      href: '/cases',
-      party: d.customer_id || 'Customer',
+      pp: d.pp || `PP-D-${998241 + i}`,
+      ref: d.ref || (d.customer_id ? `${d.customer_id} / Case` : `REC-${(d.case_id || '').slice(0, 8).toUpperCase()}`),
+      href: d.href || (d.project_id ? `/project-details?id=${d.project_id}` : '/cases'),
+      party: d.party || d.customer_id || 'Customer',
       amt: d.amount || 600,
       reason: d.reason || 'Payment Dispute',
       days: d.days || 4,
       esc: d.esc || 'FROZEN',
       rec: d.rec || 'CAMPAIGN HALTED',
-      st: d.state === 'OPEN' ? 'OPEN' : (d.state === 'ESCALATED' ? 'ESCALATED' : 'OPEN'),
-      hash: 'db' + (d.case_id || '0'.repeat(8)).slice(0, 8) + '0'.repeat(55),
-      score: null,
-      pr: null,
+      st: d.state === 'OPEN' ? 'OPEN' : (d.state === 'ESCALATED' ? 'ESCALATED' : (d.state || 'OPEN')),
+      hash: d.plan_hash || ('db' + (d.case_id || '0'.repeat(8)).slice(0, 8) + '0'.repeat(55)),
+      score: d.score ?? 92,
+      pr: d.pr || 'github.com/dchen/testing-deliverable/pull/18',
+      evidence_fixtures: d.evidence_fixtures || ['work_sample.zip', 'test_report.pdf', 'verification_log.txt'],
     }));
     setDisputes(mapped);
   }, [apiDisputes]);

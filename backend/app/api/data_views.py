@@ -506,46 +506,118 @@ def get_analytics_summary(
         }
 
 
-# ── Disputes (from Cases table with type/state filter) ────────────────────────
+# ── Disputes (from Disputed Escrow Projects & Cases) ─────────────────────────
 
 @router.get("/disputes")
 def list_disputes(
     limit: int = 50,
     current_user: dict = Depends(get_current_user),
 ) -> list[dict[str, Any]]:
-    """Return cases that are in a disputed state or type."""
+    """
+    Return all active disputes matching the authenticated user.
+    Integrates both:
+      1. Disputed Escrow Projects (e.g. ESCROW-003, ESCROW-001) with their milestones & plan hashes
+      2. Disputed Payment Recovery Cases
+    """
+    out: list[dict[str, Any]] = []
+    USER_PROFILE_MAP = {
+        "CUST-00010": ("Acme Global Solutions", "client@example.com"),
+        "CUST-00068": ("Nexus Corp", "client2@example.com"),
+        "CUST-00089": ("Global Trade Ltd", "client3@example.com"),
+        "CUST-00081": ("Rahul Sharma", "freelancer@example.com"),
+        "CUST-00041": ("Sarah Jenkins", "freelancer2@example.com"),
+        "CUST-00005": ("David Chen", "freelancer3@example.com"),
+        "CUST-00002": ("Sahil", "merchant@example.com"),
+        "CUST-00003": ("TechBazaar", "merchant2@example.com"),
+        "CUST-00004": ("MegaShop", "merchant3@example.com"),
+    }
+
     try:
         with get_sync_session() as session:
-            stmt = (
+            cid = current_user.get("customer_id")
+            user_is_admin = is_admin(current_user)
+
+            # 1. Disputed Escrow Projects (Projects where state == 'DISPUTED')
+            proj_stmt = select(Project).where(Project.state == "DISPUTED")
+            if not user_is_admin:
+                if cid:
+                    proj_stmt = proj_stmt.where(
+                        or_(Project.client_id == cid, Project.freelancer_id == cid)
+                    )
+                else:
+                    proj_stmt = proj_stmt.where(Project.id == "__none__")
+
+            disputed_projects = session.execute(proj_stmt).scalars().all()
+            for p in disputed_projects:
+                client_name = USER_PROFILE_MAP.get(p.client_id, (p.client_id, ""))[0]
+                freelancer_name = USER_PROFILE_MAP.get(p.freelancer_id, (p.freelancer_id, ""))[0]
+
+                # Find first milestone title for reference
+                ms_q = select(Milestone).where(Milestone.project_id == p.id).order_by(Milestone.sequence)
+                ms_list = session.execute(ms_q).scalars().all()
+                ms_title = ms_list[0].title if ms_list else "Testing Deliverable"
+
+                out.append({
+                    "id": f"DISP-{p.id}",
+                    "project_id": p.id,
+                    "pp": p.paypal_capture_id or f"PAYPAL-CAP-{p.id}",
+                    "ref": f"{p.id} / {ms_title}",
+                    "href": f"/project-details?id={p.id}",
+                    "party": f"{client_name} (Client)",
+                    "freelancer": f"{freelancer_name} (Freelancer)",
+                    "amount": round(float(p.total_amount or 0.0), 2),
+                    "reason": "Deliverable rejected: Client flagged milestone criteria failure (GitHub PR tests failed)",
+                    "days": 3,
+                    "esc": "FROZEN",
+                    "rec": "CAMPAIGN HALTED",
+                    "state": "OPEN",
+                    "type": "escrow_project",
+                    "plan_hash": p.plan_hash or "mock-plan-hash-" + p.id,
+                    "pr": f"github.com/{p.freelancer_id.lower()}/project-{p.id.lower()}/pull/18",
+                    "score": 68,
+                    "evidence_fixtures": ["work_sample.zip", "test_report.pdf", "verification_log.txt"],
+                    "created_at": None,
+                })
+
+            # 2. Disputed Cases (Cases where state in ('DISPUTED', 'ESCALATED'))
+            case_stmt = (
                 select(Case)
-                .where(Case.state.in_(["DISPUTED", "OPEN", "ESCALATED"]))
+                .where(Case.state.in_(["DISPUTED", "ESCALATED"]))
                 .order_by(Case.created_at.desc().nullslast())
                 .limit(limit)
             )
-            if not is_admin(current_user):
-                cid = current_user.get("customer_id")
+            if not user_is_admin:
                 if cid:
-                    stmt = stmt.where(Case.customer_id == cid)
+                    case_stmt = case_stmt.where(Case.customer_id == cid)
                 else:
-                    return []
-            results = session.execute(stmt).scalars().all()
-            out = []
-            for c in results:
+                    case_stmt = case_stmt.where(Case.customer_id == "__none__")
+
+            case_results = session.execute(case_stmt).scalars().all()
+            for c in case_results:
                 payload = c.payload or {}
+                party_name = USER_PROFILE_MAP.get(c.customer_id, (c.customer_id, ""))[0]
                 out.append({
                     "id": f"DISP-{c.id[:8].upper()}",
                     "case_id": str(c.id),
                     "customer_id": c.customer_id,
-                    "amount": c.amount_usd,
-                    "state": c.state,
-                    "type": c.type,
-                    "failure_code": payload.get("failure_code", "DISPUTED"),
+                    "pp": f"PP-D-99{c.id[:4].upper()}",
+                    "ref": f"{c.customer_id} / Case",
+                    "href": "/cases",
+                    "party": f"{party_name} (Customer)",
+                    "amount": round(float(c.amount_usd or 0.0), 2),
+                    "state": c.state if c.state == "ESCALATED" else "OPEN",
+                    "type": c.type or "failed_payment",
                     "reason": payload.get("failure_code", "Product / Work Not as Described"),
                     "days": max(1, (c.contact_count or 1) * 2),
                     "esc": "FROZEN" if c.type == "failed_payment" else "N/A",
-                    "rec": "CAMPAIGN HALTED" if c.state in ["DISPUTED", "ESCALATED"] else "ACTIVE",
+                    "rec": "CAMPAIGN HALTED",
+                    "plan_hash": "mock-plan-hash-case-" + c.id[:8],
+                    "pr": None,
+                    "score": None,
+                    "evidence_fixtures": ["gateway_capture_log.json", "subscription_agreement.pdf"],
                     "created_at": c.created_at.isoformat() if c.created_at else None,
                 })
+
             return out
     except Exception:
         return []
