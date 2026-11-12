@@ -15,8 +15,10 @@ from __future__ import annotations
 
 from typing import Any
 
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel, Field
+
+from backend.app.api.deps import get_current_user, is_admin
 
 from backend.app.channels.outbox import list_messages
 from backend.app.reconciliation.normalizer import load_all_recon_records
@@ -46,8 +48,16 @@ class ApprovalDecisionRequest(BaseModel):
 def list_cases(
     status: str | None = None,
     sort: str | None = None,
+    current_user: dict = Depends(get_current_user),
 ) -> list[dict[str, Any]]:
     cases = case_repo.list_all()
+
+    # User scoping: non-admin users only see cases for their customer_id
+    if not is_admin(current_user):
+        cid = current_user.get("customer_id")
+        if not cid:
+            return []
+        cases = [c for c in cases if c.get("customer_id") == cid]
 
     # Filter by comma-separated status list
     if status:
@@ -85,10 +95,18 @@ def list_cases(
 # ── GET /cases/{case_id} ──────────────────────────────────────────────────────
 
 @router.get("/cases/{case_id}")
-def get_case_detail(case_id: str) -> dict[str, Any]:
+def get_case_detail(
+    case_id: str,
+    current_user: dict = Depends(get_current_user),
+) -> dict[str, Any]:
     case = case_repo.get(case_id)
     if not case:
         raise HTTPException(status_code=404, detail=f"Case {case_id} not found")
+
+    if not is_admin(current_user):
+        cid = current_user.get("customer_id")
+        if not cid or case.get("customer_id") != cid:
+            raise HTTPException(status_code=403, detail="Not authorized to view this case")
 
     contacts = contact_repo.list_for_case(case_id)
     history = case.get("history", [])

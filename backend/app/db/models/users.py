@@ -20,4 +20,7 @@ class User(UUIDPrimaryKey, TimestampMixin, Base):
     password_hash: Mapped[str | None] = mapped_column(String(255), nullable=True)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
     paypal_payer_id: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    # Links this user account to their CUST-XXXXX record in entities tables.
+    # admin/risk_officer users have customer_id=None (they see all data).
+    customer_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
 

@@ -1,5 +1,10 @@
 """
 Data Views API Router — Serves dynamic PostgreSQL data for ProofPay frontend views.
+All endpoints are user-scoped:
+  - admin / risk_officer → sees ALL data (customer_id=None in their User record)
+  - client / freelancer  → sees only projects/milestones where they are client_id or freelancer_id
+  - merchant             → sees only their own invoices, subscriptions, cases, merchant_sales
+
 Endpoints:
   GET  /invoices
   POST /invoices
@@ -24,9 +29,9 @@ import uuid
 from datetime import datetime, timezone
 from typing import Any, Optional
 
-from fastapi import APIRouter, HTTPException, Query, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from pydantic import BaseModel
-from sqlalchemy import func, select
+from sqlalchemy import func, or_, select
 
 from backend.app.db.models.entities import (
     Customer,
@@ -40,6 +45,7 @@ from backend.app.db.models.support import ReconRecord, ReputationEvent
 from backend.app.db.models.cases import Case
 from backend.app.db.models.webhooks import WebhookEvent
 from backend.app.db.session import get_sync_session
+from backend.app.api.deps import get_current_user, is_admin
 
 router = APIRouter(tags=["data_views"])
 
@@ -59,6 +65,7 @@ def list_invoices(
     status: Optional[str] = None,
     customer_id: Optional[str] = None,
     limit: int = 100,
+    current_user: dict = Depends(get_current_user),
 ) -> list[dict[str, Any]]:
     try:
         with get_sync_session() as session:
@@ -67,6 +74,10 @@ def list_invoices(
                 stmt = stmt.where(Invoice.status == status)
             if customer_id:
                 stmt = stmt.where(Invoice.customer_id == customer_id)
+            elif not is_admin(current_user) and current_user.get("customer_id"):
+                stmt = stmt.where(Invoice.customer_id == current_user["customer_id"])
+            elif not is_admin(current_user) and not current_user.get("customer_id"):
+                return []  # No customer_id mapped → show nothing
             results = session.execute(stmt).scalars().all()
             return [
                 {
@@ -120,7 +131,10 @@ def create_invoice(req: CreateInvoiceRequest) -> dict[str, Any]:
 # ── Payment Attempts / Subscriptions ──────────────────────────────────────────
 
 @router.get("/payment-attempts")
-def list_payment_attempts(limit: int = 100) -> list[dict[str, Any]]:
+def list_payment_attempts(
+    limit: int = 100,
+    current_user: dict = Depends(get_current_user),
+) -> list[dict[str, Any]]:
     try:
         with get_sync_session() as session:
             stmt = (
@@ -128,6 +142,11 @@ def list_payment_attempts(limit: int = 100) -> list[dict[str, Any]]:
                 .order_by(Subscription.failed_at.desc().nullslast())
                 .limit(limit)
             )
+            if not is_admin(current_user):
+                cid = current_user.get("customer_id")
+                if not cid:
+                    return []
+                stmt = stmt.where(Subscription.customer_id == cid)
             results = session.execute(stmt).scalars().all()
             return [
                 {
@@ -147,14 +166,21 @@ def list_payment_attempts(limit: int = 100) -> list[dict[str, Any]]:
 
 
 @router.get("/subscriptions")
-def list_subscriptions(limit: int = 100) -> list[dict[str, Any]]:
-    return list_payment_attempts(limit=limit)
+def list_subscriptions(
+    limit: int = 100,
+    current_user: dict = Depends(get_current_user),
+) -> list[dict[str, Any]]:
+    return list_payment_attempts(limit=limit, current_user=current_user)
 
 
 # ── Reconciliation ────────────────────────────────────────────────────────────
 
 @router.get("/reconciliation")
-def list_reconciliation_records(limit: int = 100) -> dict[str, Any]:
+def list_reconciliation_records(
+    limit: int = 100,
+    current_user: dict = Depends(get_current_user),
+) -> dict[str, Any]:
+    # Reconciliation is admin/merchant-only
     records = []
     matched_count = 0
     unmatched_count = 0
@@ -163,6 +189,11 @@ def list_reconciliation_records(limit: int = 100) -> dict[str, Any]:
     try:
         with get_sync_session() as session:
             stmt = select(ReconRecord).order_by(ReconRecord.date.desc().nullslast()).limit(limit)
+            # Non-admin: filter by customer_ref containing their customer_id
+            if not is_admin(current_user) and current_user.get("customer_id"):
+                stmt = stmt.where(ReconRecord.customer_ref.ilike(f"%{current_user['customer_id']}%"))
+            elif not is_admin(current_user) and not current_user.get("customer_id"):
+                pass  # show all bank records for merchants with no customer_id
             results = session.execute(stmt).scalars().all()
             for r in results:
                 total_bank_volume += r.amount
@@ -196,10 +227,28 @@ def list_reconciliation_records(limit: int = 100) -> dict[str, Any]:
 # ── Ledger ────────────────────────────────────────────────────────────────────
 
 @router.get("/ledger")
-def list_ledger_entries(limit: int = 100) -> list[dict[str, Any]]:
+def list_ledger_entries(
+    limit: int = 100,
+    current_user: dict = Depends(get_current_user),
+) -> list[dict[str, Any]]:
     try:
         with get_sync_session() as session:
             stmt = select(LedgerEntry).order_by(LedgerEntry.created_at.desc()).limit(limit)
+            if not is_admin(current_user):
+                cid = current_user.get("customer_id")
+                role = current_user.get("role", "")
+                if cid:
+                    # Get project IDs for this user
+                    proj_q = select(Project.id).where(
+                        or_(Project.client_id == cid, Project.freelancer_id == cid)
+                    )
+                    proj_ids = [row[0] for row in session.execute(proj_q).fetchall()]
+                    if proj_ids:
+                        stmt = stmt.where(LedgerEntry.subject_id.in_(proj_ids))
+                    else:
+                        return []
+                else:
+                    return []
             results = session.execute(stmt).scalars().all()
             return [
                 {
@@ -221,12 +270,26 @@ def list_ledger_entries(limit: int = 100) -> list[dict[str, Any]]:
 # ── Reputation ────────────────────────────────────────────────────────────────
 
 @router.get("/reputation")
-def list_reputation_events(limit: int = 100) -> dict[str, Any]:
+def list_reputation_events(
+    limit: int = 100,
+    current_user: dict = Depends(get_current_user),
+) -> dict[str, Any]:
     events = []
-    freelancers = {}
     try:
         with get_sync_session() as session:
             stmt = select(ReputationEvent).order_by(ReputationEvent.created_at.desc()).limit(limit)
+            if not is_admin(current_user) and current_user.get("role") == "freelancer":
+                # Freelancer sees only their own reputation events
+                name = current_user.get("email", "").split("@")[0]
+                # Map email to known display name
+                name_map = {
+                    "freelancer": "Rahul Sharma",
+                    "freelancer2": "Sarah Jenkins",
+                    "freelancer3": "David Chen",
+                }
+                local = current_user.get("email", "").split("@")[0] if current_user.get("email") else ""
+                display_name = name_map.get(local, local.title())
+                stmt = stmt.where(ReputationEvent.subject == display_name)
             results = session.execute(stmt).scalars().all()
             for ev in results:
                 events.append({
@@ -237,16 +300,15 @@ def list_reputation_events(limit: int = 100) -> dict[str, Any]:
                     "audit_id": ev.audit_id,
                     "created_at": ev.created_at.isoformat() if ev.created_at else None,
                 })
-                freelancers[ev.subject] = freelancers.get(ev.subject, 100) + ev.delta
     except Exception:
         pass
 
-    # Ensure demo freelancers are always present
+    # Leaderboard is always public (reputation board is public)
     leaderboard = [
-        {"subject": "Rahul Sharma", "score": 98, "status": "Tier 1 Verified", "completed": 24},
+        {"subject": "Rahul Sharma",  "score": 98, "status": "Tier 1 Verified", "completed": 24},
         {"subject": "Sarah Jenkins", "score": 95, "status": "Tier 1 Verified", "completed": 19},
-        {"subject": "David Chen", "score": 92, "status": "Tier 2 Good", "completed": 14},
-        {"subject": "Elena Rostova", "score": 89, "status": "Tier 2 Good", "completed": 11},
+        {"subject": "David Chen",    "score": 92, "status": "Tier 2 Good",     "completed": 14},
+        {"subject": "Elena Rostova", "score": 89, "status": "Tier 2 Good",     "completed": 11},
     ]
 
     return {
@@ -260,10 +322,19 @@ def list_reputation_events(limit: int = 100) -> dict[str, Any]:
 # ── Customers ─────────────────────────────────────────────────────────────────
 
 @router.get("/customers")
-def list_customers(limit: int = 100) -> list[dict[str, Any]]:
+def list_customers(
+    limit: int = 100,
+    current_user: dict = Depends(get_current_user),
+) -> list[dict[str, Any]]:
     try:
         with get_sync_session() as session:
             stmt = select(Customer).limit(limit)
+            if not is_admin(current_user):
+                cid = current_user.get("customer_id")
+                if cid:
+                    stmt = stmt.where(Customer.customer_id == cid)
+                else:
+                    return []
             results = session.execute(stmt).scalars().all()
             return [
                 {
@@ -287,12 +358,27 @@ def list_milestones(
     project_id: Optional[str] = None,
     state: Optional[str] = None,
     limit: int = 100,
+    current_user: dict = Depends(get_current_user),
 ) -> list[dict[str, Any]]:
     try:
         with get_sync_session() as session:
             stmt = select(Milestone).order_by(Milestone.sequence).limit(limit)
             if project_id:
                 stmt = stmt.where(Milestone.project_id == project_id)
+            elif not is_admin(current_user):
+                cid = current_user.get("customer_id")
+                if cid:
+                    # Only milestones belonging to projects the user is part of
+                    proj_q = select(Project.id).where(
+                        or_(Project.client_id == cid, Project.freelancer_id == cid)
+                    )
+                    proj_ids = [row[0] for row in session.execute(proj_q).fetchall()]
+                    if proj_ids:
+                        stmt = stmt.where(Milestone.project_id.in_(proj_ids))
+                    else:
+                        return []
+                else:
+                    return []
             if state:
                 stmt = stmt.where(Milestone.state == state)
             results = session.execute(stmt).scalars().all()
@@ -319,10 +405,19 @@ def list_milestones(
 # ── Merchant Sales ────────────────────────────────────────────────────────────
 
 @router.get("/merchant-sales")
-def list_merchant_sales(limit: int = 100) -> list[dict[str, Any]]:
+def list_merchant_sales(
+    limit: int = 100,
+    current_user: dict = Depends(get_current_user),
+) -> list[dict[str, Any]]:
     try:
         with get_sync_session() as session:
             stmt = select(MerchantSale).limit(limit)
+            if not is_admin(current_user):
+                cid = current_user.get("customer_id")
+                if cid:
+                    stmt = stmt.where(MerchantSale.customer_id == cid)
+                else:
+                    return []
             results = session.execute(stmt).scalars().all()
             return [
                 {
@@ -342,19 +437,53 @@ def list_merchant_sales(limit: int = 100) -> list[dict[str, Any]]:
 # ── Analytics Summary ─────────────────────────────────────────────────────────
 
 @router.get("/analytics/summary")
-def get_analytics_summary() -> dict[str, Any]:
+def get_analytics_summary(
+    current_user: dict = Depends(get_current_user),
+) -> dict[str, Any]:
     try:
         with get_sync_session() as session:
-            project_count = session.execute(select(func.count(Project.id))).scalar() or 0
-            escrow_total = session.execute(select(func.sum(Project.total_amount))).scalar() or 0.0
-            invoice_total = session.execute(select(func.sum(Invoice.amount_usd))).scalar() or 0.0
-            case_count = session.execute(select(func.count(Case.id))).scalar() or 0
-            recovered_sum = session.execute(
-                select(func.sum(Case.amount_usd)).where(Case.state.in_(["RECOVERED", "PAID_ELSEWHERE"]))
-            ).scalar() or 0.0
-            at_risk_sum = session.execute(
-                select(func.sum(Case.amount_usd)).where(Case.state == "OPEN")
-            ).scalar() or 0.0
+            cid = current_user.get("customer_id")
+            role = current_user.get("role", "admin")
+
+            if is_admin(current_user) or not cid:
+                # Admin sees all
+                project_count = session.execute(select(func.count(Project.id))).scalar() or 0
+                escrow_total = session.execute(select(func.sum(Project.total_amount))).scalar() or 0.0
+                invoice_total = session.execute(select(func.sum(Invoice.amount_usd))).scalar() or 0.0
+                case_count = session.execute(select(func.count(Case.id))).scalar() or 0
+                recovered_sum = session.execute(
+                    select(func.sum(Case.amount_usd)).where(Case.state.in_(["RECOVERED", "PAID_ELSEWHERE"]))
+                ).scalar() or 0.0
+                at_risk_sum = session.execute(
+                    select(func.sum(Case.amount_usd)).where(Case.state == "OPEN")
+                ).scalar() or 0.0
+            else:
+                # Scoped stats
+                proj_filter = or_(Project.client_id == cid, Project.freelancer_id == cid)
+                project_count = session.execute(
+                    select(func.count(Project.id)).where(proj_filter)
+                ).scalar() or 0
+                escrow_total = session.execute(
+                    select(func.sum(Project.total_amount)).where(proj_filter)
+                ).scalar() or 0.0
+                invoice_total = session.execute(
+                    select(func.sum(Invoice.amount_usd)).where(Invoice.customer_id == cid)
+                ).scalar() or 0.0
+                case_count = session.execute(
+                    select(func.count(Case.id)).where(Case.customer_id == cid)
+                ).scalar() or 0
+                recovered_sum = session.execute(
+                    select(func.sum(Case.amount_usd)).where(
+                        Case.customer_id == cid,
+                        Case.state.in_(["RECOVERED", "PAID_ELSEWHERE"])
+                    )
+                ).scalar() or 0.0
+                at_risk_sum = session.execute(
+                    select(func.sum(Case.amount_usd)).where(
+                        Case.customer_id == cid,
+                        Case.state == "OPEN"
+                    )
+                ).scalar() or 0.0
 
             return {
                 "total_escrow_volume": round(float(escrow_total), 2),
@@ -380,7 +509,10 @@ def get_analytics_summary() -> dict[str, Any]:
 # ── Disputes (from Cases table with type/state filter) ────────────────────────
 
 @router.get("/disputes")
-def list_disputes(limit: int = 50) -> list[dict[str, Any]]:
+def list_disputes(
+    limit: int = 50,
+    current_user: dict = Depends(get_current_user),
+) -> list[dict[str, Any]]:
     """Return cases that are in a disputed state or type."""
     try:
         with get_sync_session() as session:
@@ -390,6 +522,12 @@ def list_disputes(limit: int = 50) -> list[dict[str, Any]]:
                 .order_by(Case.created_at.desc().nullslast())
                 .limit(limit)
             )
+            if not is_admin(current_user):
+                cid = current_user.get("customer_id")
+                if cid:
+                    stmt = stmt.where(Case.customer_id == cid)
+                else:
+                    return []
             results = session.execute(stmt).scalars().all()
             out = []
             for c in results:
@@ -416,38 +554,44 @@ def list_disputes(limit: int = 50) -> list[dict[str, Any]]:
 # ── Recovery Overview (funnel + recent cases) ─────────────────────────────────
 
 @router.get("/recovery/overview")
-def get_recovery_overview() -> dict[str, Any]:
+def get_recovery_overview(
+    current_user: dict = Depends(get_current_user),
+) -> dict[str, Any]:
     """Return recovery funnel stats and recent cases from DB."""
     try:
         with get_sync_session() as session:
-            total = session.execute(select(func.count(Case.id))).scalar() or 0
-            paid = session.execute(
-                select(func.count(Case.id)).where(Case.state == "PAID")
-            ).scalar() or 0
-            paid_elsewhere = session.execute(
-                select(func.count(Case.id)).where(Case.state == "PAID_ELSEWHERE")
-            ).scalar() or 0
-            halted = session.execute(
-                select(func.count(Case.id)).where(Case.state.in_(["HALTED", "UNRECOVERED"]))
-            ).scalar() or 0
-            open_count = session.execute(
-                select(func.count(Case.id)).where(Case.state == "OPEN")
-            ).scalar() or 0
+            cid = current_user.get("customer_id") if not is_admin(current_user) else None
 
-            total_amt = session.execute(select(func.sum(Case.amount_usd))).scalar() or 0.0
-            paid_amt = session.execute(
-                select(func.sum(Case.amount_usd)).where(Case.state.in_(["PAID", "PAID_ELSEWHERE"]))
-            ).scalar() or 0.0
-            halted_amt = session.execute(
-                select(func.sum(Case.amount_usd)).where(Case.state.in_(["HALTED", "UNRECOVERED"]))
-            ).scalar() or 0.0
+            def _case_count(where_clauses):
+                q = select(func.count(Case.id))
+                if cid:
+                    q = q.where(Case.customer_id == cid)
+                for w in where_clauses:
+                    q = q.where(w)
+                return session.execute(q).scalar() or 0
+
+            def _case_sum(where_clauses):
+                q = select(func.sum(Case.amount_usd))
+                if cid:
+                    q = q.where(Case.customer_id == cid)
+                for w in where_clauses:
+                    q = q.where(w)
+                return float(session.execute(q).scalar() or 0.0)
+
+            total = _case_count([])
+            paid = _case_count([Case.state == "PAID"])
+            paid_elsewhere = _case_count([Case.state == "PAID_ELSEWHERE"])
+            halted = _case_count([Case.state.in_(["HALTED", "UNRECOVERED"])])
+            open_count = _case_count([Case.state == "OPEN"])
+
+            total_amt = _case_sum([])
+            paid_amt = _case_sum([Case.state.in_(["PAID", "PAID_ELSEWHERE"])])
+            halted_amt = _case_sum([Case.state.in_(["HALTED", "UNRECOVERED"])])
 
             # Recent cases (last 10)
-            recent_stmt = (
-                select(Case)
-                .order_by(Case.created_at.desc().nullslast())
-                .limit(10)
-            )
+            recent_stmt = select(Case).order_by(Case.created_at.desc().nullslast()).limit(10)
+            if cid:
+                recent_stmt = recent_stmt.where(Case.customer_id == cid)
             recent_cases = session.execute(recent_stmt).scalars().all()
             cases_list = []
             for c in recent_cases:
@@ -514,8 +658,9 @@ def list_audit_log(
     page: int = Query(0, ge=0),
     actor: Optional[str] = None,
     search: Optional[str] = None,
+    current_user: dict = Depends(get_current_user),
 ) -> dict[str, Any]:
-    """Paginated audit log from audit_log table with tamper-evident chain."""
+    """Paginated audit log — admin sees all; others see only events tied to their projects."""
     from backend.app.db.models.audit_log import AuditLog
     try:
         page_val = page if isinstance(page, int) else 0
@@ -530,6 +675,21 @@ def list_audit_log(
                     AuditLog.subject.ilike(f"%{search}%") |
                     AuditLog.actor.ilike(f"%{search}%")
                 )
+            # Non-admin: scope to subject IDs (project IDs) the user owns
+            if not is_admin(current_user):
+                cid = current_user.get("customer_id")
+                if cid:
+                    proj_q = select(Project.id).where(
+                        or_(Project.client_id == cid, Project.freelancer_id == cid)
+                    )
+                    proj_ids = [row[0] for row in session.execute(proj_q).fetchall()]
+                    if proj_ids:
+                        stmt = stmt.where(AuditLog.subject.in_(proj_ids))
+                    else:
+                        return {"total": 0, "page": page_val, "limit": limit_val, "events": []}
+                else:
+                    return {"total": 0, "page": page_val, "limit": limit_val, "events": []}
+
             total = session.execute(select(func.count()).select_from(stmt.subquery())).scalar() or 0
             stmt = stmt.offset(page_val * limit_val).limit(limit_val)
             results = session.execute(stmt).scalars().all()
@@ -560,8 +720,11 @@ def list_audit_log(
 # ── Webhook Events (from webhook_events table) ─────────────────────────────────
 
 @router.get("/webhook-events")
-def list_webhook_events(limit: int = 50) -> list[dict[str, Any]]:
-    """Return real webhook events from the DB webhook_events table."""
+def list_webhook_events(
+    limit: int = 50,
+    current_user: dict = Depends(get_current_user),
+) -> list[dict[str, Any]]:
+    """Return real webhook events from the DB webhook_events table. Admin-only by default."""
     try:
         with get_sync_session() as session:
             stmt = (
@@ -569,6 +732,19 @@ def list_webhook_events(limit: int = 50) -> list[dict[str, Any]]:
                 .order_by(WebhookEvent.created_at.desc())
                 .limit(limit)
             )
+            # Webhook events are admin-visible by default;
+            # non-admins see only their project-related events if any
+            if not is_admin(current_user):
+                cid = current_user.get("customer_id")
+                if not cid:
+                    return []
+                # Filter by customer reference in payload
+                # Events that reference this customer's ID in the resource
+                stmt = stmt.where(
+                    WebhookEvent.payload.cast(
+                        __import__("sqlalchemy").Text
+                    ).ilike(f"%{cid}%")
+                )
             wh_results = session.execute(stmt).scalars().all()
             if wh_results:
                 EVENT_CAT_MAP = {
@@ -625,6 +801,10 @@ def list_webhook_events(limit: int = 50) -> list[dict[str, Any]]:
                 .order_by(PayPalTransaction.timestamp.desc().nullslast())
                 .limit(limit)
             )
+            if not is_admin(current_user) and current_user.get("customer_id"):
+                stmt_tx = stmt_tx.where(
+                    PayPalTransaction.customer_id == current_user["customer_id"]
+                )
             results = session.execute(stmt_tx).scalars().all()
             STATUS_EVENT_MAP = {
                 "completed": "PAYMENT.CAPTURE.COMPLETED",

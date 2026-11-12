@@ -41,31 +41,25 @@ def hash_pw(password: str) -> str:
 
 
 def seed_users(session: Session) -> None:
+    # Maps (email, name, role, customer_id) — customer_id links to CUST-XXXXX in entities tables.
+    # admin/risk_officer have customer_id=None → they see all data.
     demo_users = [
-        {
-            "email": "client@example.com",
-            "name": "Acme Global Solutions",
-            "role": "client",
-            "password": "ProofPay@2026",
-        },
-        {
-            "email": "freelancer@example.com",
-            "name": "Rahul Sharma",
-            "role": "freelancer",
-            "password": "ProofPay@2026",
-        },
-        {
-            "email": "merchant@example.com",
-            "name": "Sahil",
-            "role": "merchant",
-            "password": "ProofPay@2026",
-        },
-        {
-            "email": "admin@example.com",
-            "name": "Risk Officer",
-            "role": "admin",
-            "password": "ProofPay@2026",
-        },
+        # ── Original 4 users ──
+        {"email": "client@example.com",      "name": "Acme Global Solutions", "role": "client",       "customer_id": "CUST-00010"},
+        {"email": "freelancer@example.com",  "name": "Rahul Sharma",          "role": "freelancer",   "customer_id": "CUST-00081"},
+        {"email": "merchant@example.com",    "name": "Sahil",                 "role": "merchant",     "customer_id": "CUST-00002"},
+        {"email": "admin@example.com",       "name": "Risk Officer",          "role": "admin",        "customer_id": None},
+        # ── Additional clients ──
+        {"email": "client2@example.com",     "name": "Nexus Corp",            "role": "client",       "customer_id": "CUST-00068"},
+        {"email": "client3@example.com",     "name": "Global Trade Ltd",      "role": "client",       "customer_id": "CUST-00089"},
+        # ── Additional freelancers ──
+        {"email": "freelancer2@example.com", "name": "Sarah Jenkins",         "role": "freelancer",   "customer_id": "CUST-00041"},
+        {"email": "freelancer3@example.com", "name": "David Chen",            "role": "freelancer",   "customer_id": "CUST-00005"},
+        # ── Additional merchants ──
+        {"email": "merchant2@example.com",   "name": "TechBazaar",            "role": "merchant",     "customer_id": "CUST-00003"},
+        {"email": "merchant3@example.com",   "name": "MegaShop",              "role": "merchant",     "customer_id": "CUST-00004"},
+        # ── Additional admin/risk ──
+        {"email": "risk@example.com",        "name": "Risk Officer 2",        "role": "admin",        "customer_id": None},
     ]
 
     for u in demo_users:
@@ -77,12 +71,16 @@ def seed_users(session: Session) -> None:
                 email=u["email"],
                 name=u["name"],
                 role=u["role"],
-                password_hash=hash_pw(u["password"]),
+                password_hash=hash_pw("ProofPay@2026"),
                 is_active=True,
+                customer_id=u.get("customer_id"),
             )
             session.add(user)
+        else:
+            # Always keep customer_id in sync (idempotent update)
+            existing.customer_id = u.get("customer_id")
     session.commit()
-    print("Users seeded successfully.")
+    print(f"Users seeded/updated ({len(demo_users)} records).")
 
 
 def seed_customers(session: Session) -> None:
@@ -291,75 +289,97 @@ def seed_escrow_projects(session: Session) -> None:
     with open(escrow_file, "r", encoding="utf-8") as f:
         data = json.load(f)
 
+    # Explicit assignment: projects 0-2 assigned to named users, rest keep file data.
+    # This ensures each demo user has at least one visible project.
+    USER_PROJECT_MAP = {
+        "ESCROW-000": {"client_id": "CUST-00010", "freelancer_id": "CUST-00081"},  # client@ / freelancer@
+        "ESCROW-001": {"client_id": "CUST-00068", "freelancer_id": "CUST-00041"},  # client2@ / freelancer2@
+        "ESCROW-002": {"client_id": "CUST-00089", "freelancer_id": "CUST-00005"},  # client3@ / freelancer3@
+        "ESCROW-003": {"client_id": "CUST-00010", "freelancer_id": "CUST-00005"},  # client@ / freelancer3@
+        "ESCROW-004": {"client_id": "CUST-00068", "freelancer_id": "CUST-00081"},  # client2@ / freelancer@
+    }
+
     for item in data:
         pid = item.get("project_id")
         existing = session.execute(
             select(Project).where(Project.id == pid)
         ).scalar_one_or_none()
-        if not existing:
-            amount = float(item.get("amount_usd", 1000.0))
-            is_disputed = item.get("disputed", False)
-            state = "DISPUTED" if is_disputed else ("FUNDED" if amount > 2000 else "COMPLETED")
 
-            proj = Project(
-                id=pid,
-                state=state,
-                job_description=f"Freelance Engagement: {item.get('milestone', 'Development').title()} for {item.get('buyer_id')}",
-                total_amount=amount,
-                currency=item.get("currency", "USD"),
-                client_id=item.get("buyer_id", "CUST-00010"),
-                freelancer_id=item.get("seller_id", "CUST-00081"),
-                client_approved=True,
-                freelancer_approved=True,
-                plan_hash="mock-plan-hash-" + pid,
-                paypal_order_id=f"PAYPAL-ORDER-{pid}",
-                paypal_capture_id=f"PAYPAL-CAP-{pid}",
-            )
-            session.add(proj)
-            session.flush()
+        # Apply user mapping override or keep file data
+        override = USER_PROJECT_MAP.get(pid, {})
+        client_id = override.get("client_id", item.get("buyer_id", "CUST-00010"))
+        freelancer_id = override.get("freelancer_id", item.get("seller_id", "CUST-00081"))
 
-            # Also create 2 milestones per project
-            m_state = "DISPUTED" if is_disputed else (state if state in ("FUNDED", "COMPLETED") else "RELEASED")
-            m1 = Milestone(
-                id=f"{pid}-M1",
-                project_id=pid,
-                state=m_state,
-                title=f"{item.get('milestone', 'Phase 1').title()} Deliverable",
-                amount=round(amount * 0.6, 2),
-                currency=item.get("currency", "USD"),
-                sequence=1,
-                criteria=[
-                    {"id": "crit-1", "type": "github_pr", "weight": 0.5, "must_pass": True},
-                    {"id": "crit-2", "type": "pdf_report", "weight": 0.5, "must_pass": False},
-                ],
-            )
-            session.add(m1)
+        if existing:
+            # Idempotent: keep client/freelancer IDs in sync for user-mapped projects
+            if pid in USER_PROJECT_MAP:
+                existing.client_id = client_id
+                existing.freelancer_id = freelancer_id
+            continue
 
-            m2 = Milestone(
-                id=f"{pid}-M2",
-                project_id=pid,
-                state="DRAFT" if state == "FUNDED" else m_state,
-                title=f"Final QA & Handover",
-                amount=round(amount * 0.4, 2),
-                currency=item.get("currency", "USD"),
-                sequence=2,
-                criteria=[
-                    {"id": "crit-3", "type": "client_approval", "weight": 1.0, "must_pass": True},
-                ],
-            )
-            session.add(m2)
+        amount = float(item.get("amount_usd", 1000.0))
+        is_disputed = item.get("disputed", False)
+        state = "DISPUTED" if is_disputed else ("FUNDED" if amount > 2000 else "COMPLETED")
 
-            # Create ledger entry
-            led = LedgerEntry(
-                type="FUNDING",
-                subject_id=pid,
-                amount=amount,
-                currency=item.get("currency", "USD"),
-                paypal_id=f"PAYPAL-CAP-{pid}",
-                note=f"Escrow project funded by {item.get('buyer_id')}",
-            )
-            session.add(led)
-            session.commit()
+        proj = Project(
+            id=pid,
+            state=state,
+            job_description=f"Freelance Engagement: {item.get('milestone', 'Development').title()} for {client_id}",
+            total_amount=amount,
+            currency=item.get("currency", "USD"),
+            client_id=client_id,
+            freelancer_id=freelancer_id,
+            client_approved=True,
+            freelancer_approved=True,
+            plan_hash="mock-plan-hash-" + pid,
+            paypal_order_id=f"PAYPAL-ORDER-{pid}",
+            paypal_capture_id=f"PAYPAL-CAP-{pid}",
+        )
+        session.add(proj)
+        session.flush()
+
+        # Also create 2 milestones per project
+        m_state = "DISPUTED" if is_disputed else (state if state in ("FUNDED", "COMPLETED") else "RELEASED")
+        m1 = Milestone(
+            id=f"{pid}-M1",
+            project_id=pid,
+            state=m_state,
+            title=f"{item.get('milestone', 'Phase 1').title()} Deliverable",
+            amount=round(amount * 0.6, 2),
+            currency=item.get("currency", "USD"),
+            sequence=1,
+            criteria=[
+                {"id": "crit-1", "type": "github_pr", "weight": 0.5, "must_pass": True},
+                {"id": "crit-2", "type": "pdf_report", "weight": 0.5, "must_pass": False},
+            ],
+        )
+        session.add(m1)
+
+        m2 = Milestone(
+            id=f"{pid}-M2",
+            project_id=pid,
+            state="DRAFT" if state == "FUNDED" else m_state,
+            title="Final QA & Handover",
+            amount=round(amount * 0.4, 2),
+            currency=item.get("currency", "USD"),
+            sequence=2,
+            criteria=[
+                {"id": "crit-3", "type": "client_approval", "weight": 1.0, "must_pass": True},
+            ],
+        )
+        session.add(m2)
+
+        # Create ledger entry
+        led = LedgerEntry(
+            type="FUNDING",
+            subject_id=pid,
+            amount=amount,
+            currency=item.get("currency", "USD"),
+            paypal_id=f"PAYPAL-CAP-{pid}",
+            note=f"Escrow project funded by {client_id}",
+        )
+        session.add(led)
+        session.commit()
 
     session.commit()
     print(f"Escrow projects and milestones seeded ({len(data)} projects).")

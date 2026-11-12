@@ -16,8 +16,10 @@ import uuid
 from datetime import datetime, timezone
 from typing import Any
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, Field
+
+from backend.app.api.deps import get_current_user, is_admin
 
 from backend.app.audit import log_event as audit_log
 from backend.app.core.errors import ConflictError, NotFoundError, ValidationError
@@ -163,7 +165,9 @@ async def create_project(req: CreateProjectRequest) -> dict[str, Any]:
 
 
 @router.get("/projects")
-async def list_projects() -> list[dict[str, Any]]:
+async def list_projects(
+    current_user: dict = Depends(get_current_user),
+) -> list[dict[str, Any]]:
     projects_map = {}
     try:
         from backend.app.db.repositories.project_repo import project_repo
@@ -173,11 +177,26 @@ async def list_projects() -> list[dict[str, Any]]:
         pass
     for pid, p in _PROJECTS.items():
         projects_map[pid] = p
-    return list(projects_map.values())
+
+    all_projects = list(projects_map.values())
+    if is_admin(current_user):
+        return all_projects
+
+    cid = current_user.get("customer_id")
+    if not cid:
+        return []
+
+    return [
+        p for p in all_projects
+        if p.get("client_id") == cid or p.get("freelancer_id") == cid
+    ]
 
 
 @router.get("/projects/{project_id}")
-async def get_project(project_id: str) -> dict[str, Any]:
+async def get_project(
+    project_id: str,
+    current_user: dict = Depends(get_current_user),
+) -> dict[str, Any]:
     project = _PROJECTS.get(project_id)
     milestones = _MILESTONES.get(project_id, [])
     if not project:
@@ -191,6 +210,12 @@ async def get_project(project_id: str) -> dict[str, Any]:
             pass
     if not project:
         raise HTTPException(status_code=404, detail=f"Project {project_id} not found")
+
+    if not is_admin(current_user):
+        cid = current_user.get("customer_id")
+        if not cid or (project.get("client_id") != cid and project.get("freelancer_id") != cid):
+            raise HTTPException(status_code=403, detail="Not authorized to view this project")
+
     return {"project": project, "milestones": milestones}
 
 

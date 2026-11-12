@@ -11,8 +11,9 @@ import json
 from pathlib import Path
 from typing import Any
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 
+from backend.app.api.deps import get_current_user, is_admin
 from backend.app.stubs.contracts_stub import CaseState
 from backend.app.stubs.repositories import case_repo
 
@@ -23,7 +24,9 @@ EVAL_JSON = ROOT / "data" / "eval_report.json"
 
 
 @router.get("/dashboard/headline")
-def get_dashboard_headline() -> dict[str, Any]:
+def get_dashboard_headline(
+    current_user: dict = Depends(get_current_user),
+) -> dict[str, Any]:
     """
     Returns headline numbers for operations overview:
       - recovered_amount ($)
@@ -32,6 +35,12 @@ def get_dashboard_headline() -> dict[str, Any]:
       - recovered_count (total recovered)
     """
     cases = case_repo.list_all()
+    if not is_admin(current_user):
+        cid = current_user.get("customer_id")
+        if not cid:
+            cases = []
+        else:
+            cases = [c for c in cases if c.get("customer_id") == cid]
     case_count = len(cases)
 
     recovered_count = 0

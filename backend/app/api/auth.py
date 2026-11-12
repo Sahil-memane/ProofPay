@@ -12,10 +12,19 @@ from backend.app.db.models.users import User
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 MOCK_USERS = {
-    "client@example.com": {"name": "Acme Global Solutions", "role": "client"},
-    "freelancer@example.com": {"name": "Rahul Sharma", "role": "freelancer"},
-    "merchant@example.com": {"name": "Sahil", "role": "merchant"},
-    "admin@example.com": {"name": "Risk Officer", "role": "admin"},
+    # Originals
+    "client@example.com":      {"name": "Acme Global Solutions", "role": "client"},
+    "freelancer@example.com":  {"name": "Rahul Sharma",          "role": "freelancer"},
+    "merchant@example.com":    {"name": "Sahil",                 "role": "merchant"},
+    "admin@example.com":       {"name": "Risk Officer",          "role": "admin"},
+    # Additional users
+    "client2@example.com":     {"name": "Nexus Corp",            "role": "client"},
+    "client3@example.com":     {"name": "Global Trade Ltd",      "role": "client"},
+    "freelancer2@example.com": {"name": "Sarah Jenkins",         "role": "freelancer"},
+    "freelancer3@example.com": {"name": "David Chen",            "role": "freelancer"},
+    "merchant2@example.com":   {"name": "TechBazaar",            "role": "merchant"},
+    "merchant3@example.com":   {"name": "MegaShop",              "role": "merchant"},
+    "risk@example.com":        {"name": "Risk Officer 2",        "role": "admin"},
 }
 
 _registered_users: dict[str, dict] = {}
@@ -71,6 +80,7 @@ async def login(req: LoginRequest) -> dict:
                 "email": db_user.email,
                 "name": db_user.name,
                 "role": db_user.role,
+                "customer_id": db_user.customer_id,
             },
         }
 
@@ -83,7 +93,7 @@ async def login(req: LoginRequest) -> dict:
                 "access_token": f"mock-token-{email}",
                 "token_type": "bearer",
                 "role": "client",
-                "user": {"email": email, "name": name, "role": "client"},
+                "user": {"email": email, "name": name, "role": "client", "customer_id": None},
             }
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -98,6 +108,7 @@ async def login(req: LoginRequest) -> dict:
             "email": email,
             "name": user_info["name"],
             "role": user_info["role"],
+            "customer_id": user_info.get("customer_id"),
         },
     }
 
@@ -175,6 +186,7 @@ async def list_users() -> list[dict]:
                         "email": u.email,
                         "name": u.name,
                         "role": u.role,
+                        "customer_id": u.customer_id,
                         "is_active": u.is_active,
                         "created_at": u.created_at.isoformat() if u.created_at else None,
                     }
