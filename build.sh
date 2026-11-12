@@ -13,8 +13,8 @@ pip install --upgrade pip
 pip install -e "."
 
 echo "=== [2/3] Building React frontend ==="
-# Install Node dependencies inside frontend/react-app
-npm --prefix frontend/react-app ci
+# Use npm install (not npm ci) to handle any lock file drift across platforms
+npm --prefix frontend/react-app install --no-fund --no-audit
 # Build into frontend/react-app/dist — FastAPI mounts this automatically
 npm --prefix frontend/react-app run build
 echo "Frontend built to frontend/react-app/dist/"
