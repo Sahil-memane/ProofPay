@@ -52,9 +52,10 @@ def get_current_user(authorization: str = Header(default="")) -> dict:
         email = token[len("mock-token-"):]
 
     if not email:
-        # No auth header sent — treat as anonymous admin so existing
-        # pages that don't yet send headers don't break.
-        return {"email": None, "role": "admin", "customer_id": None}
+        # No auth header — return a restricted guest view, NOT admin.
+        # All properly built pages send Authorization: Bearer after login.
+        # Returning admin here would leak all data to unauthenticated callers.
+        return {"email": None, "role": "client", "customer_id": "__GUEST__"}
 
     # 1. Try DB lookup
     try:

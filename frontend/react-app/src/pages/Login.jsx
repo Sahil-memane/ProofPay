@@ -98,12 +98,12 @@ export default function Login() {
     const redirectTo = location.state?.from?.pathname || '/dashboard';
 
     try {
-      // Check live backend if configured
-      const res = await fetch('http://localhost:8000/auth/login', {
+      // Use relative URL so this works both on localhost and on Render production
+      const res = await fetch('/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password: signInPassword, remember: rememberMe }),
-        signal: AbortSignal.timeout(2000),
+        signal: AbortSignal.timeout(5000),
       }).catch(() => null);
 
       if (res && res.ok) {
@@ -122,11 +122,12 @@ export default function Login() {
       // Fallback to local sandbox logic
     }
 
-    // Local persona check
+    // Local persona check (only if backend unreachable — offline fallback)
     const mock = MOCK_USERS[email];
     if (mock && signInPassword === DEMO_PW) {
       const storage = rememberMe ? localStorage : sessionStorage;
-      storage.setItem('pp_session', JSON.stringify({ user: { email, ...mock }, role: mock.role, offline: true }));
+      // Always store a token so authHeaders() sends Authorization: Bearer on every API call
+      storage.setItem('pp_session', JSON.stringify({ user: { email, ...mock }, token: 'mock-token-' + email, role: mock.role, offline: true }));
       sessionStorage.setItem('pp_role', mock.role);
       localStorage.setItem('proofpay_role', mock.role);
       window.dispatchEvent(new Event('authChanged'));
@@ -142,7 +143,8 @@ export default function Login() {
       if (saved[email]) {
         const u = saved[email];
         const storage = rememberMe ? localStorage : sessionStorage;
-        storage.setItem('pp_session', JSON.stringify({ user: { email, name: u.name, role: u.role }, role: u.role, offline: true }));
+        // Always store token so API scoping works for locally-registered users too
+        storage.setItem('pp_session', JSON.stringify({ user: { email, name: u.name, role: u.role }, token: 'mock-token-' + email, role: u.role, offline: true }));
         sessionStorage.setItem('pp_role', u.role);
         localStorage.setItem('proofpay_role', u.role);
         window.dispatchEvent(new Event('authChanged'));

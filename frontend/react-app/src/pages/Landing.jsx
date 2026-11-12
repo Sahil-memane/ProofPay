@@ -352,7 +352,7 @@ export default function Landing() {
           <div className={styles.trustActions}>
             <a
               className={styles.btnApiDocs}
-              href="http://localhost:8000/docs"
+              href="/docs"
               target="_blank"
               rel="noreferrer"
             >
