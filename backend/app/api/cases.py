@@ -200,18 +200,118 @@ def get_reconciliation_summary() -> dict[str, Any]:
 # ── GET /approvals & POST /approvals/{id}/decide ─────────────────────────────
 
 @router.get("/approvals")
-def list_pending_approvals() -> list[dict[str, Any]]:
-    cases = case_repo.list_all()
-    pending = [
-        c for c in cases
+def list_pending_approvals(
+    current_user: dict = Depends(get_current_user),
+) -> list[dict[str, Any]]:
+    """List recovery cases requiring human sign-off.
+
+    Returns in-memory ACTION_PENDING_APPROVAL cases + DB cases
+    that are ESCALATED or amount >= $200, scoped to current user.
+    """
+    # 1. In-memory pending cases (from case_repo)
+    mem_cases = case_repo.list_all()
+    mem_pending = [
+        c for c in mem_cases
         if c.get("state") in (CaseState.ACTION_PENDING_APPROVAL, "ACTION_PENDING_APPROVAL")
     ]
-    return pending
+
+    # Scope in-memory cases for non-admin
+    if not is_admin(current_user):
+        cid = current_user.get("customer_id")
+        if cid:
+            mem_pending = [c for c in mem_pending if c.get("customer_id") == cid]
+        else:
+            mem_pending = []
+
+    # 2. High-value & escalated cases from in-memory repo (all states)
+    escalated_cases: list[dict[str, Any]] = []
+    hitl_cands = [
+        c for c in mem_cases
+        if c.get("state") == "ESCALATED" or float(c.get("amount_usd", 0)) >= 200
+    ]
+    if not is_admin(current_user):
+        cid = current_user.get("customer_id")
+        hitl_cands = [c for c in hitl_cands if c.get("customer_id") == cid] if cid else []
+
+    mem_pending_ids = {c.get("id") for c in mem_pending}
+    for c in hitl_cands:
+        if c.get("id") in mem_pending_ids:
+            continue
+        # Build a HITL-formatted entry
+        diagnosis = c.get("diagnosis") or {}
+        payload = c.get("payload") or {}
+        state = c.get("state", "OPEN")
+        amt = float(c.get("amount_usd", 0))
+
+        if state == "ESCALATED":
+            proposed = "STAGE_3_SERVICE_SUSPENSION"
+            risk = "HIGH RISK"
+            reason = f"Case escalated; amount ${amt:.2f} requires manual review"
+        elif amt >= 1000:
+            proposed = "STAGE_3_SERVICE_SUSPENSION"
+            risk = "HIGH RISK"
+            reason = f"Amount ${amt:.2f} exceeds $1,000 policy threshold"
+        elif amt >= 500:
+            proposed = "STAGE_2_FIRM_WARNING"
+            risk = "MEDIUM RISK"
+            reason = f"Amount ${amt:.2f} exceeds $500 autonomous threshold"
+        else:
+            proposed = "STAGE_2_FIRM_WARNING"
+            risk = "ELEVATED RISK"
+            reason = f"Amount ${amt:.2f} exceeds $200 autonomous threshold"
+
+        # Get customer info
+        try:
+            contacts = contact_repo.list_for_case(c.get("id", "")) if hasattr(contact_repo, "list_for_case") else []
+        except Exception:
+            contacts = []
+
+        history = c.get("history", [])
+        hist_text = " · ".join(
+            f"Stage {i + 1} {h.get('actor', 'system')} {h.get('to_state', '')} at {h.get('timestamp', '')[:10]}"
+            for i, h in enumerate(history[-3:])
+        ) or "No prior contact"
+
+        escalated_cases.append({
+            "id": f"REC-{c['id'][:8].upper()}",
+            "case_id": c.get("id"),
+            "customer_id": c.get("customer_id"),
+            "amount_usd": amt,
+            "state": state,
+            "proposed_action": proposed,
+            "risk_level": risk,
+            "reason": reason,
+            "failure_code": payload.get("failure_code", "unknown"),
+            "contact_history": hist_text,
+            "status": "pending",
+            "source": "db",
+        })
+
+    return mem_pending + escalated_cases
 
 
 @router.post("/approvals/{case_id}/decide")
-def decide_approval(case_id: str, req: ApprovalDecisionRequest) -> dict[str, Any]:
-    case = case_repo.get(case_id)
+def decide_approval(
+    case_id: str,
+    req: ApprovalDecisionRequest,
+    current_user: dict = Depends(get_current_user),
+) -> dict[str, Any]:
+    if not is_admin(current_user):
+        raise HTTPException(
+            status_code=403,
+            detail="Only Risk Officers and Admins can decide HITL approvals.",
+        )
+    # Support both short IDs (REC-XXXXXXXX) and full UUIDs
+    actual_case_id = case_id
+    if case_id.startswith("REC-"):
+        # Try to find the full case id from in-memory repo
+        prefix = case_id[4:].lower()
+        all_cases = case_repo.list_all()
+        matched = [c for c in all_cases if c.get("id", "").lower().startswith(prefix)]
+        if matched:
+            actual_case_id = matched[0]["id"]
+
+    case = case_repo.get(actual_case_id)
     if not case:
         raise HTTPException(status_code=404, detail=f"Case {case_id} not found")
 

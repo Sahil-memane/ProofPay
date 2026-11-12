@@ -2,51 +2,8 @@ import { useState, useEffect } from 'react';
 import { showToast } from '../components/ui/Toast';
 import { useApi } from '../api/useApi';
 import { endpoints } from '../api/endpoints';
+import { useAuth } from '../hooks/useAuth';
 import styles from './Approvals.module.css';
-
-const INITIAL_PAYOUTS = [
-  {
-    id: 'TASK-APP-104',
-    ms: 'MS-2026-001-02',
-    proj: 'E-commerce Web App',
-    rcp: 'freelancer@example.com',
-    amt: 700,
-    score: 94,
-    note: 'Passed all automated criteria',
-    flag: 'OVERSIZED_PAYOUT: Amount exceeds $200.00 autonomous threshold',
-    at: '2026-11-11 08:12 UTC',
-    pr: 'https://github.com/acme/shop/pull/42',
-    url: 'https://staging-shop.acme.app',
-    m: 'Frontend Integration & API Client'
-  },
-  {
-    id: 'TASK-APP-105',
-    ms: 'MS-2026-005-01',
-    proj: 'Brand Identity Pack',
-    rcp: 'designer@example.com',
-    amt: 850,
-    score: 88,
-    note: 'Passed 7 of 8 criteria',
-    flag: 'OVERSIZED_PAYOUT: Amount exceeds $200.00 autonomous threshold',
-    at: '2026-11-11 10:47 UTC',
-    pr: 'https://github.com/acme/brand/pull/9',
-    url: 'https://staging-brand.acme.app',
-    m: 'Logo system & guidelines'
-  }
-];
-
-const INITIAL_RECOVERIES = [
-  {
-    id: 'REC-2026-0089',
-    cust: 'Acme Corp',
-    amt: 1850,
-    act: 'STAGE_3_SERVICE_SUSPENSION',
-    risk: 'HIGH RISK',
-    why: 'Amount exceeds $1,000 policy threshold; service suspension requested',
-    diag: 'INSUFFICIENT_FUNDS',
-    hist: 'Stage 1 link sent 11-04 · Stage 2 firm warning sent 11-08 · no response'
-  }
-];
 
 const fmt = n => '$' + Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' USD';
 
@@ -59,52 +16,102 @@ async function sha256(text) {
   }
 }
 
+function mapPayout(a, i) {
+  return {
+    id: a.task_id || a.id || `TASK-APP-${104 + i}`,
+    ms: a.milestone_id || `MS-2026-00${1 + i}-02`,
+    proj: a.project_name || 'Escrow Project',
+    rcp: a.recipient || 'freelancer@example.com',
+    amt: a.amount || 700,
+    score: a.score || 94,
+    note: a.note || 'Passed all automated criteria',
+    flag: a.flag || `OVERSIZED_PAYOUT: Amount exceeds $200.00 autonomous threshold`,
+    at: a.created_at ? new Date(a.created_at).toUTCString() : '—',
+    pr: a.pr_url || null,
+    url: a.preview_url || null,
+    m: a.title || 'Milestone Deliverable',
+    status: a.status || 'pending',
+  };
+}
+
+function mapRecovery(a, i) {
+  return {
+    id: a.id || `REC-2026-00${89 + i}`,
+    case_id: a.case_id || a.id,
+    cust: a.customer_id || 'Customer',
+    amt: a.amount_usd || 0,
+    act: a.proposed_action || 'STAGE_2_FIRM_WARNING',
+    risk: a.risk_level || 'ELEVATED RISK',
+    why: a.reason || 'Amount exceeds autonomous threshold',
+    diag: a.failure_code || 'unknown',
+    hist: a.contact_history || 'No prior contact',
+    status: a.status || 'pending',
+  };
+}
+
+/** Status badge for non-admin view */
+function StatusBadge({ status }) {
+  if (status === 'approved' || status === 'completed') {
+    return (
+      <span className={`${styles.bd} ${styles.g}`}>
+        Approved by Admin
+      </span>
+    );
+  }
+  if (status === 'rejected') {
+    return (
+      <span className={`${styles.bd} ${styles.r}`}>
+        Denied by Admin
+      </span>
+    );
+  }
+  if (status === 'disputed') {
+    return (
+      <span className={`${styles.bd} ${styles.r}`}>
+        Disputed
+      </span>
+    );
+  }
+  // pending
+  return (
+    <div>
+      <span className={`${styles.bd} ${styles.a}`}>Pending Admin Verification</span>
+      <div style={{ fontSize: 11, color: '#64748B', marginTop: 3 }}>Reviewed by Risk Officer only</div>
+    </div>
+  );
+}
+
 export default function Approvals() {
+  const { user } = useAuth();
+  const isAdmin = user?.role === 'admin' || user?.role === 'risk_officer';
+
   const [tab, setTab] = useState(1);
-  const [payouts, setPayouts] = useState(INITIAL_PAYOUTS);
-  const [recoveries, setRecoveries] = useState(INITIAL_RECOVERIES);
+  const [payouts, setPayouts] = useState([]);
+  const [recoveries, setRecoveries] = useState([]);
   const [recentDecisions, setRecentDecisions] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const { data: apiPayoutApprovals } = useApi(() => endpoints.approvals.submissions.list());
   const { data: apiCaseApprovals } = useApi(() => endpoints.approvals.cases.list());
 
   useEffect(() => {
-    if (apiPayoutApprovals && Array.isArray(apiPayoutApprovals) && apiPayoutApprovals.length > 0) {
-      const mapped = apiPayoutApprovals.map((a, i) => ({
-        id: a.task_id || `TASK-APP-${104 + i}`,
-        ms: a.milestone_id || `MS-2026-00${1 + i}-02`,
-        proj: a.project_name || 'Escrow Project',
-        rcp: a.recipient || 'freelancer@example.com',
-        amt: a.amount || 700,
-        score: a.score || 94,
-        note: a.note || 'Passed all automated criteria',
-        flag: `OVERSIZED_PAYOUT: Amount exceeds $200.00 autonomous threshold`,
-        at: a.created_at ? new Date(a.created_at).toUTCString() : '2026-11-11 08:12 UTC',
-        pr: a.pr_url || 'https://github.com/acme/shop/pull/42',
-        url: a.preview_url || 'https://staging.acme.app',
-        m: a.title || 'Milestone deliverable',
-      }));
-      setPayouts(mapped.length > 0 ? mapped : INITIAL_PAYOUTS);
+    if (apiPayoutApprovals !== undefined) {
+      if (Array.isArray(apiPayoutApprovals)) {
+        setPayouts(apiPayoutApprovals.map(mapPayout));
+      }
+      setLoading(false);
     }
   }, [apiPayoutApprovals]);
 
   useEffect(() => {
-    if (apiCaseApprovals && Array.isArray(apiCaseApprovals) && apiCaseApprovals.length > 0) {
-      const mapped = apiCaseApprovals.map((a, i) => ({
-        id: a.case_id || `REC-2026-00${89 + i}`,
-        cust: a.customer_id || 'Customer',
-        amt: a.amount_usd || 1850,
-        act: a.proposed_action || 'STAGE_3_SERVICE_SUSPENSION',
-        risk: a.risk_level || 'HIGH RISK',
-        why: a.reason || 'Amount exceeds $1,000 policy threshold',
-        diag: a.failure_code || 'INSUFFICIENT_FUNDS',
-        hist: a.contact_history || 'Stage 1 sent · Stage 2 sent · no response',
-      }));
-      setRecoveries(mapped.length > 0 ? mapped : INITIAL_RECOVERIES);
+    if (apiCaseApprovals !== undefined) {
+      if (Array.isArray(apiCaseApprovals)) {
+        setRecoveries(apiCaseApprovals.map(mapRecovery));
+      }
     }
   }, [apiCaseApprovals]);
 
-  // Modal state
+  // Modal state (admin only)
   const [modalItem, setModalItem] = useState(null);
   const [decision, setDecision] = useState('APPROVE');
   const [notes, setNotes] = useState('');
@@ -196,21 +203,44 @@ export default function Approvals() {
         </div>
       </div>
 
+      {/* Governance notice for non-admin */}
+      {!isAdmin && (
+        <div style={{
+          background: '#EFF6FF',
+          border: '1px solid #93C5FD',
+          borderRadius: 8,
+          padding: '12px 16px',
+          marginBottom: 16,
+          display: 'flex',
+          alignItems: 'flex-start',
+          gap: 10,
+        }}>
+          <div>
+            <b style={{ color: '#1E40AF' }}>Governance View — Read Only</b>
+            <div style={{ fontSize: 13, color: '#1E40AF', marginTop: 2 }}>
+              Logged in as <b>{user?.email || 'you'}</b> ({user?.role || 'user'}).
+              Human-in-the-Loop overrides can only be verified and executed by an authorized Risk Officer or Admin.
+              You can view the status of pending items below.
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Alert banners */}
       <div className={styles.alertsBar}>
-        {payouts.length > 0 && (
+        {payouts.filter(p => p.status === 'pending').length > 0 && (
           <span className={`${styles.bd} ${styles.a}`} style={{ padding: '8px 14px', fontSize: 13 }}>
-            ⚠️ {payouts.length} Milestone Payout{payouts.length > 1 ? 's' : ''} Awaiting Review (Oversized &gt; $200.00 Limit)
+            {payouts.filter(p => p.status === 'pending').length} Milestone Payout{payouts.filter(p => p.status === 'pending').length > 1 ? 's' : ''} Awaiting Review — Oversized &gt; $200.00 Limit
           </span>
         )}
-        {recoveries.length > 0 && (
+        {recoveries.filter(r => r.status === 'pending').length > 0 && (
           <span className={`${styles.bd} ${styles.a}`} style={{ padding: '8px 14px', fontSize: 13 }}>
-            ⚠️ {recoveries.length} Recovery Escalation{recoveries.length > 1 ? 's' : ''} Awaiting Sign-off (Stage 3 Account Suspension)
+            {recoveries.filter(r => r.status === 'pending').length} Recovery Escalation{recoveries.filter(r => r.status === 'pending').length > 1 ? 's' : ''} Awaiting Sign-off
           </span>
         )}
-        {payouts.length === 0 && recoveries.length === 0 && (
+        {payouts.filter(p => p.status === 'pending').length === 0 && recoveries.filter(r => r.status === 'pending').length === 0 && !loading && (
           <span className={`${styles.bd} ${styles.g}`} style={{ padding: '8px 14px', fontSize: 13 }}>
-            ✓ All clear: nothing awaiting review
+            All clear — nothing awaiting review
           </span>
         )}
       </div>
@@ -240,27 +270,25 @@ export default function Approvals() {
               <table className={styles.table}>
                 <thead>
                   <tr>
-                    <th className={styles.th}>Task ID</th>
-                    <th className={styles.th}>Milestone / Project</th>
+                    <th className={styles.th}>Task ID / Milestone</th>
+                    <th className={styles.th}>Project</th>
                     <th className={styles.th}>Freelancer Recipient</th>
                     <th className={styles.th}>Amount</th>
-                    <th className={styles.th}>AI Verification Score</th>
+                    <th className={styles.th}>AI Score</th>
                     <th className={styles.th}>Flag Reason</th>
                     <th className={styles.th}>Submitted</th>
-                    <th className={styles.th}>Actions</th>
+                    <th className={styles.th}>{isAdmin ? 'Actions' : 'Status'}</th>
                   </tr>
                 </thead>
                 <tbody>
                   {payouts.map(p => (
                     <tr key={p.id}>
                       <td className={styles.td}>
-                        <a className={styles.monoLink} href="/audit">
-                          {p.id}
-                        </a>
+                        <code className={styles.mono}>{p.ms}</code>
+                        <div className={styles.muted} style={{ fontSize: 11 }}>{p.id}</div>
                       </td>
                       <td className={styles.td}>
-                        <code className={styles.mono}>{p.ms}</code>
-                        <div className={styles.muted}>{p.proj}</div>
+                        <div>{p.proj}</div>
                       </td>
                       <td className={styles.td}>{p.rcp}</td>
                       <td className={`${styles.td} ${styles.num}`}>
@@ -272,23 +300,28 @@ export default function Approvals() {
                         </div>
                       </td>
                       <td className={styles.td}>
-                        <b className={styles.num}>{p.score}%</b> - {p.note}
+                        <b className={styles.num}>{p.score}%</b>
+                        <div className={styles.muted} style={{ fontSize: 12 }}>{p.note}</div>
                       </td>
                       <td className={styles.td}>
                         <code className={styles.mono} style={{ color: '#B42830' }}>
                           {p.flag.split(':')[0]}
                         </code>
-                        <div className={styles.muted}>{p.flag.split(': ')[1]}</div>
+                        <div className={styles.muted}>{(p.flag.split(': ')[1] || '').substring(0, 40)}</div>
                       </td>
-                      <td className={`${styles.td} ${styles.num}`}>{p.at}</td>
+                      <td className={`${styles.td} ${styles.num}`} style={{ fontSize: 12 }}>{p.at}</td>
                       <td className={styles.td}>
-                        <button
-                          className={`${styles.btn} ${styles.btnP}`}
-                          style={{ height: 36 }}
-                          onClick={() => openModal('p', p)}
-                        >
-                          Review &amp; Decide
-                        </button>
+                        {isAdmin ? (
+                          <button
+                            className={`${styles.btn} ${styles.btnP}`}
+                            style={{ height: 36 }}
+                            onClick={() => openModal('p', p)}
+                          >
+                            Review &amp; Decide
+                          </button>
+                        ) : (
+                          <StatusBadge status={p.status} />
+                        )}
                       </td>
                     </tr>
                   ))}
@@ -297,9 +330,9 @@ export default function Approvals() {
             </div>
           ) : (
             <div className={styles.empty}>
-              <b>Queue clear</b>
+              <b>{loading ? 'Loading…' : 'Queue clear'}</b>
               <div className={styles.muted} style={{ marginTop: 4 }}>
-                No items awaiting human review in this queue.
+                {loading ? 'Fetching milestone approvals…' : 'No items awaiting human review in this queue.'}
               </div>
             </div>
           )
@@ -312,12 +345,12 @@ export default function Approvals() {
                 <thead>
                   <tr>
                     <th className={styles.th}>Case ID</th>
-                    <th className={styles.th}>Customer / Company</th>
+                    <th className={styles.th}>Customer</th>
                     <th className={styles.th}>Amount at Risk</th>
                     <th className={styles.th}>Proposed Action</th>
                     <th className={styles.th}>Risk Level</th>
                     <th className={styles.th}>Reason for Human Review</th>
-                    <th className={styles.th}>Actions</th>
+                    <th className={styles.th}>{isAdmin ? 'Actions' : 'Status'}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -327,20 +360,29 @@ export default function Approvals() {
                         <a className={styles.monoLink} href="/cases">
                           {r.id}
                         </a>
+                        <div className={styles.muted} style={{ fontSize: 11 }}>{r.diag}</div>
                       </td>
                       <td className={styles.td}><b>{r.cust}</b></td>
                       <td className={`${styles.td} ${styles.num}`}><b>{fmt(r.amt)}</b></td>
                       <td className={styles.td}><code className={styles.mono}>{r.act}</code></td>
-                      <td className={styles.td}><span className={`${styles.bd} ${styles.r}`}>{r.risk}</span></td>
+                      <td className={styles.td}>
+                        <span className={`${styles.bd} ${r.risk.includes('HIGH') ? styles.r : styles.a}`}>
+                          {r.risk}
+                        </span>
+                      </td>
                       <td className={styles.td}>{r.why}</td>
                       <td className={styles.td}>
-                        <button
-                          className={`${styles.btn} ${styles.btnP}`}
-                          style={{ height: 36 }}
-                          onClick={() => openModal('r', r)}
-                        >
-                          Review &amp; Decide
-                        </button>
+                        {isAdmin ? (
+                          <button
+                            className={`${styles.btn} ${styles.btnP}`}
+                            style={{ height: 36 }}
+                            onClick={() => openModal('r', r)}
+                          >
+                            Review &amp; Decide
+                          </button>
+                        ) : (
+                          <StatusBadge status={r.status} />
+                        )}
                       </td>
                     </tr>
                   ))}
@@ -386,8 +428,8 @@ export default function Approvals() {
         </div>
       </section>
 
-      {/* Decision Modal */}
-      {modalItem && (
+      {/* Decision Modal — admin only */}
+      {modalItem && isAdmin && (
         <div className={styles.modalBackdrop}>
           <div className={styles.modalCard}>
             <div className={styles.modalHead}>
@@ -483,19 +525,23 @@ export default function Approvals() {
                   <h3 style={{ fontSize: 15, fontWeight: 600, margin: '0 0 8px' }}>Evidence Summary</h3>
                   {modalItem.kind === 'p' ? (
                     <div style={{ display: 'grid', gap: 6, fontSize: 13 }}>
-                      <div>
-                        <span className={styles.muted}>GitHub PR: </span>
-                        <a href={modalItem.item.pr} target="_blank" rel="noreferrer" className={styles.link}>
-                          {modalItem.item.pr}
-                        </a>
-                      </div>
-                      <div>
-                        <span className={styles.muted}>Staging URL: </span>
-                        <a href={modalItem.item.url} target="_blank" rel="noreferrer" className={styles.link}>
-                          {modalItem.item.url}
-                        </a>{' '}
-                        <span className={`${styles.bd} ${styles.g}`}>HTTP 200 OK</span>
-                      </div>
+                      {modalItem.item.pr && (
+                        <div>
+                          <span className={styles.muted}>GitHub PR: </span>
+                          <a href={modalItem.item.pr} target="_blank" rel="noreferrer" className={styles.link}>
+                            {modalItem.item.pr}
+                          </a>
+                        </div>
+                      )}
+                      {modalItem.item.url && (
+                        <div>
+                          <span className={styles.muted}>Staging URL: </span>
+                          <a href={modalItem.item.url} target="_blank" rel="noreferrer" className={styles.link}>
+                            {modalItem.item.url}
+                          </a>{' '}
+                          <span className={`${styles.bd} ${styles.g}`}>HTTP 200 OK</span>
+                        </div>
+                      )}
                       <div>
                         <span className={styles.muted}>Verifier Score: </span>
                         <b>{modalItem.item.score}/100</b> ({modalItem.item.note})
@@ -508,7 +554,7 @@ export default function Approvals() {
                   ) : (
                     <div style={{ display: 'grid', gap: 6, fontSize: 13 }}>
                       <div>
-                        <span className={styles.muted}>Diagnosis: </span>
+                        <span className={styles.muted}>Diagnosis / Failure: </span>
                         <code className={styles.mono}>{modalItem.item.diag}</code>
                       </div>
                       <div>

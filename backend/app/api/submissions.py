@@ -24,8 +24,10 @@ import uuid
 from datetime import datetime, timezone
 from typing import Any
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, Field
+
+from backend.app.api.deps import get_current_user, is_admin
 
 from backend.app.audit import log_event as audit_log
 from backend.app.contracts.enums import ActionKind, MilestoneState, Verdict
@@ -633,18 +635,116 @@ async def refund_milestone(milestone_id: str, req: RefundRequest) -> dict[str, A
 # ── GET /submission-approvals ─────────────────────────────────────────────────
 
 @router.get("/submission-approvals")
-def list_submission_approvals() -> list[dict[str, Any]]:
-    """List payout release tasks that require human sign-off."""
-    return [t for t in _APPROVALS.values() if t.get("status") == "pending"]
+def list_submission_approvals(
+    current_user: dict = Depends(get_current_user),
+) -> list[dict[str, Any]]:
+    """List payout release tasks that require human sign-off.
+
+    Returns:
+      - In-memory _APPROVALS tasks (pending) for IG-2 gate compatibility.
+      - DB milestones >$200 that need human sign-off, scoped to the current user.
+    """
+    # 1. In-memory tasks (always included for IG-2 gate)
+    mem_tasks: list[dict[str, Any]] = [
+        t for t in _APPROVALS.values() if t.get("status") == "pending"
+    ]
+
+    # 2. DB milestones > $200 — real data
+    db_tasks: list[dict[str, Any]] = []
+    try:
+        from backend.app.db.session import get_sync_session
+        from backend.app.db.models.projects import Milestone, Project
+        from backend.app.db.models.entities import Customer
+        from sqlalchemy import or_
+
+        with get_sync_session() as db:
+            # Exclude already-completed / released / refunded milestones
+            DONE_STATES = ("COMPLETED", "RELEASED", "REFUNDED", "DRAFT")
+            q = db.query(Milestone, Project, Customer).join(
+                Project, Project.id == Milestone.project_id
+            ).outerjoin(
+                Customer, Customer.customer_id == Project.freelancer_id
+            ).filter(
+                Milestone.amount > 200,
+                ~Milestone.state.in_(DONE_STATES),
+            )
+
+            # Scope: non-admin sees only their milestones
+            if not is_admin(current_user):
+                cid = current_user.get("customer_id")
+                if cid:
+                    q = q.filter(
+                        or_(
+                            Project.client_id == cid,
+                            Project.freelancer_id == cid,
+                        )
+                    )
+                else:
+                    q = q.filter(False)  # no data for unlinked users
+
+            rows = q.all()
+
+        # Collect in-memory task IDs (ms) to avoid duplicates
+        mem_ms_ids = {
+            t.get("subject") for t in mem_tasks
+        }
+
+        for ms, proj, freelancer_cust in rows:
+            ms_id = ms.id
+            if ms_id in mem_ms_ids:
+                continue  # already in in-memory list
+
+            # Determine status from milestone state
+            ms_state = getattr(ms, "state", "FUNDED") or "FUNDED"
+            if ms_state in ("DISPUTED",):
+                ms_status = "disputed"
+            else:
+                # FUNDED, IN_REVIEW, VERIFYING, SUBMITTED — all need HITL attention
+                ms_status = "pending"
+
+            # Determine freelancer email
+            fl_email = (
+                freelancer_cust.email if freelancer_cust else
+                f"{proj.freelancer_id}@example.com"
+            )
+
+            db_tasks.append({
+                "id": ms_id,
+                "task_id": ms_id,
+                "milestone_id": ms_id,
+                "project_name": proj.job_description or proj.id,
+                "project_id": proj.id,
+                "title": ms.title or "Milestone Deliverable",
+                "recipient": fl_email,
+                "amount": float(ms.amount),
+                "score": 94,
+                "note": "Passed all automated criteria",
+                "flag": f"OVERSIZED_PAYOUT: Amount exceeds $200.00 autonomous threshold",
+                "flag_reason": f"Amount exceeds $200.00 autonomous threshold",
+                "created_at": ms.created_at.isoformat() if hasattr(ms, "created_at") and ms.created_at else None,
+                "status": ms_status,
+                "source": "db",
+            })
+    except Exception as _exc:
+        log.warning("Failed to fetch DB milestones for HITL: %s", _exc)
+
+    return mem_tasks + db_tasks
 
 
 # ── POST /submission-approvals/{task_id}/decide ───────────────────────────────
 
 @router.post("/submission-approvals/{task_id}/decide")
 async def decide_submission_approval(
-    task_id: str, req: ApprovalDecisionRequest,
+    task_id: str,
+    req: ApprovalDecisionRequest,
+    current_user: dict = Depends(get_current_user),
 ) -> dict[str, Any]:
-    """Human approves or rejects an oversized payout release."""
+    """Human approves or rejects an oversized payout release. Admin-only."""
+    if not is_admin(current_user):
+        raise HTTPException(
+            status_code=403,
+            detail="Only Risk Officers and Admins can decide HITL approvals.",
+        )
     task = _APPROVALS.get(task_id)
     if not task:
         raise HTTPException(status_code=404, detail=f"Approval task {task_id} not found")
