@@ -13,8 +13,6 @@ services:
         fromDatabase:
           name: proofpay-db
           property: connectionString
-      # Alembic uses sync psycopg2 driver; derive from DATABASE_URL in build.sh
-      # but also expose explicitly for runtime use
       - key: DATABASE_URL_SYNC
         fromDatabase:
           name: proofpay-db
@@ -30,11 +28,7 @@ services:
       - key: POLICY_SIGNING_KEY
         generateValue: true
       - key: APP_BASE_URL
-        value: https://proofpay-ai.onrender.com   # update after first deploy
-
-      # ── PayPal (set manually in Render dashboard) ────────────────────────────
-      - key: APP_BASE_URL
-        value: https://proofpay-api.onrender.com   # update after first deploy
+        value: https://proofpay-ai.onrender.com
 
       # ── PayPal (set manually in Render dashboard) ────────────────────────────
       - key: PAYPAL_MODE
@@ -42,7 +36,7 @@ services:
       - key: PAYPAL_BASE_URL
         value: https://api-m.sandbox.paypal.com
       - key: PAYPAL_EXEC_MODE
-        value: fake                     # change to "rest" with real credentials
+        value: fake
       - key: PAYPAL_CLIENT_ID
         sync: false
       - key: PAYPAL_CLIENT_SECRET
