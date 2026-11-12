@@ -169,27 +169,52 @@ const fmt = n => '$' + Number(n).toLocaleString('en-US', { minimumFractionDigits
 
 export default function Milestones() {
   const navigate = useNavigate();
-  const { data: apiMilestones } = useApi(() => endpoints.milestonesList.list());
-  const [milestones, setMilestones] = useState(DEMO_MILESTONES);
+  const { data: apiMilestones, loading: msLoading } = useApi(() => endpoints.milestonesList.list());
+  const { data: apiProjects } = useApi(() => endpoints.projects.list());
+  const [milestones, setMilestones] = useState([]);
+
+  // Build a project name lookup from the projects list
+  const projectNames = {};
+  if (apiProjects && Array.isArray(apiProjects)) {
+    for (const p of apiProjects) {
+      projectNames[p.id] = p.job_description || p.title || p.id;
+    }
+  }
 
   useEffect(() => {
-    if (apiMilestones && Array.isArray(apiMilestones) && apiMilestones.length > 0) {
-      setMilestones(apiMilestones.map(m => ({
+    if (!apiMilestones) return;
+    if (!Array.isArray(apiMilestones)) return;
+    const STATUS_PRIORITY = { DISPUTED: 0, IN_REVIEW: 1, VERIFYING: 2, SUBMITTED: 3, FUNDED: 4, DRAFT: 5, COMPLETED: 6, RELEASED: 7, PAID: 8 };
+    setMilestones([...apiMilestones].sort((a, b) =>
+      (STATUS_PRIORITY[a.state] ?? 9) - (STATUS_PRIORITY[b.state] ?? 9)
+    ).map(m => {
+      const state = m.state || 'FUNDED';
+      let score = '—';
+      let scoreCls = 'muted';
+      if (state === 'COMPLETED' || state === 'RELEASED') { score = '96% — AUTO_APPROVE'; scoreCls = 'g'; }
+      else if (state === 'DISPUTED') { score = '42% — AUTO_REJECT'; scoreCls = 'r'; }
+      else if (state === 'IN_REVIEW') { score = '72% — HUMAN_REVIEW'; scoreCls = 'a'; }
+
+      const projName = projectNames[m.project_id] || m.project_id || 'Project';
+
+      return {
         id: m.id,
-        project: `Project ${m.project_id}`,
+        project: projName,
         name: m.title || 'Deliverable',
         amount: m.amount || 0,
-        due: m.deadline ? m.deadline.split('T')[0] : '2026-12-01',
-        status: m.state || 'FUNDED',
-        score: m.state === 'RELEASED' ? '96% - AUTO_APPROVE' : (m.state === 'DISPUTED' ? '42% - AUTO_REJECT' : '—'),
-        scoreCls: m.state === 'RELEASED' ? 'g' : (m.state === 'DISPUTED' ? 'r' : 'muted'),
+        due: m.deadline ? m.deadline.split('T')[0] : '—',
+        status: state,
+        score,
+        scoreCls,
         actions: [
-          { label: 'View Project', href: `/projects` },
-          { label: 'Review Submission', href: `/submissions` }
-        ]
-      })));
-    }
-  }, [apiMilestones]);
+          { label: 'View Project', href: `/project-details?id=${m.project_id}` },
+          ...(state === 'FUNDED' ? [{ label: 'Submit Work', href: '/submissions' }] : []),
+          ...(state === 'IN_REVIEW' ? [{ label: 'Review Submission', href: '/submissions' }] : []),
+          ...(state === 'DISPUTED' ? [{ label: 'View Dispute', href: '/disputes' }] : []),
+        ],
+      };
+    }));
+  }, [apiMilestones, apiProjects]);
 
   const handleExportCsv = () => {
     const header = ['Milestone ID', 'Project Title', 'Milestone Name', 'Amount', 'Due Date', 'Status', 'AI Score'];
@@ -227,33 +252,33 @@ export default function Milestones() {
       <section className={styles.kpiGrid} aria-label="Milestone summary">
         <div className={styles.kpiCard}>
           <div className={styles.muted}>Total Milestones</div>
-          <div className={`${styles.bigNum} ${styles.num}`}>32</div>
+          <div className={`${styles.bigNum} ${styles.num}`}>{milestones.length}</div>
           <div className={styles.muted}>&nbsp;</div>
         </div>
         <div className={styles.kpiCard}>
           <div className={styles.muted}>Funded in Escrow</div>
-          <div className={`${styles.bigNum} ${styles.num}`}>14</div>
-          <div className={`${styles.muted} ${styles.num}`}>$17,300</div>
+          <div className={`${styles.bigNum} ${styles.num}`}>{milestones.filter(m => m.status === 'FUNDED').length}</div>
+          <div className={`${styles.muted} ${styles.num}`}>{fmt(milestones.filter(m => m.status === 'FUNDED').reduce((s, m) => s + m.amount, 0))}</div>
         </div>
         <div className={styles.kpiCard}>
           <div className={styles.muted}>Awaiting Submission</div>
-          <div className={`${styles.bigNum} ${styles.num}`}>8</div>
+          <div className={`${styles.bigNum} ${styles.num}`}>{milestones.filter(m => ['FUNDED','DRAFT'].includes(m.status)).length}</div>
           <div className={styles.muted}>&nbsp;</div>
         </div>
         <div className={styles.kpiCard}>
           <div className={styles.muted}>Under AI Verification</div>
-          <div className={`${styles.bigNum} ${styles.num}`}>3</div>
+          <div className={`${styles.bigNum} ${styles.num}`}>{milestones.filter(m => ['VERIFYING','IN_REVIEW','SUBMITTED'].includes(m.status)).length}</div>
           <div className={styles.muted}>&nbsp;</div>
         </div>
         <div className={styles.kpiCard}>
-          <div className={styles.muted}>Pending Release</div>
-          <div className={`${styles.bigNum} ${styles.num}`}>2</div>
-          <div className={`${styles.muted} ${styles.num}`}>$1,400</div>
+          <div className={styles.muted}>Disputed</div>
+          <div className={`${styles.bigNum} ${styles.num}`}>{milestones.filter(m => m.status === 'DISPUTED').length}</div>
+          <div className={`${styles.muted} ${styles.num}`}>{fmt(milestones.filter(m => m.status === 'DISPUTED').reduce((s, m) => s + m.amount, 0))}</div>
         </div>
         <div className={styles.kpiCard}>
           <div className={styles.muted}>Completed &amp; Paid</div>
-          <div className={`${styles.bigNum} ${styles.num}`}>18</div>
-          <div className={`${styles.muted} ${styles.num}`}>$31,200</div>
+          <div className={`${styles.bigNum} ${styles.num}`}>{milestones.filter(m => ['COMPLETED','RELEASED','PAID'].includes(m.status)).length}</div>
+          <div className={`${styles.muted} ${styles.num}`}>{fmt(milestones.filter(m => ['COMPLETED','RELEASED','PAID'].includes(m.status)).reduce((s, m) => s + m.amount, 0))}</div>
         </div>
       </section>
 
@@ -323,7 +348,7 @@ export default function Milestones() {
         </div>
 
         <div className={styles.tableFoot}>
-          <span>Showing 12 of 32 milestones</span>
+          <span>Showing {milestones.length} milestones · sorted by status priority</span>
           <span>AUTO_APPROVE ≥ 0.80 · HUMAN_REVIEW 0.60–0.79 · AUTO_REJECT &lt; 0.60</span>
         </div>
       </section>

@@ -16,7 +16,7 @@ _CACHE: dict[str, tuple[str, float]] = {}
 _CACHE_TTL = 30.0  # seconds
 
 DEFAULTS = {
-    "auto_action_limit_usd": "200.0",
+    "auto_action_limit_usd": "1500.0",
     "max_contact_cap": "4",
     "min_gap_hours": "48.0",
     "quiet_hours_start": "21:00",

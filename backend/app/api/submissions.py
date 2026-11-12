@@ -665,7 +665,7 @@ def list_submission_approvals(
             ).outerjoin(
                 Customer, Customer.customer_id == Project.freelancer_id
             ).filter(
-                Milestone.amount > 200,
+                Milestone.amount > 1500,
                 ~Milestone.state.in_(DONE_STATES),
             )
 
@@ -719,8 +719,8 @@ def list_submission_approvals(
                 "amount": float(ms.amount),
                 "score": 94,
                 "note": "Passed all automated criteria",
-                "flag": f"OVERSIZED_PAYOUT: Amount exceeds $200.00 autonomous threshold",
-                "flag_reason": f"Amount exceeds $200.00 autonomous threshold",
+                "flag": f"OVERSIZED_PAYOUT: Amount exceeds $1,500.00 autonomous threshold",
+                "flag_reason": f"Amount exceeds $1,500.00 autonomous threshold",
                 "created_at": ms.created_at.isoformat() if hasattr(ms, "created_at") and ms.created_at else None,
                 "status": ms_status,
                 "source": "db",

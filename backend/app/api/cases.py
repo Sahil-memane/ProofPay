@@ -227,7 +227,7 @@ def list_pending_approvals(
     escalated_cases: list[dict[str, Any]] = []
     hitl_cands = [
         c for c in mem_cases
-        if c.get("state") == "ESCALATED" or float(c.get("amount_usd", 0)) >= 200
+        if c.get("state") == "ESCALATED" or float(c.get("amount_usd", 0)) >= 1500
     ]
     if not is_admin(current_user):
         cid = current_user.get("customer_id")

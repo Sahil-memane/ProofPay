@@ -203,22 +203,24 @@ export default function Ledger() {
   useEffect(() => {
     let active = true;
     const computeChain = async () => {
-      let sourceList = INITIAL_TRANSACTIONS;
+      let sourceList;
       if (apiLedger && Array.isArray(apiLedger) && apiLedger.length > 0) {
         sourceList = apiLedger.map((l, i) => ({
-          id: `TXN-2026-${9040 - i}`,
-          ts: l.created_at || '2026-11-11T09:58:31Z',
-          prj: l.subject_id,
-          ms: 'All milestones',
-          mn: 'Escrow funding & release',
-          type: l.type === 'FUNDING' ? 'CAPTURE_FUNDING' : (l.type === 'RELEASE' ? 'PAYOUT_RELEASE' : l.type),
+          id: `TXN-${l.id?.slice(0, 8)?.toUpperCase() || (9040 - i)}`,
+          ts: l.created_at || '—',
+          prj: l.subject_id || l.project_id || '—',
+          ms: l.milestone_id || 'All milestones',
+          mn: l.note || 'Escrow funding & release',
+          type: l.type === 'FUNDING' ? 'CAPTURE_FUNDING' : (l.type === 'RELEASE' ? 'PAYOUT_RELEASE' : (l.type || 'CAPTURE_FUNDING')),
           from: l.type === 'FUNDING' ? CLIENT_ACC : ESCROW_VAULT,
           to: l.type === 'FUNDING' ? ESCROW_VAULT : FREELANCER_ACC,
-          amt: l.amount,
-          ref: l.paypal_id || 'PAYPAL-REF-AUTO',
-          pol: 'ALLOWED',
+          amt: l.amount || 0,
+          ref: l.paypal_id || '—',
+          pol: l.policy_status || 'ALLOWED',
           note: l.note || 'Tamper-evident audit verified ledger entry',
         }));
+      } else {
+        sourceList = INITIAL_TRANSACTIONS;
       }
 
       let prev = '0'.repeat(64);

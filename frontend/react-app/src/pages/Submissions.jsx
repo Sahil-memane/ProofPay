@@ -75,14 +75,14 @@ export default function Submissions() {
     policyMsg = `Borderline score. Payout of $${amt.toFixed(2)} routed to the Human Approvals Queue (Task #APP-105).`;
     policyBg = '#FEF1D9';
     policyColor = '#8A5A00';
-  } else if (amt <= 200) {
+  } else if (amt <= 1500) {
     policyBadge = { text: 'ALLOWED', cls: 'g' };
-    policyMsg = 'ALLOWED — Within the $200.00 autonomous limit. Dispatched PayPal Payout batch ID: PAYOUT-BATCH-771.';
+    policyMsg = `ALLOWED — Within the $1,500.00 autonomous limit. Dispatched PayPal Payout batch ID: PAYOUT-BATCH-771.`;
     policyBg = '#E3F4EB';
     policyColor = '#1E7A4C';
   } else {
-    policyBadge = { text: 'DENIED', cls: 'r' };
-    policyMsg = 'DENIED — Exceeds autonomous limit ($200.00). Sent to Human Approvals Queue (Task #APP-104).';
+    policyBadge = { text: 'NEEDS_APPROVAL', cls: 'r' };
+    policyMsg = 'NEEDS_APPROVAL — Exceeds autonomous limit ($1,500.00). Sent to Human Approvals Queue.';
     policyBg = '#FBE5E6';
     policyColor = '#B42830';
   }
@@ -295,7 +295,7 @@ export default function Submissions() {
           </div>
           <div>
             <div className={styles.muted}>Autonomous limit</div>
-            <div className={`${styles.num}`} style={{ fontSize: 16, fontWeight: 600 }}>$200.00 / txn</div>
+            <div className={`${styles.num}`} style={{ fontSize: 16, fontWeight: 600 }}>$1,500.00 / txn</div>
           </div>
           <div>
             <div className={styles.muted}>Daily volume</div>
