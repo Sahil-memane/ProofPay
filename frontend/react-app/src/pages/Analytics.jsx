@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useApi } from '../api/useApi';
 import { endpoints } from '../api/endpoints';
 import { showToast } from '../components/ui/Toast';
@@ -44,24 +44,69 @@ const TABLE_ROWS = [
   { metric: 'Escrow: submission to release', manual: 'n/a', proofpay: '4.1 hours', imp: null }
 ];
 
+const fmtUSD = (n) =>
+  Number(n || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
 export default function Analytics() {
   const { data: summaryData } = useApi(() => endpoints.analytics.summary());
   const [selectedBm, setSelectedBm] = useState(0);
-  const [apiLive, setApiLive] = useState(true);
+  const [apiLive] = useState(true);
+
+  // Live values from API
+  const totalAtRisk = summaryData?.total_at_risk ?? 0;
+  const recoveredRev = summaryData?.recovered_revenue ?? 0;
+  const manualEst = summaryData?.manual_estimate ?? 0;
+  const incGain = summaryData?.incremental_gain ?? 0;
+  const rateDisplay = summaryData?.recovery_rate ?? 0;
+
+  // Benchmarks: update recovery rate card with live data
+  const liveBenchmarks = summaryData
+    ? BENCHMARKS.map(bm => {
+        if (bm.k === 'rate') {
+          return {
+            ...bm,
+            p: rateDisplay,
+            i: `ProofPay recovered ${rateDisplay}% of failed charges vs. 22% for manual dunning${rateDisplay > 22 ? `, ${(rateDisplay / 22).toFixed(1)}x higher` : ''}.`
+          };
+        }
+        return bm;
+      })
+    : BENCHMARKS;
 
   const dynamicRows = summaryData ? [
-    { metric: 'Recovery rate', manual: '22%', proofpay: `${summaryData.recovery_rate}%`, imp: `${(summaryData.recovery_rate / 22).toFixed(1)}x higher` },
+    {
+      metric: 'Recovery rate',
+      manual: '22%',
+      proofpay: `${rateDisplay}%`,
+      imp: rateDisplay > 0 ? `${(rateDisplay / 22).toFixed(1)}x higher` : 'n/a'
+    },
     { metric: 'Average time to recover', manual: '12 days', proofpay: '2.4 days', imp: '5x faster (9.6 days saved)' },
     { metric: 'Dispute rate', manual: '4.2%', proofpay: '0.4%', imp: '90% lower' },
-    { metric: `Revenue recovered (of $${(summaryData.recovered_revenue + summaryData.at_risk_revenue).toLocaleString()} at risk)`, manual: `$${(summaryData.recovered_revenue * 0.35).toFixed(2)}`, proofpay: `$${summaryData.recovered_revenue.toLocaleString()}`, imp: `+$${(summaryData.recovered_revenue * 0.65).toFixed(2)}` },
-    { metric: `Escrow volume (${summaryData.active_projects} active projects)`, manual: 'n/a', proofpay: `$${summaryData.total_escrow_volume.toLocaleString()}`, imp: null },
-    { metric: `Invoice volume`, manual: 'n/a', proofpay: `$${summaryData.total_invoice_volume.toLocaleString()}`, imp: null }
+    {
+      metric: `Revenue recovered (of $${fmtUSD(totalAtRisk)} at risk)`,
+      manual: `$${fmtUSD(manualEst)}`,
+      proofpay: `$${fmtUSD(recoveredRev)}`,
+      imp: incGain > 0 ? `+$${fmtUSD(incGain)}` : 'n/a'
+    },
+    {
+      metric: `Escrow volume (${summaryData.active_projects ?? 0} active projects)`,
+      manual: 'n/a',
+      proofpay: `$${fmtUSD(summaryData.total_escrow_volume ?? 0)}`,
+      imp: null
+    },
+    {
+      metric: 'Invoice volume',
+      manual: 'n/a',
+      proofpay: `$${fmtUSD(summaryData.total_invoice_volume ?? 0)}`,
+      imp: null
+    }
   ] : TABLE_ROWS;
 
   const handleDownloadCsv = () => {
+    const rows = summaryData ? dynamicRows : TABLE_ROWS;
     const csvContent = [
       ['Metric', 'Manual dunning', 'ProofPay', 'Improvement'],
-      ...TABLE_ROWS.map(r => [r.metric, r.manual, r.proofpay, r.imp || 'n/a'])
+      ...rows.map(r => [r.metric, r.manual, r.proofpay, r.imp || 'n/a'])
     ]
       .map(row => row.map(cell => `"${cell}"`).join(','))
       .join('\n');
@@ -93,7 +138,7 @@ export default function Analytics() {
         </div>
         <div className={styles.headerActions}>
           <span className={`${styles.bd} ${apiLive === true ? styles.g : styles.a}`}>
-            {apiLive === null ? 'Checking API…' : apiLive ? 'Live API' : 'Demo fixtures (API unreachable)'}
+            {apiLive ? 'Live API' : 'Demo fixtures (API unreachable)'}
           </span>
           <button className={styles.btn} onClick={handleDownloadCsv}>Download CSV</button>
           <button className={`${styles.btn} ${styles.btnP}`} onClick={handlePrintPdf}>Download PDF report</button>
@@ -105,24 +150,33 @@ export default function Analytics() {
         <div className={styles.heroLeft}>
           <div className={styles.heroLabel}>Net recovered revenue vs. traditional dunning</div>
           <div className={styles.heroAmount}>
-            +$8,250.00 <span className={styles.heroAmountSub}>USD incremental gain</span>
+            {summaryData ? `+$${fmtUSD(incGain)}` : '—'}{' '}
+            <span className={styles.heroAmountSub}>USD incremental gain</span>
           </div>
           <div className={styles.heroDesc}>
-            Manual dunning would have recovered about $4,200.00 of the same $18,600.00 at risk.
+            {summaryData
+              ? `Manual dunning would have recovered about $${fmtUSD(manualEst)} of the same $${fmtUSD(totalAtRisk)} at risk.`
+              : 'Loading recovery data…'}
           </div>
         </div>
         <div className={styles.heroStats}>
           <div>
             <div className={styles.heroStatLabel}>Total at risk</div>
-            <div className={styles.heroStatVal}>$18,600.00</div>
+            <div className={styles.heroStatVal}>
+              {summaryData ? `$${fmtUSD(totalAtRisk)}` : '—'}
+            </div>
           </div>
           <div>
             <div className={styles.heroStatLabel}>Total recovered</div>
-            <div className={styles.heroStatVal}>$12,450.00</div>
+            <div className={styles.heroStatVal}>
+              {summaryData ? `$${fmtUSD(recoveredRev)}` : '—'}
+            </div>
           </div>
           <div>
             <div className={styles.heroStatLabel}>Recovery rate</div>
-            <div className={styles.heroStatVal}>67%</div>
+            <div className={styles.heroStatVal}>
+              {summaryData ? `${rateDisplay}%` : '—'}
+            </div>
           </div>
         </div>
       </section>
@@ -146,7 +200,7 @@ export default function Analytics() {
         </div>
 
         <div className={styles.benchGrid}>
-          {BENCHMARKS.map((m, i) => {
+          {liveBenchmarks.map((m, i) => {
             const mx = Math.max(m.b, m.p);
             const isSelected = selectedBm === i;
             return (
@@ -176,7 +230,7 @@ export default function Analytics() {
         </div>
 
         <div className={styles.benchInfo}>
-          {BENCHMARKS[selectedBm].i}
+          {liveBenchmarks[selectedBm].i}
         </div>
       </section>
 

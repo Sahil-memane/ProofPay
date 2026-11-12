@@ -25,7 +25,7 @@ function mapPayout(a, i) {
     amt: a.amount || 700,
     score: a.score || 94,
     note: a.note || 'Passed all automated criteria',
-    flag: a.flag || `OVERSIZED_PAYOUT: Amount exceeds $200.00 autonomous threshold`,
+    flag: a.flag || `OVERSIZED_PAYOUT: Amount exceeds $1,500.00 autonomous threshold`,
     at: a.created_at ? new Date(a.created_at).toUTCString() : '—',
     pr: a.pr_url || null,
     url: a.preview_url || null,
@@ -142,10 +142,28 @@ export default function Approvals() {
     }
     setNotesError('');
     setSubmitting(true);
-    await new Promise(r => setTimeout(r, 800));
 
     const { kind, item } = modalItem;
     const ok = decision === 'APPROVE';
+
+    try {
+      if (kind === 'p') {
+        await endpoints.approvals.submissions.decide(item.id, {
+          decision: ok ? 'approve' : 'reject',
+          actor: user?.email || 'admin@example.com',
+          reason: notes,
+        });
+      } else {
+        await endpoints.approvals.cases.decide(item.id, {
+          decision: ok ? 'approve' : 'reject',
+          actor: user?.email || 'admin@example.com',
+          notes: notes,
+        });
+      }
+    } catch (err) {
+      console.warn('Backend decide API error (proceeding with optimistic update):', err);
+    }
+
     const hash = await sha256(JSON.stringify({ id: item.id, decision, notes, t: Date.now() }));
     const batch = 'PAYOUTS-' + hash.slice(0, 10).toUpperCase();
 
@@ -230,7 +248,7 @@ export default function Approvals() {
       <div className={styles.alertsBar}>
         {payouts.filter(p => p.status === 'pending').length > 0 && (
           <span className={`${styles.bd} ${styles.a}`} style={{ padding: '8px 14px', fontSize: 13 }}>
-            {payouts.filter(p => p.status === 'pending').length} Milestone Payout{payouts.filter(p => p.status === 'pending').length > 1 ? 's' : ''} Awaiting Review — Oversized &gt; $200.00 Limit
+            {payouts.filter(p => p.status === 'pending').length} Milestone Payout{payouts.filter(p => p.status === 'pending').length > 1 ? 's' : ''} Awaiting Review — Oversized &gt; $1,500.00 Limit
           </span>
         )}
         {recoveries.filter(r => r.status === 'pending').length > 0 && (
@@ -295,7 +313,7 @@ export default function Approvals() {
                         <b>{fmt(p.amt)}</b>
                         <div>
                           <span className={`${styles.bd} ${styles.r}`} style={{ marginTop: 4 }}>
-                            Exceeds $200 Cap
+                            Exceeds $1,500 Cap
                           </span>
                         </div>
                       </td>
@@ -515,7 +533,7 @@ export default function Approvals() {
                   <b style={{ color: '#B42830' }}>Mandate Guard Flag</b>
                   <div>
                     {modalItem.kind === 'p'
-                      ? `Policy blocked autonomous payout because amount (${fmt(modalItem.item.amt)}) exceeds $200.00 cap. Human confirmation required.`
+                      ? `Policy blocked autonomous payout because amount (${fmt(modalItem.item.amt)}) exceeds $1,500.00 cap. Human confirmation required.`
                       : `Policy blocked autonomous action: ${modalItem.item.why}. Human sign-off required.`}
                   </div>
                 </div>

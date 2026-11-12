@@ -42,6 +42,163 @@ router = APIRouter(tags=["submissions"])
 _SUBMISSIONS: dict[str, dict[str, Any]] = {}   # milestone_id → latest submission
 _APPROVALS: dict[str, dict[str, Any]] = {}     # task_id → approval task
 
+# ── Seed realistic submission records for known milestones ────────────────────
+_SEED_SUBMISSIONS: list[dict[str, Any]] = [
+    # freelancer@example.com (CUST-00081) — ESCROW-004-M1 submitted, in review
+    {
+        "id": "SUB-004-M1-001",
+        "milestone_id": "ESCROW-004-M1",
+        "project_id": "ESCROW-004",
+        "freelancer_id": "CUST-00081",
+        "attempt": 1,
+        "pr_url": "https://github.com/proofpay-dev/escrow-004/pull/17",
+        "deployed_url": "https://staging-004.proofpay-dev.app",
+        "repository": "proofpay-dev/escrow-004",
+        "evidence_url": "https://docs.proofpay-dev.app/escrow-004-m1-evidence",
+        "files": {
+            "test-report.pdf": {"size": 142200, "type": "application/pdf"},
+            "coverage-report.zip": {"size": 88400, "type": "application/zip"},
+        },
+        "notes": (
+            "Testing deliverable complete. Integrated end-to-end test suite (87% coverage), "
+            "ran regression on all payment flows, resolved 3 edge cases in the capture webhook handler. "
+            "Remaining gap: 2 checkout hooks lack unit tests — will address in M2."
+        ),
+        "status": "IN_REVIEW",
+        "score": 0.78,
+        "route": "IN_REVIEW",
+        "decision": "CLIENT_REVIEW_REQUIRED",
+        "rationale": (
+            "Core functionality verified. Test suite passes, staging returns HTTP 200. "
+            "Coverage is 87% vs 90% target — borderline; routed to client review."
+        ),
+        "criterion_results": [
+            {"name": "GitHub PR exists, passes linting & build", "weight": 0.35, "passed": True},
+            {"name": "Deployed endpoint returns HTTP 200", "weight": 0.35, "passed": True},
+            {"name": "Responsive layout without shifts", "weight": 0.20, "passed": True},
+            {"name": "Unit test coverage >= 90%", "weight": 0.10, "passed": False},
+        ],
+        "created_at": "2026-11-11T14:22:00+00:00",
+    },
+    # freelancer@example.com (CUST-00081) — ESCROW-000-M1 completed (released)
+    {
+        "id": "SUB-000-M1-001",
+        "milestone_id": "ESCROW-000-M1",
+        "project_id": "ESCROW-000",
+        "freelancer_id": "CUST-00081",
+        "attempt": 1,
+        "pr_url": "https://github.com/proofpay-dev/escrow-000/pull/8",
+        "deployed_url": "https://staging-000.proofpay-dev.app",
+        "repository": "proofpay-dev/escrow-000",
+        "evidence_url": "https://docs.proofpay-dev.app/escrow-000-m1-evidence",
+        "files": {
+            "deliverable-report.pdf": {"size": 198400, "type": "application/pdf"},
+        },
+        "notes": "Maintenance deliverable complete. All acceptance criteria met. Performance benchmarks within SLA.",
+        "status": "RELEASED",
+        "score": 0.96,
+        "route": "RELEASE_PENDING",
+        "decision": "RELEASE_PROPOSAL",
+        "rationale": "All acceptance criteria passed. Score 0.96 — AUTO_APPROVE. Payout dispatched.",
+        "criterion_results": [
+            {"name": "GitHub PR exists, passes linting & build", "weight": 0.35, "passed": True},
+            {"name": "Deployed endpoint returns HTTP 200", "weight": 0.35, "passed": True},
+            {"name": "Responsive layout without shifts", "weight": 0.20, "passed": True},
+            {"name": "Unit test coverage >= 90%", "weight": 0.10, "passed": True},
+        ],
+        "created_at": "2026-11-10T09:30:00+00:00",
+    },
+    # freelancer@example.com (CUST-00081) — ESCROW-000-M2 completed (released)
+    {
+        "id": "SUB-000-M2-001",
+        "milestone_id": "ESCROW-000-M2",
+        "project_id": "ESCROW-000",
+        "freelancer_id": "CUST-00081",
+        "attempt": 1,
+        "pr_url": "https://github.com/proofpay-dev/escrow-000/pull/14",
+        "deployed_url": "https://staging-000.proofpay-dev.app",
+        "repository": "proofpay-dev/escrow-000",
+        "evidence_url": "https://docs.proofpay-dev.app/escrow-000-m2-evidence",
+        "files": {
+            "qa-handover-report.pdf": {"size": 210000, "type": "application/pdf"},
+        },
+        "notes": "Final QA & Handover deliverable complete. Client sign-off completed and documentation handed over.",
+        "status": "RELEASED",
+        "score": 0.98,
+        "route": "RELEASE_PENDING",
+        "decision": "RELEASE_PROPOSAL",
+        "rationale": "Client approval verified. All criteria passed. Payout released.",
+        "criterion_results": [
+            {"name": "Client Approval signed off", "weight": 0.50, "passed": True},
+            {"name": "QA handover checklist complete", "weight": 0.50, "passed": True},
+        ],
+        "created_at": "2026-11-10T12:00:00+00:00",
+    },
+    # freelancer3@example.com (CUST-00005) — ESCROW-003-M1 disputed
+    {
+        "id": "SUB-003-M1-001",
+        "milestone_id": "ESCROW-003-M1",
+        "project_id": "ESCROW-003",
+        "freelancer_id": "CUST-00005",
+        "attempt": 2,
+        "pr_url": "https://github.com/proofpay-dev/escrow-003/pull/12",
+        "deployed_url": "https://staging-003.proofpay-dev.app",
+        "repository": "proofpay-dev/escrow-003",
+        "evidence_url": "https://docs.proofpay-dev.app/escrow-003-m1-evidence",
+        "files": {
+            "testing-report.pdf": {"size": 165000, "type": "application/pdf"},
+            "test-logs.zip": {"size": 212000, "type": "application/zip"},
+        },
+        "notes": "Second submission. Addressed client feedback from first attempt. All test scenarios pass.",
+        "status": "DISPUTED",
+        "score": 0.74,
+        "route": "IN_REVIEW",
+        "decision": "CLIENT_REVIEW_REQUIRED",
+        "rationale": "Score 0.74 — borderline. Client filed a dispute regarding deliverable criteria before review concluded.",
+        "criterion_results": [
+            {"name": "GitHub PR exists, passes linting & build", "weight": 0.35, "passed": True},
+            {"name": "Deployed endpoint returns HTTP 200", "weight": 0.35, "passed": True},
+            {"name": "Responsive layout without shifts", "weight": 0.20, "passed": False},
+            {"name": "Unit test coverage >= 90%", "weight": 0.10, "passed": False},
+        ],
+        "created_at": "2026-11-11T10:15:00+00:00",
+    },
+    # freelancer2@example.com (CUST-00041) — ESCROW-001-M1 disputed
+    {
+        "id": "SUB-001-M1-001",
+        "milestone_id": "ESCROW-001-M1",
+        "project_id": "ESCROW-001",
+        "freelancer_id": "CUST-00041",
+        "attempt": 1,
+        "pr_url": "https://github.com/proofpay-dev/escrow-001/pull/5",
+        "deployed_url": "https://staging-001.proofpay-dev.app",
+        "repository": "proofpay-dev/escrow-001",
+        "evidence_url": None,
+        "files": {
+            "development-report.pdf": {"size": 182000, "type": "application/pdf"},
+        },
+        "notes": "Development milestone complete. API integrations tested, documentation updated.",
+        "status": "DISPUTED",
+        "score": 0.69,
+        "route": "IN_REVIEW",
+        "decision": "CLIENT_REVIEW_REQUIRED",
+        "rationale": "Score 0.69 — human review required. Client disputed before decision.",
+        "criterion_results": [
+            {"name": "GitHub PR exists, passes linting & build", "weight": 0.35, "passed": True},
+            {"name": "Deployed endpoint returns HTTP 200", "weight": 0.35, "passed": True},
+            {"name": "API contracts match spec", "weight": 0.20, "passed": False},
+            {"name": "Integration tests pass", "weight": 0.10, "passed": False},
+        ],
+        "created_at": "2026-11-10T16:40:00+00:00",
+    },
+]
+
+# Seed into _SUBMISSIONS on module load
+for _seed in _SEED_SUBMISSIONS:
+    _mid = _seed["milestone_id"]
+    if _mid not in _SUBMISSIONS:
+        _SUBMISSIONS[_mid] = _seed
+
 
 # ── Request / Response schemas ────────────────────────────────────────────────
 
@@ -80,6 +237,33 @@ def _get_milestone(mid: str) -> tuple[dict[str, Any] | None, dict[str, Any] | No
         for m in milestones:
             if m.get("id") == mid:
                 return m, _PROJECTS.get(pid)
+    # Fallback to database
+    try:
+        from backend.app.db.session import get_sync_session
+        from backend.app.db.models.projects import Milestone, Project
+        with get_sync_session() as db:
+            row = db.query(Milestone, Project).join(Project, Project.id == Milestone.project_id).filter(Milestone.id == mid).first()
+            if row:
+                ms, proj = row
+                m_dict = {
+                    "id": ms.id,
+                    "project_id": ms.project_id,
+                    "title": ms.title,
+                    "amount": float(ms.amount),
+                    "state": ms.state,
+                    "submission_count": 0,
+                    "max_submissions": 3,
+                }
+                p_dict = {
+                    "id": proj.id,
+                    "client_id": proj.client_id,
+                    "freelancer_id": proj.freelancer_id,
+                    "state": proj.state,
+                    "total_amount": float(proj.total_amount) if proj.total_amount else 0.0,
+                }
+                return m_dict, p_dict
+    except Exception as exc:
+        log.warning("_get_milestone DB fallback failed: %s", exc)
     return None, None
 
 
@@ -90,6 +274,17 @@ def _set_state(mid: str, state: str) -> None:
             if m.get("id") == mid:
                 m["state"] = state
                 return
+    # Also update DB if present
+    try:
+        from backend.app.db.session import get_sync_session
+        from backend.app.db.models.projects import Milestone
+        with get_sync_session() as db:
+            ms = db.query(Milestone).filter(Milestone.id == mid).first()
+            if ms:
+                ms.state = state
+                db.commit()
+    except Exception as exc:
+        log.warning("_set_state DB update failed: %s", exc)
 
 
 # ── POST /milestones/{milestone_id}/submit ────────────────────────────────────
@@ -503,6 +698,45 @@ async def _trigger_release(
         sub = _SUBMISSIONS.get(milestone_id, {})
         sub["status"] = "ACTION_FAILED"
         sub["error"] = str(exc)
+
+
+# ── GET /submissions ─────────────────────────────────────────────────────────
+
+@router.get("/submissions")
+def list_all_submissions(
+    current_user: dict = Depends(get_current_user),
+) -> list[dict[str, Any]]:
+    """List all milestones + their submission status for the current user."""
+    result: list[dict[str, Any]] = []
+    try:
+        from backend.app.db.session import get_sync_session
+        from backend.app.db.models.projects import Milestone, Project
+        from sqlalchemy import or_
+        with get_sync_session() as db:
+            q = db.query(Milestone, Project).join(Project, Project.id == Milestone.project_id)
+            if not is_admin(current_user):
+                cid = current_user.get("customer_id")
+                if cid:
+                    q = q.filter(or_(Project.client_id == cid, Project.freelancer_id == cid))
+                else:
+                    return []
+            rows = q.order_by(Milestone.created_at.desc()).all()
+            for ms, proj in rows:
+                sub = _SUBMISSIONS.get(ms.id)
+                result.append({
+                    "milestone_id": ms.id,
+                    "milestone_title": ms.title or "Deliverable",
+                    "project_id": proj.id,
+                    "project_name": proj.job_description or proj.id,
+                    "amount": float(ms.amount),
+                    "state": ms.state or "FUNDED",
+                    "client_id": proj.client_id,
+                    "freelancer_id": proj.freelancer_id,
+                    "submission": sub,
+                })
+    except Exception as exc:
+        log.warning("Failed to list submissions: %s", exc)
+    return result
 
 
 # ── GET /milestones/{id}/submission ──────────────────────────────────────────

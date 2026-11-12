@@ -6,7 +6,7 @@ import styles from './Ledger.module.css';
 
 const ESCROW_VAULT = 'ProofPay Escrow Vault';
 const CLIENT_ACC = 'Client PayPal Account';
-const FREELANCER_ACC = 'Freelancer PayPal Account';
+const FREELANCER_ACC = 'to freelancer account';
 
 const INITIAL_TRANSACTIONS = [
   {
@@ -205,20 +205,31 @@ export default function Ledger() {
     const computeChain = async () => {
       let sourceList;
       if (apiLedger && Array.isArray(apiLedger) && apiLedger.length > 0) {
-        sourceList = apiLedger.map((l, i) => ({
-          id: `TXN-${l.id?.slice(0, 8)?.toUpperCase() || (9040 - i)}`,
-          ts: l.created_at || '—',
-          prj: l.subject_id || l.project_id || '—',
-          ms: l.milestone_id || 'All milestones',
-          mn: l.note || 'Escrow funding & release',
-          type: l.type === 'FUNDING' ? 'CAPTURE_FUNDING' : (l.type === 'RELEASE' ? 'PAYOUT_RELEASE' : (l.type || 'CAPTURE_FUNDING')),
-          from: l.type === 'FUNDING' ? CLIENT_ACC : ESCROW_VAULT,
-          to: l.type === 'FUNDING' ? ESCROW_VAULT : FREELANCER_ACC,
-          amt: l.amount || 0,
-          ref: l.paypal_id || '—',
-          pol: l.policy_status || 'ALLOWED',
-          note: l.note || 'Tamper-evident audit verified ledger entry',
-        }));
+        sourceList = apiLedger.map((l, i) => {
+          const isFunding = l.type === 'FUNDING' || l.type === 'CAPTURE_FUNDING';
+          const isPayout = l.type === 'RELEASE' || l.type === 'PAYOUT_RELEASE' || l.type === 'COMPLETED';
+          const isRefund = l.type === 'REFUND';
+          const isFreeze = l.type === 'DISPUTE_FREEZE';
+
+          const txnType = isFunding ? 'CAPTURE_FUNDING' : (isPayout ? 'PAYOUT_RELEASE' : (l.type || 'CAPTURE_FUNDING'));
+          const from = l.debited_account || (isFunding ? CLIENT_ACC : ESCROW_VAULT);
+          const to = l.credited_account || (isFunding ? ESCROW_VAULT : (isPayout ? FREELANCER_ACC : (isRefund ? CLIENT_ACC : (isFreeze ? ESCROW_VAULT + ' (frozen)' : FREELANCER_ACC))));
+
+          return {
+            id: l.id?.startsWith('TXN-') || l.id?.startsWith('REL-') ? l.id : `TXN-${l.id?.slice(0, 8)?.toUpperCase() || (9040 - i)}`,
+            ts: l.created_at || '—',
+            prj: l.subject_id || l.project_id || '—',
+            ms: l.milestone_id || 'All milestones',
+            mn: l.milestone_title || l.note || 'Escrow funding & release',
+            type: txnType,
+            from,
+            to,
+            amt: Number(l.amount) || 0,
+            ref: l.paypal_id || '—',
+            pol: l.policy_status || 'ALLOWED',
+            note: l.note || 'Tamper-evident audit verified ledger entry',
+          };
+        });
       } else {
         sourceList = INITIAL_TRANSACTIONS;
       }
@@ -324,6 +335,12 @@ export default function Ledger() {
     return { id: x.ref, status: 'RECORDED', amount: { currency_code: 'USD', value: x.amt.toFixed(2) } };
   };
 
+  const totalFunded = transactions.filter(x => x.type === 'CAPTURE_FUNDING').reduce((s, x) => s + (Number(x.amt) || 0), 0);
+  const totalReleased = transactions.filter(x => x.type === 'PAYOUT_RELEASE').reduce((s, x) => s + (Number(x.amt) || 0), 0);
+  const totalRefunded = transactions.filter(x => x.type === 'REFUND').reduce((s, x) => s + (Number(x.amt) || 0), 0);
+  const balanceOnHold = Math.max(0, totalFunded - totalReleased - totalRefunded);
+  const refundCount = transactions.filter(x => x.type === 'REFUND').length;
+
   return (
     <div className={styles.page}>
       {/* Header */}
@@ -353,7 +370,7 @@ export default function Ledger() {
               </svg>
             </div>
           </div>
-          <div className={`${styles.bigNum} ${styles.num}`}>$48,500.00</div>
+          <div className={`${styles.bigNum} ${styles.num}`}>{fmt(totalFunded)}</div>
           <div className={styles.muted}>USD · PayPal Order captures</div>
         </div>
 
@@ -366,7 +383,7 @@ export default function Ledger() {
               </svg>
             </div>
           </div>
-          <div className={`${styles.bigNum} ${styles.num}`}>$31,200.00</div>
+          <div className={`${styles.bigNum} ${styles.num}`}>{fmt(totalReleased)}</div>
           <div className={styles.muted}>USD · PayPal Payouts</div>
         </div>
 
@@ -379,8 +396,8 @@ export default function Ledger() {
               </svg>
             </div>
           </div>
-          <div className={`${styles.bigNum} ${styles.num}`}>$1,400.00</div>
-          <div className={styles.muted}>USD · 1 refund</div>
+          <div className={`${styles.bigNum} ${styles.num}`}>{fmt(totalRefunded)}</div>
+          <div className={styles.muted}>USD · {refundCount} refund{refundCount !== 1 ? 's' : ''}</div>
         </div>
 
         <div className={styles.card} style={{ borderColor: '#0070E0' }}>
@@ -392,7 +409,7 @@ export default function Ledger() {
               </svg>
             </div>
           </div>
-          <div className={`${styles.bigNum} ${styles.num}`}>$15,900.00</div>
+          <div className={`${styles.bigNum} ${styles.num}`}>{fmt(balanceOnHold)}</div>
           <div className={styles.up}>Funded − released − refunded ✓</div>
         </div>
       </section>

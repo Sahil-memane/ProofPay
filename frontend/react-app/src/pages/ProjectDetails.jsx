@@ -11,8 +11,10 @@ const fmt = (n, cur = 'USD') =>
 export default function ProjectDetails() {
   const [params] = useSearchParams();
   const id = params.get('id') || 'ESCROW-000';
+  const [approving, setApproving] = useState(false);
+  const [funding, setFunding] = useState(false);
 
-  const { data: apiResponse, loading, error } = useApi(
+  const { data: apiResponse, loading, error, refetch } = useApi(
     () => (id ? endpoints.projects.get(id) : Promise.resolve(null)),
     [id]
   );
@@ -51,6 +53,39 @@ export default function ProjectDetails() {
       showToast('Plan hash copied to clipboard.', 'success');
     } else {
       showToast('Plan hash is not yet locked.', 'info');
+    }
+  };
+
+  // Wire: Approve (client or freelancer signs the plan)
+  const handleApprove = async (party) => {
+    setApproving(true);
+    try {
+      await endpoints.projects.approve(p.id, { party });
+      showToast(`${party === 'client' ? 'Client' : 'Freelancer'} approval recorded. Plan hash being computed.`, 'success');
+      refetch();
+    } catch (err) {
+      showToast(`Approval failed: ${err.message || 'Network error'}`, 'error');
+    } finally {
+      setApproving(false);
+    }
+  };
+
+  // Wire: Fund (create PayPal order)
+  const handleFund = async () => {
+    setFunding(true);
+    try {
+      const res = await endpoints.projects.fund(p.id);
+      if (res?.approval_url) {
+        showToast('PayPal order created. Opening approval page…', 'success');
+        window.open(res.approval_url, '_blank');
+      } else {
+        showToast('Fund initiated — capture webhook will confirm.', 'info');
+      }
+      refetch();
+    } catch (err) {
+      showToast(`Fund failed: ${err.message || 'Network error'}`, 'error');
+    } finally {
+      setFunding(false);
     }
   };
 
@@ -232,6 +267,16 @@ export default function ProjectDetails() {
                   : `Awaiting signature from ${p.clientName}`}
               </div>
             </div>
+            {!p.clientApproved && p.status === 'DRAFT' && (
+              <button
+                className={`${styles.btn} ${styles.btnP}`}
+                onClick={() => handleApprove('client')}
+                disabled={approving}
+                style={{ marginLeft: 'auto' }}
+              >
+                {approving ? 'Signing…' : 'Sign as Client'}
+              </button>
+            )}
           </div>
 
           <div className={styles.approvalBox}>
@@ -255,6 +300,16 @@ export default function ProjectDetails() {
                   : `Awaiting signature from ${p.freelancerName}`}
               </div>
             </div>
+            {!p.freelancerApproved && p.status === 'DRAFT' && (
+              <button
+                className={`${styles.btn} ${styles.btnP}`}
+                onClick={() => handleApprove('freelancer')}
+                disabled={approving}
+                style={{ marginLeft: 'auto' }}
+              >
+                {approving ? 'Signing…' : 'Sign as Freelancer'}
+              </button>
+            )}
           </div>
         </div>
 
@@ -273,8 +328,19 @@ export default function ProjectDetails() {
       <section className={styles.card}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
           <h2 className={styles.h2}>PayPal Escrow Funding</h2>
-          <div className={`${styles.num}`} style={{ fontSize: 18, fontWeight: 700, color: '#003087' }}>
-            {fmt(p.totalAmount, p.currency)}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+            <div className={`${styles.num}`} style={{ fontSize: 18, fontWeight: 700, color: '#003087' }}>
+              {fmt(p.totalAmount, p.currency)}
+            </div>
+            {p.status === 'PLAN_APPROVED' && (
+              <button
+                className={`${styles.btn} ${styles.btnP}`}
+                onClick={handleFund}
+                disabled={funding}
+              >
+                {funding ? 'Creating Order…' : 'Fund via PayPal'}
+              </button>
+            )}
           </div>
         </div>
 

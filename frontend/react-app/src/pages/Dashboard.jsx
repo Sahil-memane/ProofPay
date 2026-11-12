@@ -49,19 +49,28 @@ export default function Dashboard() {
   const { data: headline } = useApi(() => endpoints.dashboard.headline());
   const { data: audit } = useApi(() => endpoints.audit.list({ limit: 6 }));
   const { data: approvals } = useApi(() => endpoints.approvals.submissions.list());
+  const { data: recoveryData } = useApi(() => endpoints.recovery.overview());
 
   const hl = headline ?? {};
-  const recoveredAmt = hl.recovered_amount ?? 562;
-  const atRisk = hl.at_risk_amount ?? 824;
+  const recoveredAmt = hl.recovered_amount ?? 0;
+  const atRisk = hl.at_risk_amount ?? 0;
   const remaining = hl.remaining_at_risk ?? Math.max(0, atRisk - recoveredAmt);
-  const recoveryRate = hl.recovery_rate ?? (atRisk > 0 ? Math.round((recoveredAmt / atRisk) * 100) : 68);
-  const caseCt = hl.case_count ?? 3;
-  const recoveredCt = hl.recovered_count ?? 2;
-  const totalEscrowed = hl.total_escrowed ?? 4281;
-  const releasedAmount = hl.released_amount ?? 1618;
-  const pendingEscrow = hl.pending_escrow ?? 2663;
-  const activeProjects = hl.active_projects ?? 2;
-  const disputesCount = hl.disputes_count ?? 1;
+  const recoveryRate = hl.recovery_rate ?? (atRisk > 0 ? Math.round((recoveredAmt / atRisk) * 100) : 0);
+  const caseCt = hl.case_count ?? 0;
+  const recoveredCt = hl.recovered_count ?? 0;
+  const totalEscrowed = hl.total_escrowed ?? 0;
+  const releasedAmount = hl.released_amount ?? 0;
+  const pendingEscrow = hl.pending_escrow ?? 0;
+  const activeProjects = hl.active_projects ?? 0;
+  const disputesCount = hl.disputes_count ?? 0;
+
+  // Recovery funnel stats from /recovery/overview
+  const rstats = recoveryData?.stats ?? {};
+  const paidCt = rstats.paid ?? 0;
+  const paidElsewhereCt = rstats.paid_elsewhere ?? 0;
+  const haltedCt = rstats.halted ?? 0;
+  const openCt = rstats.open ?? 0;
+  const realRecoveryRate = rstats.recovery_rate ?? recoveryRate;
 
   const hour = new Date().getHours();
   const greeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
@@ -209,21 +218,31 @@ export default function Dashboard() {
         <div className={styles.card} style={{ minWidth: 0 }}>
           <div className={styles.sectionHead}>
             <h2 className={styles.h2}>Attention Required</h2>
-            <Badge cls="r">10 open</Badge>
+            {(() => {
+              const pendingApprovals = Array.isArray(approvals) ? approvals.length : 0;
+              const openCases = Math.max(0, caseCt - recoveredCt - paidElsewhereCt);
+              const total = pendingApprovals + disputesCount + openCases;
+              return <Badge cls={total > 0 ? 'r' : 'g'}>{total} open</Badge>;
+            })()}
           </div>
           <div>
-            {[
-              { count: 3, cls: 'a', text: 'Pending human approvals', href: '/approvals' },
-              { count: 2, cls: 'a', text: 'Borderline verifications', href: '/submissions' },
-              { count: 1, cls: 'r', text: 'Active dispute', href: '/disputes' },
-              { count: 4, cls: 'b', text: 'Reconciliation exceptions', href: '/reconciliation' },
-            ].map(item => (
-              <div key={item.text} className={styles.row}>
-                <Badge cls={item.cls}>{item.count}</Badge>
-                <span style={{ flex: 1 }}>{item.text}</span>
-                <a href={item.href} className={styles.link}>View Details</a>
-              </div>
-            ))}
+            {(() => {
+              const pendingApprovals = Array.isArray(approvals) ? approvals.length : 0;
+              const openCases = Math.max(0, caseCt - recoveredCt - paidElsewhereCt);
+              return [
+                { count: pendingApprovals, cls: 'a', text: 'Pending human approvals', href: '/approvals' },
+                { count: disputesCount, cls: 'r', text: 'Active disputes', href: '/disputes' },
+                { count: openCases, cls: 'a', text: 'Open recovery cases', href: '/cases' },
+              ]
+                .filter(item => item.count > 0)
+                .map(item => (
+                  <div key={item.text} className={styles.row}>
+                    <Badge cls={item.cls}>{item.count}</Badge>
+                    <span style={{ flex: 1 }}>{item.text}</span>
+                    <a href={item.href} className={styles.link}>View Details</a>
+                  </div>
+                ));
+            })()}
           </div>
         </div>
       </section>
@@ -234,10 +253,10 @@ export default function Dashboard() {
         <div className={styles.escrowGrid}>
           {[
             { label: 'Active Projects', val: String(activeProjects) },
-            { label: 'Awaiting Funding', val: String(Math.max(0, activeProjects - 1)), badge: 'a', badgeTxt: 'Pending' },
+            { label: 'Pending Escrow', val: `$${Number(pendingEscrow || 0).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`, badge: pendingEscrow > 0 ? 'a' : 'g', badgeTxt: pendingEscrow > 0 ? 'Pending' : 'Funded' },
             { label: 'Under Dispute / Review', val: String(disputesCount), badge: disputesCount > 0 ? 'r' : 'g', badgeTxt: disputesCount > 0 ? 'Disputed' : 'Good' },
             { label: 'Recovered Cases', val: String(recoveredCt), badge: 'g', badgeTxt: 'Resolved' },
-            { label: 'Completed Milestones', val: String(Math.max(1, activeProjects * 2)), badge: 'g', badgeTxt: 'Released' },
+            { label: 'Released to Freelancers', val: `$${Number(releasedAmount || 0).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`, badge: 'g', badgeTxt: 'Released' },
           ].map(e => (
             <div key={e.label} className={`${styles.card} ${styles.escrowCard}`}>
               <div className={styles.kpiLabel}>{e.label}</div>
@@ -254,25 +273,41 @@ export default function Dashboard() {
         <div className={styles.card} style={{ minWidth: 0 }}>
           <h2 className={styles.h2}>Recovery Performance</h2>
           <div className={styles.donutRow}>
-            <svg viewBox="0 0 100 100" width="150" height="150" role="img" aria-label="Donut chart of 150 recovery cases" style={{ flex: 'none' }}>
+            <svg viewBox="0 0 100 100" width="150" height="150" role="img" aria-label="Donut chart of recovery cases" style={{ flex: 'none' }}>
               <g fill="none" strokeWidth="14" transform="rotate(-90 50 50)">
-                <circle cx="50" cy="50" r="40" stroke="#2E9D65" strokeDasharray="167.5 251.3" />
-                <circle cx="50" cy="50" r="40" stroke="#0070E0" strokeDasharray="20.1 251.3" strokeDashoffset="-167.5" />
-                <circle cx="50" cy="50" r="40" stroke="#009CDE" strokeDasharray="23.4 251.3" strokeDashoffset="-187.6" />
-                <circle cx="50" cy="50" r="40" stroke="#F5A623" strokeDasharray="15.1 251.3" strokeDashoffset="-211" />
-                <circle cx="50" cy="50" r="40" stroke="#D9363E" strokeDasharray="25.1 251.3" strokeDashoffset="-226.1" />
+                {caseCt > 0 ? (
+                  <>
+                    <circle cx="50" cy="50" r="40" stroke="#2E9D65" strokeDasharray={`${(paidCt / caseCt) * 251.3} 251.3`} />
+                    <circle cx="50" cy="50" r="40" stroke="#009CDE" strokeDasharray={`${(paidElsewhereCt / caseCt) * 251.3} 251.3`} strokeDashoffset={`${-(paidCt / caseCt) * 251.3}`} />
+                    <circle cx="50" cy="50" r="40" stroke="#0070E0" strokeDasharray={`${(openCt / caseCt) * 251.3} 251.3`} strokeDashoffset={`${-((paidCt + paidElsewhereCt) / caseCt) * 251.3}`} />
+                    <circle cx="50" cy="50" r="40" stroke="#D9363E" strokeDasharray={`${(haltedCt / caseCt) * 251.3} 251.3`} strokeDashoffset={`${-((paidCt + paidElsewhereCt + openCt) / caseCt) * 251.3}`} />
+                  </>
+                ) : (
+                  <circle cx="50" cy="50" r="40" stroke="#E5E9F0" strokeDasharray="251.3 0" />
+                )}
               </g>
               <text x="50" y="48" textAnchor="middle" fontSize="16" fontWeight="600" fill="#172B4D" fontFamily="Inter,sans-serif">{caseCt}</text>
               <text x="50" y="60" textAnchor="middle" fontSize="7" fill="#64748B" fontFamily="Inter,sans-serif">cases</text>
             </svg>
             <div className={styles.donutLegend}>
-              {[['#2E9D65', `Recovered · ${recoveredCt}`], ['#0070E0', 'Active · 12'], ['#009CDE', 'Paid elsewhere · 14'], ['#F5A623', 'Halted by policy · 9'], ['#D9363E', 'Escalated · 15']].map(([col, lbl]) => (
+              {[
+                ['#2E9D65', `Recovered · ${paidCt}`],
+                ['#0070E0', `Active · ${openCt}`],
+                ['#009CDE', `Paid elsewhere · ${paidElsewhereCt}`],
+                ['#D9363E', `Halted · ${haltedCt}`],
+              ].map(([col, lbl]) => (
                 <div key={lbl}><span className={styles.dot} style={{ background: col }} />{lbl}</div>
               ))}
             </div>
           </div>
           <div className={styles.recoveryStats}>
-            {[['Recovery success rate', '67%'], ['Avg. recovery time', '3.2 days'], ['Avg. contacts / recovery', '2.4'], ['Paid elsewhere', '14 cases'], ['Halted by policy', '9 cases']].map(([lbl, val]) => (
+            {[
+              ['Recovery success rate', `${realRecoveryRate}%`],
+              ['Recovered cases', String(paidCt)],
+              ['Active cases', String(openCt)],
+              ['Paid elsewhere', `${paidElsewhereCt} cases`],
+              ['Halted by policy', `${haltedCt} cases`],
+            ].map(([lbl, val]) => (
               <div key={lbl}>
                 <div className={styles.kpiLabel}>{lbl}</div>
                 <div className={styles.statVal}>{val}</div>

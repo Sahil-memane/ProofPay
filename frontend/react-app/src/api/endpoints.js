@@ -29,6 +29,7 @@ export const endpoints = {
     patch: (id, body) => api.patch(`/milestones/${id}`, body),
   },
   submissions: {
+    list:    ()                  => api.get('/submissions'),
     submit:  (milestoneId, body) => api.post(`/milestones/${milestoneId}/submit`, body),
     get:     (milestoneId)       => api.get(`/milestones/${milestoneId}/submission`),
     review:  (milestoneId, body) => api.post(`/milestones/${milestoneId}/review`, body),

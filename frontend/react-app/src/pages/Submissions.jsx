@@ -1,151 +1,196 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../hooks/useAuth';
+import { useApi } from '../api/useApi';
+import { endpoints } from '../api/endpoints';
 import { showToast } from '../components/ui/Toast';
 import styles from './Submissions.module.css';
 
-const SCENARIOS = {
-  '0.95': {
-    s: 94,
-    c: ['p', 'p', 'p', 'h'],
-    why: 'The PR builds and lints cleanly, the staging endpoint returns HTTP 200 with valid assets, and the layout is stable across breakpoints. Coverage is 78% against an 80% target, which costs a few points.'
-  },
-  '0.72': {
-    s: 72,
-    c: ['p', 'p', 'h', 'f'],
-    why: 'Core functionality works, but layout shifts appear at tablet width and coverage is well below target. The result is borderline, so a human should review the evidence.'
-  },
-  '0.45': {
-    s: 45,
-    c: ['f', 'h', 'f', 'f'],
-    why: 'The PR fails the build step and the staging endpoint serves incomplete assets. Most acceptance criteria are not met, so the deliverable is rejected.'
-  }
+const STATUS_BADGE = {
+  FUNDED: 'b',
+  DRAFT: 'x',
+  IN_REVIEW: 'a',
+  VERIFYING: 'a',
+  SUBMITTED: 'b',
+  DISPUTED: 'r',
+  COMPLETED: 'g',
+  RELEASED: 'g',
+  PAID: 'g',
+  REFUNDED: 'x',
+  REVISION_REQUESTED: 'a',
+  ACTION_FAILED: 'r',
+  RESUBMIT: 'a',
+  RELEASE_PENDING: 'g',
 };
 
-const CRITERIA = [
-  ['35%', 'GitHub PR exists, passes linting & build'],
-  ['35%', 'Deployed endpoint returns HTTP 200 with valid UI assets'],
-  ['20%', 'Responsive layout rendered without layout shifts'],
-  ['10%', 'Unit test coverage at 78% (Target 80%)']
-];
-
-const STATUS_ICONS = {
-  p: ['✅ Passed', 'g'],
-  h: ['⚠️ Partial', 'a'],
-  f: ['❌ Failed', 'r']
-};
+const fmt = n => '$' + Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' USD';
 
 export default function Submissions() {
-  const { role } = useAuth();
-  const [scenarioKey, setScenarioKey] = useState('0.95');
-  const [statusBadge, setStatusBadge] = useState({ text: 'SUBMITTED', cls: 'b' });
-  const [amountOption, setAmountOption] = useState('700');
+  const { user, role } = useAuth();
+  const isFreelancer = role === 'freelancer';
+  const isClient = role === 'client';
+  const isAdmin = role === 'admin';
+
+  const { data: allSubmissions, reload: reloadSubmissions, loading } = useApi(() => endpoints.submissions.list());
+  const milestones = allSubmissions || [];
+
+  const [selectedMilestoneId, setSelectedMilestoneId] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   // Form inputs
-  const [prUrl, setPrUrl] = useState('https://github.com/acme/shop/pull/42');
-  const [repo, setRepo] = useState('acme/shop');
-  const [liveUrl, setLiveUrl] = useState('https://preview-42.acme.app');
+  const [prUrl, setPrUrl] = useState('https://github.com/proofpay-dev/escrow-004/pull/17');
+  const [repo, setRepo] = useState('proofpay-dev/escrow-004');
+  const [liveUrl, setLiveUrl] = useState('https://staging-004.proofpay-dev.app');
   const [evidenceUrl, setEvidenceUrl] = useState('');
   const [notes, setNotes] = useState('');
 
-  const scenario = SCENARIOS[scenarioKey];
-  const amt = parseFloat(amountOption);
-  const scoreRatio = scenario.s / 100;
+  // Auto-select milestone on data load
+  useEffect(() => {
+    if (!milestones.length) return;
+    if (!selectedMilestoneId || !milestones.some(m => m.milestone_id === selectedMilestoneId)) {
+      // Prioritize milestones with an active submission, else first funded, else first
+      const withSub = milestones.find(m => m.submission);
+      const funded = milestones.find(m => m.state === 'FUNDED');
+      setSelectedMilestoneId((withSub || funded || milestones[0]).milestone_id);
+    }
+  }, [milestones, selectedMilestoneId]);
 
-  // Verification route
+  const selected = milestones.find(m => m.milestone_id === selectedMilestoneId);
+  const sub = selected?.submission;
+
+  // Derivations for AI verification report
+  const scoreRatio = sub && typeof sub.score === 'number' ? sub.score : 0;
+  const scoreDisplay = Math.round(scoreRatio * 100);
   const route = scoreRatio >= 0.8
     ? { text: 'AUTO_APPROVE', cls: 'g', stroke: '#2E9D65' }
     : scoreRatio >= 0.6
     ? { text: 'HUMAN_REVIEW', cls: 'a', stroke: '#F5A623' }
     : { text: 'AUTO_REJECT', cls: 'r', stroke: '#D9363E' };
 
-  // Mandate Guard policy calculation
+  // Mandate Guard Autonomous Policy Guard evaluation
+  const amt = selected ? Number(selected.amount) || 0 : 0;
+  const autoLimit = 1500.0;
+  const isOverLimit = amt > autoLimit;
+
   let policyBadge = { text: 'ALLOWED', cls: 'g' };
   let policyMsg = '';
   let policyBg = '#E3F4EB';
   let policyColor = '#1E7A4C';
 
-  if (route.text === 'AUTO_REJECT') {
-    policyBadge = { text: 'NOT_EVALUATED', cls: 'b' };
-    policyMsg = 'No payout proposed. Verification score is below 0.60, so the deliverable was auto-rejected and returned to the freelancer.';
-    policyBg = '#E6F0FC';
-    policyColor = '#005BB5';
-  } else if (route.text === 'HUMAN_REVIEW') {
-    policyBadge = { text: 'HUMAN_REVIEW', cls: 'a' };
-    policyMsg = `Borderline score. Payout of $${amt.toFixed(2)} routed to the Human Approvals Queue (Task #APP-105).`;
-    policyBg = '#FEF1D9';
-    policyColor = '#8A5A00';
-  } else if (amt <= 1500) {
-    policyBadge = { text: 'ALLOWED', cls: 'g' };
-    policyMsg = `ALLOWED — Within the $1,500.00 autonomous limit. Dispatched PayPal Payout batch ID: PAYOUT-BATCH-771.`;
-    policyBg = '#E3F4EB';
-    policyColor = '#1E7A4C';
-  } else {
-    policyBadge = { text: 'NEEDS_APPROVAL', cls: 'r' };
-    policyMsg = 'NEEDS_APPROVAL — Exceeds autonomous limit ($1,500.00). Sent to Human Approvals Queue.';
+  if (!sub) {
+    policyBadge = { text: 'PENDING_SUBMISSION', cls: 'b' };
+    policyMsg = 'Awaiting deliverable submission. Mandate Guard policy will evaluate payout criteria upon submission.';
+    policyBg = '#F8FAFC';
+    policyColor = '#475569';
+  } else if (sub.status === 'DISPUTED' || selected?.state === 'DISPUTED') {
+    policyBadge = { text: 'DISPUTED', cls: 'r' };
+    policyMsg = 'Escrow frozen by Mandate Guard. Active dispute prevents automated release.';
     policyBg = '#FBE5E6';
     policyColor = '#B42830';
+  } else if (sub.status === 'RELEASED' || selected?.state === 'COMPLETED' || selected?.state === 'RELEASED') {
+    policyBadge = { text: 'RELEASED', cls: 'g' };
+    policyMsg = `RELEASED — Full payout of ${fmt(amt)} was dispatched via PayPal Payouts.`;
+    policyBg = '#E3F4EB';
+    policyColor = '#1E7A4C';
+  } else if (isOverLimit) {
+    policyBadge = { text: 'NEEDS_APPROVAL', cls: 'r' };
+    policyMsg = `NEEDS_APPROVAL — Milestone amount (${fmt(amt)}) exceeds the $1,500.00 autonomous execution threshold. Mandate Guard routed this proposal to the Human Approvals Queue.`;
+    policyBg = '#FBE5E6';
+    policyColor = '#B42830';
+  } else if (scoreRatio < 0.6) {
+    policyBadge = { text: 'AUTO_REJECT', cls: 'r' };
+    policyMsg = 'AI verification score below 0.60 threshold. Payout blocked and deliverable returned for revision.';
+    policyBg = '#FBE5E6';
+    policyColor = '#B42830';
+  } else if (scoreRatio < 0.8) {
+    policyBadge = { text: 'HUMAN_REVIEW', cls: 'a' };
+    policyMsg = `Borderline score (${scoreDisplay}%). Routed to Human Approvals Queue for officer verification.`;
+    policyBg = '#FEF1D9';
+    policyColor = '#8A5A00';
+  } else {
+    policyBadge = { text: 'ALLOWED', cls: 'g' };
+    policyMsg = `ALLOWED — Within the $1,500.00 autonomous limit. Payout proposal approved for automated release.`;
+    policyBg = '#E3F4EB';
+    policyColor = '#1E7A4C';
   }
 
-  const auditHash = {
-    '0.95': 'sha256:7c1e…b94a',
-    '0.72': 'sha256:3fa9…02de',
-    '0.45': 'sha256:d81b…6c57'
-  }[scenarioKey];
-
-  const handleInject = (key) => {
-    setScenarioKey(key);
-    setStatusBadge({ text: 'VERIFIED', cls: 'b' });
-    showToast(`Verifier injected: ${key} → ${SCENARIOS[key].s >= 80 ? 'AUTO_APPROVE' : SCENARIOS[key].s >= 60 ? 'HUMAN_REVIEW' : 'AUTO_REJECT'}`, 'info');
-    if (key === '0.72' || (key === '0.95' && amt > 200)) {
-      showToast('Policy Alert: Payout routed to Human Approvals Queue.', 'warning');
+  // Handle manual client review
+  const handleClientApprove = async () => {
+    if (!selectedMilestoneId) return;
+    try {
+      await endpoints.submissions.review(selectedMilestoneId, { decision: 'approve', actor: 'client' });
+      showToast('Client approved deliverable. Processing payout release.', 'success');
+      reloadSubmissions();
+    } catch (err) {
+      showToast(err.message || 'Approval failed', 'danger');
     }
   };
 
-  const handleClientApprove = () => {
-    if (policyBadge.text === 'ALLOWED') {
-      showToast('Payout dispatched via PayPal Payouts (PAYOUT-BATCH-771).', 'success');
-    } else {
-      showToast('Policy Alert: Payout exceeds $200.00 limit. Routed to Human Approvals Queue.', 'warning');
+  const handleRequestRevision = async () => {
+    if (!selectedMilestoneId) return;
+    try {
+      await endpoints.submissions.review(selectedMilestoneId, { decision: 'reject', actor: 'client', reason: 'Client requested deliverable revisions' });
+      showToast('Revision requested. Freelancer notified.', 'warning');
+      reloadSubmissions();
+    } catch (err) {
+      showToast(err.message || 'Request revision failed', 'danger');
     }
-  };
-
-  const handleRequestRevision = () => {
-    setStatusBadge({ text: 'REVISION_REQUESTED', cls: 'a' });
-    showToast('Revision requested. Freelancer notified.', 'warning');
-  };
-
-  const handleRefund = () => {
-    showToast('Refund request submitted for review.', 'warning');
   };
 
   const handleDispute = () => {
-    setStatusBadge({ text: 'DISPUTED', cls: 'r' });
-    showToast('Dispute filed. Escrow frozen for this milestone.', 'danger');
+    showToast('Active dispute initiated for this milestone escrow.', 'danger');
   };
 
-  const handleFormSubmit = (e) => {
+  // Handle deliverable submission
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
-    setModalOpen(false);
-    setStatusBadge({ text: 'VERIFYING', cls: 'b' });
-    showToast('Success: Milestone deliverable submitted successfully.', 'success');
-    setTimeout(() => {
-      setStatusBadge({ text: 'VERIFIED', cls: 'b' });
-    }, 1200);
+    if (!selectedMilestoneId) return;
+    setSubmitting(true);
+    try {
+      await endpoints.submissions.submit(selectedMilestoneId, {
+        freelancer_id: user?.customer_id || 'CUST-00081',
+        pr_url: prUrl,
+        repository: repo,
+        deployed_url: liveUrl,
+        evidence_url: evidenceUrl || undefined,
+        notes: notes || undefined,
+      });
+      showToast('Deliverable submitted successfully. AI verifier triggered.', 'success');
+      setModalOpen(false);
+      reloadSubmissions();
+    } catch (err) {
+      showToast(err.message || 'Submission failed', 'danger');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
     <div className={styles.page}>
-      {/* Header */}
+      {/* Header with Milestone Selector */}
       <div className={styles.pageHeader}>
         <div>
           <h1 className={styles.h1}>Submissions &amp; AI Verification</h1>
           <p className={styles.sub}>
-            Milestone 2: Frontend Integration &amp; API Client · <span className={styles.num}>$700.00 USD</span> · PRJ-2026-001
+            Select a milestone to view its submitted deliverable, acceptance criteria, and AI verification report.
           </p>
         </div>
         <div className={styles.headerActions}>
-          {role === 'freelancer' && (
+          <select
+            className={styles.input}
+            style={{ minWidth: 320, fontWeight: 500 }}
+            value={selectedMilestoneId}
+            onChange={e => setSelectedMilestoneId(e.target.value)}
+            disabled={loading}
+          >
+            {milestones.length === 0 && <option value="">No milestones found</option>}
+            {milestones.map(m => (
+              <option key={m.milestone_id} value={m.milestone_id}>
+                {m.milestone_id}: {m.milestone_title} ({m.project_name || m.project_id}) · {m.state}
+              </option>
+            ))}
+          </select>
+          {isFreelancer && selected?.state === 'FUNDED' && (
             <button className={`${styles.btn} ${styles.btnP}`} onClick={() => setModalOpen(true)}>
               Submit Deliverable
             </button>
@@ -153,234 +198,322 @@ export default function Submissions() {
         </div>
       </div>
 
-      {/* 2-Column: Submitted Deliverables & AI Verification Report */}
-      <section className={styles.twoCol}>
-        {/* Left: Submitted Deliverables */}
-        <div className={styles.card}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h2 className={styles.h2}>Submitted Deliverables</h2>
-            <span className={`${styles.bd} ${styles[statusBadge.cls]}`}>{statusBadge.text}</span>
+      {/* Selected Milestone Context Bar */}
+      {selected && (
+        <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: 8, padding: '12px 18px', display: 'flex', gap: 24, flexWrap: 'wrap', alignItems: 'center' }}>
+          <div>
+            <span className={styles.muted}>Milestone: </span>
+            <strong style={{ color: '#003087' }}>{selected.milestone_title}</strong>
           </div>
-
-          <div className={styles.row} style={{ marginTop: 12 }}>
-            <div className={styles.ico}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M6 3v12M18 9a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM6 21a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM18 9a9 9 0 0 1-9 9" />
-              </svg>
-            </div>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div className={styles.muted}>GitHub Pull Request</div>
-              <a href={prUrl} target="_blank" rel="noreferrer" className={styles.link}>
-                github.com/acme/shop/pull/42
-              </a>
-              <div className={styles.muted}>acme/shop · branch feat/api-client · commit <code className={styles.mono}>9f8a12e</code></div>
-            </div>
-            <span className={`${styles.bd} ${styles.g}`}>Build passing</span>
+          <div>
+            <span className={styles.muted}>Project: </span>
+            <strong>{selected.project_name || selected.project_id}</strong>
           </div>
-
-          <div className={styles.row}>
-            <div className={styles.ico}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18" />
-              </svg>
-            </div>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div className={styles.muted}>Deployed Staging Preview</div>
-              <a href={liveUrl} target="_blank" rel="noreferrer" className={styles.link}>
-                preview-42.acme.app
-              </a>
-            </div>
-            <span className={`${styles.bd} ${styles.g} ${styles.num}`}>HTTP 200 OK · 128ms</span>
+          <div>
+            <span className={styles.muted}>Amount: </span>
+            <strong className={styles.num}>{fmt(selected.amount)}</strong>
           </div>
-
-          <div className={styles.row}>
-            <div className={styles.ico}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9zM8 13h8M8 17h5" />
-              </svg>
-            </div>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div className={styles.muted}>Evidence</div>
-              <a href="#" className={styles.link}>docs.acme.app/m2-evidence</a>
-              <div className={styles.muted}>test-logs.zip (212 KB) · coverage-report.pdf (88 KB)</div>
-            </div>
+          <div>
+            <span className={styles.muted}>Status: </span>
+            <span className={`${styles.bd} ${styles[STATUS_BADGE[selected.state]] || styles.b}`}>{selected.state}</span>
           </div>
-
-          <div style={{ borderTop: '1px solid #E5E9F0', paddingTop: 12, marginTop: 12 }}>
-            <div className={styles.muted}>Freelancer notes · Rahul Sharma</div>
-            <p style={{ margin: '4px 0 8px', fontSize: 13, color: '#172B4D' }}>
-              Integrated the REST client with retry and error handling, wired product and cart views, and added responsive breakpoints. Remaining gap: two checkout hooks lack unit tests.
-            </p>
-            <div className={`${styles.muted} ${styles.num}`}>Submitted 2026-11-11 11:30 UTC</div>
-          </div>
+          {sub && (
+            <div>
+              <span className={styles.muted}>Submission Attempt: </span>
+              <strong>#{sub.attempt || 1}</strong>
+            </div>
+          )}
+          {sub && sub.created_at && (
+            <div>
+              <span className={styles.muted}>Submitted: </span>
+              <span className={styles.num}>{new Date(sub.created_at).toLocaleDateString()} {new Date(sub.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+            </div>
+          )}
         </div>
+      )}
 
-        {/* Right: AI Verification Report */}
-        <div className={styles.card} style={{ minWidth: 0 }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
-            <h2 className={styles.h2}>AI Verification Report</h2>
-            <span className={`${styles.bd} ${styles[route.cls]}`}>{route.text}</span>
+      {/* No Deliverable Submitted Yet */}
+      {selected && !sub && (
+        <section className={styles.card} style={{ textAlign: 'center', padding: '48px 24px' }}>
+          <div style={{ fontWeight: 600, fontSize: 17, color: '#172B4D' }}>No deliverable submitted yet for this milestone</div>
+          <p className={styles.muted} style={{ maxWidth: 540, margin: '8px auto 20px' }}>
+            {isFreelancer && selected.state === 'FUNDED'
+              ? 'This milestone is funded in PayPal escrow. Submit your GitHub pull request and staging preview to trigger automated AI verification.'
+              : 'Awaiting freelancer submission. Acceptance criteria and verification reports will appear here once submitted.'}
+          </p>
+          {isFreelancer && selected.state === 'FUNDED' && (
+            <button className={`${styles.btn} ${styles.btnP}`} onClick={() => setModalOpen(true)}>
+              Submit Deliverable
+            </button>
+          )}
+        </section>
+      )}
+
+      {/* 2-Column: Submitted Deliverables & AI Verification Report (when submission exists) */}
+      {sub && (
+        <section className={styles.twoCol}>
+          {/* Left: Submitted Deliverables */}
+          <div className={styles.card}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <h2 className={styles.h2}>Submitted Deliverables</h2>
+              <span className={`${styles.bd} ${styles[STATUS_BADGE[sub.status]] || styles.b}`}>{sub.status}</span>
+            </div>
+
+            {sub.pr_url && (
+              <div className={styles.row} style={{ marginTop: 12 }}>
+                <div className={styles.ico}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M6 3v12M18 9a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM6 21a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM18 9a9 9 0 0 1-9 9" />
+                  </svg>
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div className={styles.muted}>GitHub Pull Request</div>
+                  <a href={sub.pr_url} target="_blank" rel="noreferrer" className={styles.link}>
+                    {sub.pr_url.replace(/^https?:\/\//, '')}
+                  </a>
+                  {sub.repository && (
+                    <div className={styles.muted}>{sub.repository} · branch main</div>
+                  )}
+                </div>
+                <span className={`${styles.bd} ${styles.g}`}>PR Verified</span>
+              </div>
+            )}
+
+            {sub.deployed_url && (
+              <div className={styles.row}>
+                <div className={styles.ico}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18" />
+                  </svg>
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div className={styles.muted}>Deployed Staging Preview</div>
+                  <a href={sub.deployed_url} target="_blank" rel="noreferrer" className={styles.link}>
+                    {sub.deployed_url.replace(/^https?:\/\//, '')}
+                  </a>
+                </div>
+                <span className={`${styles.bd} ${styles.g} ${styles.num}`}>HTTP 200 OK</span>
+              </div>
+            )}
+
+            {sub.evidence_url && (
+              <div className={styles.row}>
+                <div className={styles.ico}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9zM8 13h8M8 17h5" />
+                  </svg>
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div className={styles.muted}>Evidence Documentation</div>
+                  <a href={sub.evidence_url} target="_blank" rel="noreferrer" className={styles.link}>
+                    {sub.evidence_url.replace(/^https?:\/\//, '')}
+                  </a>
+                </div>
+              </div>
+            )}
+
+            {sub.files && Object.keys(sub.files).length > 0 && (
+              <div className={styles.row}>
+                <div className={styles.ico}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" />
+                  </svg>
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div className={styles.muted}>Attached Evidence Files</div>
+                  <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 4 }}>
+                    {Object.entries(sub.files).map(([name, f]) => (
+                      <span key={name} className={`${styles.bd} ${styles.b}`}>
+                        {name} ({Math.round((f.size || 0) / 1024)} KB)
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {sub.notes && (
+              <div style={{ borderTop: '1px solid #E5E9F0', paddingTop: 12, marginTop: 12 }}>
+                <div className={styles.muted}>Freelancer Notes</div>
+                <p style={{ margin: '4px 0 8px', fontSize: 13, color: '#172B4D', lineHeight: 1.5 }}>
+                  {sub.notes}
+                </p>
+                {sub.created_at && (
+                  <div className={`${styles.muted} ${styles.num}`}>
+                    Submitted {new Date(sub.created_at).toISOString().slice(0, 16).replace('T', ' ')} UTC
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 24, alignItems: 'center', margin: '16px 0' }}>
-            <svg viewBox="0 0 120 120" width="150" height="150" role="img" style={{ flex: 'none' }}>
-              <circle cx="60" cy="60" r="52" fill="none" stroke="#E5E9F0" strokeWidth="12" />
-              <circle
-                cx="60"
-                cy="60"
-                r="52"
-                fill="none"
-                stroke={route.stroke}
-                strokeWidth="12"
-                strokeLinecap="round"
-                strokeDasharray="326.7"
-                strokeDashoffset={(326.7 * (1 - scoreRatio)).toFixed(1)}
-                transform="rotate(-90 60 60)"
-                style={{ transition: 'all 0.5s ease' }}
-              />
-              <text x="60" y="62" textAnchor="middle" fontSize="30" fontWeight="600" fill="#172B4D" fontFamily="Inter,sans-serif">
-                {scenario.s}
-              </text>
-              <text x="60" y="80" textAnchor="middle" fontSize="11" fill="#64748B" fontFamily="Inter,sans-serif">
-                out of 100
-              </text>
-            </svg>
+          {/* Right: AI Verification Report */}
+          <div className={styles.card} style={{ minWidth: 0 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
+              <h2 className={styles.h2}>AI Verification Report</h2>
+              <span className={`${styles.bd} ${styles[route.cls]}`}>{route.text}</span>
+            </div>
 
-            <div style={{ flex: 1, minWidth: 180, fontSize: 13 }} className={styles.muted}>
-              Thresholds
-              <div style={{ marginTop: 6, display: 'grid', gap: 4, color: '#172B4D' }}>
-                <span><span className={`${styles.bd} ${styles.g}`}>AUTO_APPROVE</span> ≥ 0.80</span>
-                <span><span className={`${styles.bd} ${styles.a}`}>HUMAN_REVIEW</span> 0.60–0.79</span>
-                <span><span className={`${styles.bd} ${styles.r}`}>AUTO_REJECT</span> &lt; 0.60</span>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 24, alignItems: 'center', margin: '16px 0' }}>
+              <svg viewBox="0 0 120 120" width="140" height="140" role="img" style={{ flex: 'none' }}>
+                <circle cx="60" cy="60" r="52" fill="none" stroke="#E5E9F0" strokeWidth="12" />
+                <circle
+                  cx="60"
+                  cy="60"
+                  r="52"
+                  fill="none"
+                  stroke={route.stroke}
+                  strokeWidth="12"
+                  strokeLinecap="round"
+                  strokeDasharray="326.7"
+                  strokeDashoffset={(326.7 * (1 - scoreRatio)).toFixed(1)}
+                  transform="rotate(-90 60 60)"
+                  style={{ transition: 'all 0.5s ease' }}
+                />
+                <text x="60" y="62" textAnchor="middle" fontSize="30" fontWeight="600" fill="#172B4D" fontFamily="Inter,sans-serif">
+                  {scoreDisplay}
+                </text>
+                <text x="60" y="80" textAnchor="middle" fontSize="11" fill="#64748B" fontFamily="Inter,sans-serif">
+                  out of 100
+                </text>
+              </svg>
+
+              <div style={{ flex: 1, minWidth: 180, fontSize: 13 }} className={styles.muted}>
+                Thresholds
+                <div style={{ marginTop: 6, display: 'grid', gap: 4, color: '#172B4D' }}>
+                  <span><span className={`${styles.bd} ${styles.g}`}>AUTO_APPROVE</span> ≥ 0.80</span>
+                  <span><span className={`${styles.bd} ${styles.a}`}>HUMAN_REVIEW</span> 0.60–0.79</span>
+                  <span><span className={`${styles.bd} ${styles.r}`}>AUTO_REJECT</span> &lt; 0.60</span>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div style={{ display: 'grid', gap: 8 }}>
-            {CRITERIA.map((c, i) => {
-              const statusKey = scenario.c[i];
-              const [label, badgeClass] = STATUS_ICONS[statusKey];
-              return (
-                <div key={c[1]} className={styles.row}>
-                  <span className={`${styles.bd} ${styles[badgeClass]}`} style={{ minWidth: 84, textAlign: 'center' }}>
-                    {label}
-                  </span>
-                  <span style={{ flex: 1 }}>{c[1]}</span>
-                  <span className={`${styles.muted} ${styles.num}`}>Weight {c[0]}</span>
+            <div style={{ display: 'grid', gap: 8 }}>
+              {sub.criterion_results && sub.criterion_results.length > 0 ? (
+                sub.criterion_results.map((c, i) => (
+                  <div key={i} className={styles.row}>
+                    <span
+                      className={`${styles.bd} ${c.passed ? styles.g : styles.r}`}
+                      style={{ minWidth: 70, textAlign: 'center' }}
+                    >
+                      {c.passed ? 'Passed' : 'Failed'}
+                    </span>
+                    <span style={{ flex: 1 }}>{c.name}</span>
+                    <span className={`${styles.muted} ${styles.num}`}>
+                      Weight {Math.round((c.weight || 0) * 100)}%
+                    </span>
+                  </div>
+                ))
+              ) : (
+                <div className={styles.muted} style={{ padding: '8px 0' }}>
+                  Verification complete. Criterion evaluation score recorded.
                 </div>
-              );
-            })}
+              )}
+            </div>
+
+            {sub.rationale && (
+              <div style={{ borderTop: '1px solid #E5E9F0', marginTop: 12, paddingTop: 12 }}>
+                <div style={{ fontWeight: 600, fontSize: 14 }}>Verifier Rationale</div>
+                <p style={{ margin: '4px 0 0', color: '#172B4D', fontSize: 13, lineHeight: 1.5 }}>
+                  {sub.rationale}
+                </p>
+              </div>
+            )}
+          </div>
+        </section>
+      )}
+
+      {/* Section C: Mandate Guard Autonomous Policy Evaluation — Always Displayed */}
+      {selected && (
+        <section className={styles.card}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
+            <h2 className={styles.h2}>Mandate Guard Policy Evaluation</h2>
+            <span className={`${styles.bd} ${styles[policyBadge.cls]}`}>{policyBadge.text}</span>
           </div>
 
-          <div style={{ borderTop: '1px solid #E5E9F0', marginTop: 12, paddingTop: 12 }}>
-            <div style={{ fontWeight: 600, fontSize: 14 }}>Verifier rationale</div>
-            <p style={{ margin: '4px 0 0', color: '#172B4D', fontSize: 13 }}>
-              {scenario.why}
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Section C: Mandate Guard Policy Evaluation */}
-      <section className={styles.card}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
-          <h2 className={styles.h2}>Mandate Guard Policy Evaluation</h2>
-          <span className={`${styles.bd} ${styles[policyBadge.cls]}`}>{policyBadge.text}</span>
-        </div>
-
-        <div className={styles.policyGrid}>
-          <div>
-            <div className={styles.muted}>Payout amount</div>
-            <div className={`${styles.num}`} style={{ fontSize: 16, fontWeight: 600 }}>${amt.toFixed(2)}</div>
-          </div>
-          <div>
-            <div className={styles.muted}>Autonomous limit</div>
-            <div className={`${styles.num}`} style={{ fontSize: 16, fontWeight: 600 }}>$1,500.00 / txn</div>
-          </div>
-          <div>
-            <div className={styles.muted}>Daily volume</div>
-            <div className={`${styles.num}`} style={{ fontSize: 16, fontWeight: 600 }}>$650.00 of $5,000.00</div>
-          </div>
-          <div>
-            <div className={styles.muted}>Verified PayPal email</div>
-            <div style={{ fontSize: 14, fontWeight: 500 }}>freelancer@example.com ✓</div>
-          </div>
-        </div>
-
-        <div
-          style={{
-            padding: '12px 16px',
-            borderRadius: 8,
-            fontWeight: 500,
-            fontSize: 14,
-            background: policyBg,
-            color: policyColor
-          }}
-        >
-          {policyMsg}
-        </div>
-
-        <div className={styles.muted} style={{ marginTop: 12 }}>
-          AI recommends. Policy decides. Audit hash <code className={styles.mono}>{auditHash}</code> ·{' '}
-          <a href="/audit" className={styles.link}>View in Audit Trail</a>
-        </div>
-      </section>
-
-      {/* Section D: Role-specific Actions */}
-      <section className={styles.card}>
-        <h2 className={styles.h2}>Actions</h2>
-
-        {role === 'client' && (
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 12 }}>
-            <button className={`${styles.btn} ${styles.btnP}`} onClick={handleClientApprove}>
-              Approve Payout
-            </button>
-            <button className={styles.btn} onClick={handleRequestRevision}>
-              Request Revisions
-            </button>
-            <button className={styles.btn} style={{ color: '#B42830' }} onClick={handleRefund}>
-              Request Refund
-            </button>
-            <button className={styles.btn} style={{ color: '#B42830' }} onClick={handleDispute}>
-              Dispute
-            </button>
-          </div>
-        )}
-
-        {role === 'freelancer' && (
-          <div className={styles.muted} style={{ marginTop: 12 }}>
-            Freelancers can resubmit deliverables or track verification here. Switch to Client to review.
-          </div>
-        )}
-
-        {role === 'admin' && (
-          <div className={styles.muted} style={{ marginTop: 12 }}>
-            Risk Officers decide over-limit releases in the <a href="/approvals" className={styles.link}>Approvals Queue</a>.
-          </div>
-        )}
-
-        {role === 'admin' && (
-          <div style={{ borderTop: '1px dashed #E5E9F0', marginTop: 16, paddingTop: 16 }}>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, alignItems: 'center' }}>
-              <span className={`${styles.bd} ${styles.a}`}>⚡ DEMO</span>
-              <span className={styles.muted}>POST /milestones/&#123;id&#125;/_inject_verification</span>
-              <button className={styles.btn} onClick={() => handleInject('0.95')}>0.95 Auto-Approve</button>
-              <button className={styles.btn} onClick={() => handleInject('0.72')}>0.72 Human Review</button>
-              <button className={styles.btn} onClick={() => handleInject('0.45')}>0.45 Reject</button>
-              <label className={styles.muted}>Milestone</label>
-              <select
-                className={styles.btn}
-                style={{ fontWeight: 500 }}
-                value={amountOption}
-                onChange={e => setAmountOption(e.target.value)}
-              >
-                <option value="700">M2 · $700.00</option>
-                <option value="150">Demo · $150.00</option>
-              </select>
+          <div className={styles.policyGrid}>
+            <div>
+              <div className={styles.muted}>Milestone Amount</div>
+              <div className={styles.num} style={{ fontSize: 16, fontWeight: 600 }}>{fmt(amt)}</div>
+            </div>
+            <div>
+              <div className={styles.muted}>Autonomous Limit</div>
+              <div className={styles.num} style={{ fontSize: 16, fontWeight: 600 }}>$1,500.00 / txn</div>
+            </div>
+            <div>
+              <div className={styles.muted}>Limit Status</div>
+              <div style={{ fontSize: 14, fontWeight: 600, color: isOverLimit ? '#B42830' : '#1E7A4C' }}>
+                {isOverLimit ? 'EXCEEDS ($1,500.00)' : 'WITHIN LIMIT'}
+              </div>
+            </div>
+            <div>
+              <div className={styles.muted}>Recipient Verification</div>
+              <div style={{ fontSize: 14, fontWeight: 500 }}>PayPal Account Verified</div>
             </div>
           </div>
-        )}
-      </section>
+
+          <div
+            style={{
+              padding: '12px 16px',
+              borderRadius: 8,
+              fontWeight: 500,
+              fontSize: 14,
+              background: policyBg,
+              color: policyColor,
+            }}
+          >
+            {policyMsg}
+          </div>
+
+          <div className={styles.muted} style={{ marginTop: 12 }}>
+            AI recommends. Policy decides. Every action is recorded in the tamper-evident audit ledger.
+          </div>
+        </section>
+      )}
+
+      {/* Section D: Actions */}
+      {selected && (
+        <section className={styles.card}>
+          <h2 className={styles.h2}>Actions</h2>
+
+          {isClient && sub && sub.status === 'IN_REVIEW' && (
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 12 }}>
+              <button className={`${styles.btn} ${styles.btnP}`} onClick={handleClientApprove}>
+                Approve Deliverable
+              </button>
+              <button className={styles.btn} onClick={handleRequestRevision}>
+                Request Revision
+              </button>
+              <button className={styles.btn} style={{ color: '#B42830' }} onClick={handleDispute}>
+                File Dispute
+              </button>
+            </div>
+          )}
+
+          {isFreelancer && (selected.state === 'FUNDED' || sub?.route === 'RESUBMIT') && (
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 12 }}>
+              <button className={`${styles.btn} ${styles.btnP}`} onClick={() => setModalOpen(true)}>
+                {sub ? 'Resubmit Deliverable' : 'Submit Deliverable'}
+              </button>
+            </div>
+          )}
+
+          {isAdmin && (
+            <div className={styles.muted} style={{ marginTop: 12 }}>
+              Risk Officers can review over-limit releases in the{' '}
+              <a href="/approvals" className={styles.link}>Human Approvals Queue (HITL)</a>.
+            </div>
+          )}
+
+          {isClient && (!sub || sub.status !== 'IN_REVIEW') && (
+            <div className={styles.muted} style={{ marginTop: 12 }}>
+              {sub?.status === 'RELEASED'
+                ? 'This deliverable has been approved and payout released.'
+                : 'Awaiting freelancer deliverable submission.'}
+            </div>
+          )}
+        </section>
+      )}
 
       {/* Submit Deliverable Modal */}
       {modalOpen && (
@@ -389,7 +522,11 @@ export default function Submissions() {
             <h2 className={styles.h2}>Submit Deliverable</h2>
             <label className={styles.label}>
               Milestone
-              <input className={styles.input} readOnly value="Milestone 2: Frontend Integration — $700.00 USD" />
+              <input
+                className={styles.input}
+                readOnly
+                value={`${selected?.milestone_id || ''}: ${selected?.milestone_title || ''} — ${fmt(selected?.amount || 0)}`}
+              />
             </label>
             <label className={styles.label}>
               GitHub Pull Request URL
@@ -411,7 +548,7 @@ export default function Submissions() {
               />
             </label>
             <label className={styles.label}>
-              Deployed Live URL
+              Deployed Live Preview URL
               <input
                 className={styles.input}
                 type="url"
@@ -421,7 +558,7 @@ export default function Submissions() {
               />
             </label>
             <label className={styles.label}>
-              Evidence Documentation URL
+              Evidence Documentation URL (Optional)
               <input
                 className={styles.input}
                 type="url"
@@ -435,21 +572,17 @@ export default function Submissions() {
               <textarea
                 className={styles.textarea}
                 rows="3"
-                placeholder="Summarize what was delivered"
+                placeholder="Describe your implementation and verification notes"
                 value={notes}
                 onChange={e => setNotes(e.target.value)}
               />
             </label>
-            <label className={styles.label}>
-              Files (test logs, zip, pdf)
-              <input className={styles.input} type="file" multiple style={{ padding: '8px' }} />
-            </label>
             <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end', marginTop: 8 }}>
-              <button type="button" className={styles.btn} onClick={() => setModalOpen(false)}>
+              <button type="button" className={styles.btn} onClick={() => setModalOpen(false)} disabled={submitting}>
                 Cancel
               </button>
-              <button type="submit" className={`${styles.btn} ${styles.btnP}`}>
-                Submit Deliverable for AI Verification
+              <button type="submit" className={`${styles.btn} ${styles.btnP}`} disabled={submitting}>
+                {submitting ? 'Submitting...' : 'Submit Deliverable for AI Verification'}
               </button>
             </div>
           </form>
