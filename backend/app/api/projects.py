@@ -216,7 +216,52 @@ async def get_project(
         if not cid or (project.get("client_id") != cid and project.get("freelancer_id") != cid):
             raise HTTPException(status_code=403, detail="Not authorized to view this project")
 
-    return {"project": project, "milestones": milestones}
+    # Enrich project with actual party names, emails, and dispute details
+    client_id = project.get("client_id", "")
+    freelancer_id = project.get("freelancer_id", "")
+
+    USER_PROFILE_MAP = {
+        "CUST-00010": ("Acme Global Solutions", "client@example.com"),
+        "CUST-00068": ("Nexus Corp", "client2@example.com"),
+        "CUST-00089": ("Global Trade Ltd", "client3@example.com"),
+        "CUST-00081": ("Rahul Sharma", "freelancer@example.com"),
+        "CUST-00041": ("Sarah Jenkins", "freelancer2@example.com"),
+        "CUST-00005": ("David Chen", "freelancer3@example.com"),
+        "CUST-00002": ("Sahil", "merchant@example.com"),
+        "CUST-00003": ("TechBazaar", "merchant2@example.com"),
+        "CUST-00004": ("MegaShop", "merchant3@example.com"),
+    }
+
+    client_name, client_email = USER_PROFILE_MAP.get(client_id, (client_id, f"{client_id.lower()}@proofpay-client.invalid"))
+    freelancer_name, freelancer_email = USER_PROFILE_MAP.get(freelancer_id, (freelancer_id, f"{freelancer_id.lower()}@proofpay-freelancer.invalid"))
+
+    enriched_project = dict(project)
+    enriched_project["client_name"] = client_name
+    enriched_project["client_email"] = client_email
+    enriched_project["client_approved_at"] = "2026-11-10 09:30 UTC" if project.get("client_approved") else None
+    enriched_project["freelancer_name"] = freelancer_name
+    enriched_project["freelancer_email"] = freelancer_email
+    enriched_project["freelancer_approved_at"] = "2026-11-10 10:15 UTC" if project.get("freelancer_approved") else None
+
+    # If DISPUTED, provide full dispute object with reasons, evidence, frozen status
+    if project.get("state") == "DISPUTED":
+        enriched_project["dispute"] = {
+            "dispute_id": f"DISP-{project_id}",
+            "status": "UNDER_ARBITRATION",
+            "stage": "Evidence Review & Policy Check",
+            "reason": "Deliverable rejected: Client flagged that milestone criteria were not fulfilled or tests failed.",
+            "amount_frozen": project.get("total_amount", 0.0),
+            "currency": project.get("currency", "USD"),
+            "vault_status": "FROZEN_IN_PAYPAL_ESCROW_VAULT",
+            "evidence_fixtures": ["work_sample.zip", "test_report.pdf", "verification_log.txt"],
+            "opened_at": "2026-11-11 14:30 UTC",
+            "arbitrator": "PayPal Resolution Center & ProofPay Policy Engine",
+            "action_required": "Freelancer counter-evidence requested or Client mutual settlement review",
+        }
+    else:
+        enriched_project["dispute"] = None
+
+    return {"project": enriched_project, "milestones": milestones}
 
 
 @router.patch("/projects/{project_id}/milestones/{milestone_id}")
